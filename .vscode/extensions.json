@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "kumar-harsh.graphql-for-vscode",
+    "esbenp.prettier-vscode",
+    "burkeholland.react-food-truck",
+    "eg2.tslint",
+    "davidanson.vscode-markdownlint",
+    "asvetliakov.snapshot-tools"
+  ]
+}

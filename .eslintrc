@@ -1,0 +1,8 @@
+{
+  "plugins": ["prettier"],
+  "parserOptions": { "ecmaVersion": 8, "sourceType": "module" },
+  "rules": {
+    "quotes": ["error", "single"],
+    "prettier/prettier": "error"
+  }
+}
