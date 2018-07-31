@@ -39,12 +39,51 @@ interface GameState {
 }
 
 const Square = (props: SquareProps) => {
-  const className = props.isWinner ? 'winner-square' : 'square';
-  return (
-    <button className={className} onClick={() => props.onClick()}>
-      {props.value}
-    </button>
-  );
+  if (props.isWinner) {
+    return (
+      <button
+        className={css`
+          background: #ffa500;
+          border: 1px solid #999;
+          float: left;
+          font-size: 24px;
+          font-weight: bold;
+          line-height: 34px;
+          height: 34px;
+          margin-right: -1px;
+          margin-top: -1px;
+          padding: 0;
+          text-align: center;
+          width: 34px;
+        `}
+        onClick={() => props.onClick()}
+      >
+        {props.value}
+      </button>
+    );
+  } else {
+    return (
+      <button
+        className={css`
+          background: #fff;
+          border: 1px solid #999;
+          float: left;
+          font-size: 24px;
+          font-weight: bold;
+          line-height: 34px;
+          height: 34px;
+          margin-right: -1px;
+          margin-top: -1px;
+          padding: 0;
+          text-align: center;
+          width: 34px;
+        `}
+        onClick={() => props.onClick()}
+      >
+        {props.value}
+      </button>
+    );
+  }
 };
 
 const Row = (props: RowProps) => {
@@ -188,15 +227,30 @@ class Game extends React.Component<{}, GameState> {
 
     // Build up DOM
     return (
-      <div className="game">
+      <div
+        className={css(`
+        display: flex;
+        flex-direction: row;`)}
+      >
         <Board
           squares={current.squares}
           onClick={i => this.handleClick(i)}
           winnerSquares={winnerSquares}
         />
-        <div className="game-info">
+        <div
+          className={css(`
+            margin-left: 20px;
+        `)}
+        >
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <ol
+            className={css(`
+              padding-left: 30px;
+
+          `)}
+          >
+            {moves}
+          </ol>
           <Toggle
             isToggleOn={this.state.isToggleOn}
             onClick={() => this.toggleHandler()}
