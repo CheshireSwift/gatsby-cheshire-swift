@@ -7,6 +7,12 @@ const cellClass = {
   [cellState.ALIVE]: 'alive',
 };
 
+const TimeControl = (props: { onClickHandler: () => void, value: string }) => {
+  return (
+    <button onClick={props.onClickHandler}>{props.value}</button>
+  );
+};
+
 interface SquareProps {
   styleClass: string;
   onClickHandler: () => void;
@@ -19,6 +25,8 @@ const Square = (props: SquareProps) => (
 
 interface BoardState {
   squares: cellState[];
+  isRunning: boolean;
+  timerToken: Timer;
 }
 
 class Board extends React.Component<{}, BoardState> {
@@ -28,7 +36,9 @@ class Board extends React.Component<{}, BoardState> {
     this.timestep = this.timestep.bind(this);
     this.sideLength = 50;
     this.state = {
+      isRunning: false,
       squares: Array(this.sideLength * this.sideLength).fill(cellState.DEAD),
+      timerToken: 0,
     };
   }
 
@@ -46,6 +56,10 @@ class Board extends React.Component<{}, BoardState> {
         onClickHandler={() => this.handleClick(i)}
       />
     );
+  }
+
+  command() {
+    return (this.state.isRunning ? 'Stop' : 'Go');
   }
 
   timestep() {
@@ -86,7 +100,6 @@ class Board extends React.Component<{}, BoardState> {
       }
     });
     this.setState({ squares: newState });
-    setTimeout(this.timestep, 500);
   }
 
   makeRow(i: number) {
@@ -96,10 +109,19 @@ class Board extends React.Component<{}, BoardState> {
     );
   }
 
+  controlClick() {
+    if (!this.state.isRunning) {
+      const id = setInterval(this.timestep, 500);
+      this.setState({ timerToken: id });
+    } else {
+      clearInterval(this.state.timerToken);
+    }
+    this.setState({ isRunning: !this.state.isRunning });
+  }
   render() {
     return (
       <div>
-        <button className="timestep" onClick={() => this.timestep()}>Go!</button>
+        <TimeControl onClickHandler={this.controlClick.bind(this)} value={this.command()} />
         {_.range(this.sideLength).map((row: number) => this.makeRow(row))}
       </div>
     );
