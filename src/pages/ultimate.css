@@ -1,0 +1,43 @@
+.square {
+  background: #fff;
+  border: 1px solid #999;
+  line-height: 34px;
+  height: 34px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 34px;
+}
+
+.small-board {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(auto, max-content));
+  background-color: white;
+  padding: 10px;
+  border: 1px solid black;
+}
+
+.large-board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(auto, max-content));
+  background-color: black;
+  border: 1px solid black;
+}
+
+.board-available {
+  background-color: green;
+}
+
+.board-unavailable {
+  background-color: red;
+}
+
+.small-winner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
