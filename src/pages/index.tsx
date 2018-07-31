@@ -33,7 +33,7 @@ class Board extends React.Component<{}, BoardState> {
   sideLength: number;
   constructor(props: {}) {
     super(props);
-    this.timestep = this.timestep.bind(this);
+    this.computeNextGeneration = this.computeNextGeneration.bind(this);
     this.sideLength = 50;
     this.state = {
       isRunning: false,
@@ -42,7 +42,7 @@ class Board extends React.Component<{}, BoardState> {
     };
   }
 
-  handleClick(i: number) {
+  createAliveCell(i: number) {
     const squares = this.state.squares.slice();
     squares[i] = cellState.ALIVE;
     this.setState({ squares });
@@ -53,21 +53,20 @@ class Board extends React.Component<{}, BoardState> {
       <Square
         key={i}
         styleClass={cellClass[this.state.squares[i]]}
-        onClickHandler={() => this.handleClick(i)}
+        onClickHandler={() => this.createAliveCell(i)}
       />
     );
   }
 
-  command() {
+  buttonText() {
     return (this.state.isRunning ? 'Stop' : 'Go');
   }
 
-  timestep() {
+  computeNextGeneration() {
     // Figure out how many live neighbours each cell has
-    console.log('step');
     const aliveNeighbourCount: number[] = [];
-    this.state.squares.forEach((square: any, i: number) => {
-      // List of grid offsets to neighbours
+    this.state.squares.forEach((square: cellState, i: number) => {
+      // For each grid offset of a neighbour...
       const offsets: number[][] = [[-1, -1], [0, -1], [+1, -1], [-1, 0], [+1, 0], [-1, +1], [0, +1], [+1, +1]];
       let aliveNeighbours = 0;
       offsets.forEach(pair => {
@@ -76,7 +75,7 @@ class Board extends React.Component<{}, BoardState> {
         const neighbour = { x: row + dx, y: col + dy };
         if (neighbour.x < 0 || neighbour.x >= this.sideLength
           || neighbour.y < 0 || neighbour.y >= this.sideLength) {
-          // Neighbour cell is out of bounds
+          // Neighbour cell is out of bounds, ignore
           return;
         }
 
@@ -88,30 +87,31 @@ class Board extends React.Component<{}, BoardState> {
     });
 
     // Once we have the number of live neighbours we can modify the state
-    const newState = _.zipWith(this.state.squares, aliveNeighbourCount, (square, nLiveNeighbours: number) => {
-      if (square === cellState.ALIVE) {
-        // Any live cell with fewer than two live neighbors dies, as if by under population.
-        // Any live cell with two or three live neighbors lives on to the next generation.
-        // Any live cell with more than three live neighbors dies, as if by overpopulation.
-        return (nLiveNeighbours < 2 || nLiveNeighbours > 3) ? cellState.DEAD : cellState.ALIVE;
-      } else {
-        // Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
-        return (nLiveNeighbours === 3) ? cellState.ALIVE : cellState.DEAD;
-      }
-    });
+    const newState = _.zipWith(this.state.squares, aliveNeighbourCount,
+      (square: cellState, nLiveNeighbours: number) => {
+        if (square === cellState.ALIVE) {
+          // Any live cell with fewer than two live neighbors dies, as if by under population.
+          // Any live cell with two or three live neighbors lives on to the next generation.
+          // Any live cell with more than three live neighbors dies, as if by overpopulation.
+          return (nLiveNeighbours < 2 || nLiveNeighbours > 3) ? cellState.DEAD : cellState.ALIVE;
+        } else {
+          // Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+          return (nLiveNeighbours === 3) ? cellState.ALIVE : cellState.DEAD;
+        }
+      });
     this.setState({ squares: newState });
   }
 
-  makeRow(i: number) {
+  makeRowOfSquares(i: number) {
     return (<div className="board-row">
       {_.range(i * this.sideLength, (i + 1) * this.sideLength).map((j: number) => this.renderSquare(j))}
     </div>
     );
   }
 
-  controlClick() {
+  alternateAnimation() {
     if (!this.state.isRunning) {
-      const id = setInterval(this.timestep, 500);
+      const id = setInterval(this.computeNextGeneration, 500);
       this.setState({ timerToken: id });
     } else {
       clearInterval(this.state.timerToken);
@@ -121,8 +121,8 @@ class Board extends React.Component<{}, BoardState> {
   render() {
     return (
       <div>
-        <TimeControl onClickHandler={this.controlClick.bind(this)} value={this.command()} />
-        {_.range(this.sideLength).map((row: number) => this.makeRow(row))}
+        <TimeControl onClickHandler={this.alternateAnimation.bind(this)} value={this.buttonText()} />
+        {_.range(this.sideLength).map((row: number) => this.makeRowOfSquares(row))}
       </div>
     );
   }
