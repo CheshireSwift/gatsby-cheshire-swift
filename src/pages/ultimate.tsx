@@ -1,7 +1,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-
-import './ultimate.css';
+import { css } from 'emotion';
 
 enum Winner {
   Nought,
@@ -92,8 +91,8 @@ export class Game extends React.Component<{}, GameState> {
 
   render() {
     return (
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ display: 'inline-block' }}>
+      <div className={css({ textAlign: 'center' })}>
+        <div className={css({ display: 'inline-block' })}>
           <LargeBoard
             available={this.state.available}
             boards={this.state.boards}
@@ -111,8 +110,20 @@ interface LargeBoardProps {
   handleClick: (i: number, j: number) => void;
 }
 
+const boardStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(3, minmax(auto, max-content))',
+};
+
 const LargeBoard = (props: LargeBoardProps) => (
-  <div className="large-board">
+  <div
+    className={css({
+      backgroundColor: 'black',
+      border: '1px solid black',
+      gridGap: 1,
+      ...boardStyle,
+    })}
+  >
     {props.boards.map((board: Board, i: number) => {
       const availableBoard = props.available.includes(i);
       return (
@@ -139,13 +150,25 @@ interface SmallBoardProps {
 
 const SmallBoard = (props: SmallBoardProps) => (
   <div
-    className={
-      'small-board ' +
-      (props.available ? 'board-available' : 'board-unavailable')
-    }
+    className={css({
+      backgroundColor: props.available ? 'green' : 'red',
+      padding: 10,
+      position: 'relative',
+      ...boardStyle,
+    })}
   >
     {props.board.winner !== null && (
-      <div className="small-winner">{getSymbol(props.board.winner)()}</div>
+      <div
+        className={css({
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+        })}
+      >
+        {getSymbol(props.board.winner)()}
+      </div>
     )}
     {props.board.cells.map((cell: Cell, i: number) => (
       <Square key={i} cell={cell} onClick={() => props.handleClick(i)} />
@@ -159,7 +182,18 @@ interface SquareProps {
 }
 
 const Square = (props: SquareProps) => (
-  <button className="square" onClick={props.onClick}>
+  <button
+    className={css({
+      backgroundColor: 'white',
+      border: '1px solid #999',
+      height: 34,
+      marginRight: -1,
+      marginTop: -1,
+      padding: 0,
+      width: 34,
+    })}
+    onClick={props.onClick}
+  >
     {getSymbol(props.cell.winner)()}
   </button>
 );
