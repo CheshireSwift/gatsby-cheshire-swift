@@ -3,8 +3,7 @@ import './ticTacToe.css';
 
 interface SquareProps {
   isWinner: boolean;
-  onClick: (i: number) => void;
-  squareNum: number;
+  onClick: () => void;
   value: string;
 }
 
@@ -41,10 +40,7 @@ interface GameState {
 const Square = (props: SquareProps) => {
   const className = props.isWinner ? 'winner-square' : 'square';
   return (
-    <button
-      className={className}
-      onClick={() => props.onClick(props.squareNum)}
-    >
+    <button className={className} onClick={() => props.onClick()}>
       {props.value}
     </button>
   );
@@ -59,8 +55,7 @@ const Row = (props: RowProps) => {
     cells.push(
       renderSquare({
         isWinner,
-        onClick: props.onClick,
-        squareNum: 3 * props.rowNum + i,
+        onClick: () => props.onClick(3 * props.rowNum + i),
         value: props.squares[3 * props.rowNum + i],
       }),
     );
@@ -72,7 +67,6 @@ function renderSquare(props: SquareProps): JSX.Element {
   return (
     <Square
       value={props.value}
-      squareNum={props.squareNum}
       onClick={props.onClick}
       isWinner={props.isWinner}
     />
