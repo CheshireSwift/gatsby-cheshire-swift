@@ -137,11 +137,17 @@ export class Game extends React.Component<GameProps, GameState> {
             )}
           />
         </div>
-        Toggle list order
-        <input type="checkbox" id="toggle" className="toggle" />
+
         <div className="game-info">
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <div className="moveList">
+            <ol>{moves}</ol>
+            &ensp;&ensp;Toggle list order &ensp;
+            <input type="checkbox" id="toggle" className="toggle" />
+          </div>
+          {/* <button onClick={() => reverseOrder(moves)}>
+            Toggle list order
+          </button> */}
         </div>
       </div>
     );

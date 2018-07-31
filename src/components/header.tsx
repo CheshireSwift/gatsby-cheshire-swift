@@ -29,7 +29,6 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       <div
         style={{
           background: 'rebeccapurple',
-          marginBottom: '1.45rem',
         }}
       >
         <div

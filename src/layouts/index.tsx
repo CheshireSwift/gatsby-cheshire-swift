@@ -19,11 +19,24 @@ const Layout = ({ children, data }: LayoutProps) => (
       ]}
     />
     <Header siteTitle={data.site.siteMetadata.title} />
+
+    <div className="navbar">
+      <ul>
+        <li className="hover">
+          <a href="../">Home</a>
+        </li>
+        <li className="spacer">•</li>
+        <li className="hover">
+          <a href="../page-2">Tic-Tac-Toe</a>
+        </li>
+      </ul>
+    </div>
+
     <div
       style={{
         margin: '0 auto',
         maxWidth: 960,
-        padding: '0px 1.0875rem 1.45rem',
+        padding: 0,
         paddingTop: 0,
       }}
     >
