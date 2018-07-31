@@ -1,5 +1,5 @@
 import * as React from 'react';
-//import './index.css';
+// import './index.css';
 
 function Square(props: any) {
   return (
@@ -10,7 +10,7 @@ function Square(props: any) {
 }
 
 interface BoardProps {
-  squares: Array<any>;
+  squares: any[];
   onClick: any;
   winningArray: any;
 }
@@ -52,7 +52,7 @@ class Board extends React.Component<BoardProps, {}> {
 interface GameProps {}
 
 interface GameState {
-  history: Array<{ squares: Array<any>; clickedSquare?: Array<number> }>;
+  history: Array<{ squares: any[]; clickedSquare?: number[] }>;
   stepNumber: number;
   xIsNext: boolean;
 }
@@ -82,7 +82,7 @@ export class Game extends React.Component<GameProps, GameState> {
     this.setState({
       history: history.concat([
         {
-          squares: squares,
+          squares,
           clickedSquare: [Math.floor((i % 3) + 1), Math.floor(i / 3 + 1)],
         },
       ]),
@@ -133,7 +133,7 @@ export class Game extends React.Component<GameProps, GameState> {
             squares={current.squares}
             onClick={i => this.handleClick(i)}
             winningArray={createWinningArray(
-              calculateWinner(history[this.state.stepNumber].squares)
+              calculateWinner(history[this.state.stepNumber].squares),
             )}
           />
         </div>
@@ -156,7 +156,7 @@ export class Game extends React.Component<GameProps, GameState> {
 
 // ========================================
 
-function calculateWinner(squares: Array<any>) {
+function calculateWinner(squares: any[]) {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -176,8 +176,8 @@ function calculateWinner(squares: Array<any>) {
   return null;
 }
 
-function createWinningArray(winningSquares: Array<any>) {
-  let winningArray = [
+function createWinningArray(winningSquares: any[]) {
+  const winningArray = [
     'square',
     'square',
     'square',
@@ -193,7 +193,6 @@ function createWinningArray(winningSquares: Array<any>) {
       winningArray[parseInt(winningSquares[1][i], 10)] = 'winning square';
     }
   }
-  console.log(winningArray);
   return winningArray;
 }
 

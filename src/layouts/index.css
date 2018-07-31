@@ -694,6 +694,11 @@ input[type='checkbox']:checked + ol {
 .navbar a {
   text-decoration: none;
   color: white;
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  padding: 2em;
+  margin: -2em;
 }
 
 .hover:hover {
@@ -706,6 +711,7 @@ input[type='checkbox']:checked + ol {
   background-color: #decaf1;
   padding: 10px;
   border: 2px solid #3d1661;
+  margin: 10px;
 }
 
 .moveList {

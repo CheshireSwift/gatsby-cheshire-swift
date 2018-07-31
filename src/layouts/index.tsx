@@ -29,6 +29,10 @@ const Layout = ({ children, data }: LayoutProps) => (
         <li className="hover">
           <a href="../page-2">Tic-Tac-Toe</a>
         </li>
+        <li className="spacer">•</li>
+        <li className="hover">
+          <a href="../charizard">Charizard</a>
+        </li>
       </ul>
     </div>
 
