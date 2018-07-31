@@ -1,5 +1,6 @@
 import * as React from 'react';
 import './ticTacToe.css';
+import { css } from 'emotion';
 
 interface SquareProps {
   isWinner: boolean;
@@ -86,7 +87,7 @@ const Board = (props: BoardProps) => {
     );
   }
 
-  return <div>{rows}</div>;
+  return <div className="game-board">{rows}</div>;
 };
 
 const Toggle = (props: ToggleProps) => {
@@ -188,13 +189,11 @@ class Game extends React.Component<{}, GameState> {
     // Build up DOM
     return (
       <div className="game">
-        <div className="game-board">
-          <Board
-            squares={current.squares}
-            onClick={i => this.handleClick(i)}
-            winnerSquares={winnerSquares}
-          />
-        </div>
+        <Board
+          squares={current.squares}
+          onClick={i => this.handleClick(i)}
+          winnerSquares={winnerSquares}
+        />
         <div className="game-info">
           <div>{status}</div>
           <ol>{moves}</ol>
@@ -230,4 +229,4 @@ function calculateWinner(squares: string[]) {
 }
 
 // ========================================
-module.exports = { Game };
+module.exports = { Game, Square, Board, Row };
