@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as _ from 'lodash';
 import * as life from './game-of-life';
 import * as cell from './cellState';
 import TimeControl from './timecontrol';
@@ -16,6 +15,9 @@ interface BoardState {
 
 const ruleRegex = /^B(\d*)\/S(\d*)$/;  // Strings which look like 'B3/S23'
 
+const startingRule = 'B1/S12';
+const [bornCounts, surviveCounts] = [[1], [1, 2]]; // This should be a function of startingRule...
+
 export class Board extends React.Component<{}, BoardState> {
     sideLength: number;
     input: HTMLInputElement;
@@ -23,7 +25,7 @@ export class Board extends React.Component<{}, BoardState> {
         super(props);
         this.sideLength = 50;
         this.state = {
-            generationFunction: life.computeNextGeneration([3], [2, 3]),
+            generationFunction: life.computeNextGeneration(bornCounts, surviveCounts),
             isRunning: false,
             squares: Array(this.sideLength * this.sideLength).fill(cell.state.DEAD),
             timerToken: 0,
@@ -31,21 +33,35 @@ export class Board extends React.Component<{}, BoardState> {
     }
 
     render() {
+        const inputField = (
+            <input ref={c => {this.input = c; }} type="text" onChange={evt => this.handleRuleChange(evt)} />
+        );
+
+        const statusMessage = (
+            <div className={css({height: 20})}>
+                {this.input ? this.statusMessage(this.input.value) : null}
+            </div>
+        );
+
+        const spacer = (
+            <div className={css({height: 10})}></div>
+        );
+
         return (
             <div>
-                <input ref={c => {this.input = c; }} type="text" onChange={evt => this.handleRuleChange(evt)} />
-                <div className={css({height: '20px'})}>{this.input ? this.statusMessage(this.input.value) : null}</div>
+                {inputField}
+                {statusMessage}
                 <TimeControl onClickHandler={this.alternateAnimation.bind(this)} value={this.buttonText()} />
                 <Clear onClickHandler={this.clearBoard} />
-                <div className={css({height: '10px'})}></div>
+                {spacer}
                 <Grid squares={this.state.squares} sideLength={this.sideLength}
                 onClickHandler={this.createAliveCell.bind(this)}/>
-            </div >
+            </div>
         );
     }
 
     componentDidMount() {
-        this.input.value = 'B1/S12';
+        this.input.value = startingRule;
     }
 
     isValidRule = (rule: string) => ruleRegex.test(rule);

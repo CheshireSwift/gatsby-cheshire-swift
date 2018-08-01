@@ -21,7 +21,10 @@ const Square = (props: SquareProps) => (
         padding: 0,
         textAlign: 'center',
         width: '15px',
-      })} onClick={props.onClickHandler} >
+      },
+      {':focus': {
+        outline: 'none',
+      }})} onClick={props.onClickHandler} >
     </button>
 );
 
