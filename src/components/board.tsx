@@ -32,12 +32,16 @@ export class Board extends React.Component<{}, BoardState> {
     render() {
         return (
             <div>
-                <div>
-                    <input type="text" value={this.state.rule} onChange={evt => this.handleRuleChange(evt)} />
-                    <span>{this.isValidRule() ? "" : "Not a valid rule"}</span>
-                </div>
+                <input type="text" value={this.state.rule} onChange={evt => this.handleRuleChange(evt)} />
+                <div style={{height: '20px'}}>{this.isValidRule() ? "" : "Not a valid rule"}</div>
 
                 <TimeControl onClickHandler={this.alternateAnimation.bind(this)} value={this.buttonText()} />
+
+                <button className="styledButton"
+                onClick={() => this.setState({squares: this.state.squares.fill(cell.state.DEAD)})}>
+                Clear
+                </button>
+
                 <div className="separator"></div>
                 {_.range(this.sideLength).map((row: number) => this.makeRowOfSquares(row))}
             </div>
