@@ -6,15 +6,26 @@
   "dependencies": {
     "emotion": "^9.2.4",
     "emotion-server": "^9.2.4",
+    "emotions": "0.0.1",
     "gatsby": "^1.9.277",
     "gatsby-link": "^1.6.45",
     "gatsby-plugin-emotion": "^1.1.17",
     "gatsby-plugin-react-helmet": "^2.0.10",
     "gatsby-plugin-typescript": "^1.4.20",
     "lodash": "^4.17.10",
+    "react": "^15.6.2",
+    "react-dom": "^15.6.2",
     "react-emotion": "^9.2.4",
     "react-helmet": "^5.2.0",
     "typescript": "^2.9.2"
+  },
+  "jest": {
+    "setupTestFrameworkScriptFile": "./node_modules/jest-enzyme/lib/index.js",
+    "unmockedModulePathPatterns": [
+      "react",
+      "enzyme",
+      "jest-enzyme"
+    ]
   },
   "keywords": [
     "gatsby",
@@ -47,6 +58,7 @@
     "eslint-plugin-prettier": "^2.6.2",
     "jest": "^23.3.0",
     "jest-emotion": "^9.2.5",
+    "jest-enzyme": "^6.0.2",
     "jest-enzyme-selector-matchers": "^2.0.2",
     "prettier": "^1.13.7",
     "react-test-renderer": "^15.6.2",

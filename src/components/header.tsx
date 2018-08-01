@@ -1,5 +1,21 @@
 import * as React from 'react';
 import Link from 'gatsby-link';
+import styled from 'react-emotion';
+
+const PageDiv = styled('div')`
+  background: 'rebeccapurple',
+  marginBottom: '1.45rem',
+`;
+
+const MarginDiv = styled('div')`
+  margin: '0 auto',
+  maxWidth: 960,
+  padding: '1.45rem 1.0875rem',
+`;
+
+const H1Styled = styled('h1')`
+  margin: 0;
+`;
 
 interface HeaderProps {
   siteTitle: string;
@@ -26,20 +42,9 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
   render() {
     return (
-      <div
-        style={{
-          background: 'rebeccapurple',
-          marginBottom: '1.45rem',
-        }}
-      >
-        <div
-          style={{
-            margin: '0 auto',
-            maxWidth: 960,
-            padding: '1.45rem 1.0875rem',
-          }}
-        >
-          <h1 style={{ margin: 0 }}>
+      <PageDiv>
+        <MarginDiv>
+          <H1Styled>
             <Link
               to="/"
               style={{
@@ -49,9 +54,9 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             >
               {this.state.overrideTitle || this.props.siteTitle}
             </Link>
-          </h1>
-        </div>
-      </div>
+          </H1Styled>
+        </MarginDiv>
+      </PageDiv>
     );
   }
 }
