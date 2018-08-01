@@ -32,6 +32,7 @@ export class Board extends React.Component<{}, BoardState> {
     render() {
         return (
             <div>
+                <p>Try some sample rules from <a href="https://en.wikipedia.org/wiki/Life-like_cellular_automaton">here</a></p>
                 <input type="text" value={this.state.rule} onChange={evt => this.handleRuleChange(evt)} />
                 <div style={{height: '20px'}}>{this.isValidRule() ? "" : "Not a valid rule"}</div>
 
