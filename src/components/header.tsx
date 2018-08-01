@@ -3,6 +3,7 @@ import Link from 'gatsby-link';
 
 interface HeaderProps {
   siteTitle: string;
+  color: string;
 }
 
 interface HeaderState {
@@ -43,8 +44,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             <Link
               to="/"
               style={{
-                color: 'white',
-                textDecoration: 'none',
+                color: this.props.color,
+                textDecoration: 'overline underline white',
               }}
             >
               {this.state.overrideTitle || this.props.siteTitle}
