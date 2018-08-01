@@ -16,7 +16,8 @@ interface BoardState {
 const ruleRegex = /^B(\d*)\/S(\d*)$/;  // Strings which look like 'B3/S23'
 
 const startingRule = 'B1/S12';
-const [bornCounts, surviveCounts] = [[1], [1, 2]]; // This should be a function of startingRule...
+const [bornCounts, surviveCounts] = startingRule.split('/')
+                .map(fragment => fragment.split('').map(i => parseInt(i, 10)).filter((i: number) => !isNaN(i)));
 
 export class Board extends React.Component<{}, BoardState> {
     sideLength: number;
