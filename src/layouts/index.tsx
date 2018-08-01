@@ -90,6 +90,12 @@ const Layout = ({ children, data }: LayoutProps) => (
           Charizard
         </a>
       </div>
+      <div className={navSpacerStyle}>•</div>
+      <div className={navLinkStyle}>
+        <a className={linkStyle} href="../longPage">
+          Long Page
+        </a>
+      </div>
     </div>
     <div
       className={css({

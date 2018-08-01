@@ -6,16 +6,16 @@ export default () => (
   <div>
     <h1
       className={css({
-        "color": 'inherit',
+        color: 'inherit',
         'font-family':
           'Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif',
         'font-size': '2em',
         'font-weight': 'bold',
         'line-height': 1.1,
-        "margin": 0,
+        margin: 0,
         'margin-bottom': '1.45rem',
         'margin-top': '1.45rem',
-        "padding": 0,
+        padding: 0,
       })}
     >
       charizard
@@ -30,7 +30,7 @@ export default () => (
         padding: 0,
       })}
       alt="rawr"
-      src="/assets/charizardFly.gif"
+      src="https://cdn.bulbagarden.net/upload/thumb/7/7e/006Charizard.png/500px-006Charizard.png"
     />
   </div>
 );
