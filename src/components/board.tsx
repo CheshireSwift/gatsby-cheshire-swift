@@ -4,28 +4,27 @@ import * as life from './game-of-life';
 import * as cell from './cellState';
 import TimeControl from './timecontrol';
 import Clear from './clear';
-import Square from './square';
+import Grid from './grid';
 import { css } from 'emotion';
 
 interface BoardState {
     squares: cell.state[];
     isRunning: boolean;
-    timerToken: Timer;
-    rule: string;
+    timerToken: number;
     generationFunction: (squares: cell.state[]) => (cell.state[]);
 }
 
-const ruleRegex = /B(\d*)\/S(\d*)/;  // Strings which look like 'B3/S23'
+const ruleRegex = /^B(\d*)\/S(\d*)$/;  // Strings which look like 'B3/S23'
 
 export class Board extends React.Component<{}, BoardState> {
     sideLength: number;
+    input: HTMLInputElement;
     constructor(props: {}) {
         super(props);
         this.sideLength = 50;
         this.state = {
             generationFunction: life.computeNextGeneration([3], [2, 3]),
             isRunning: false,
-            rule: 'B3/S23',
             squares: Array(this.sideLength * this.sideLength).fill(cell.state.DEAD),
             timerToken: 0,
         };
@@ -34,37 +33,45 @@ export class Board extends React.Component<{}, BoardState> {
     render() {
         return (
             <div>
-                <input type="text" value={this.state.rule} onChange={evt => this.handleRuleChange(evt)} />
-                <div className={css({height: '20px'})}>{this.isValidRule() ? "" : "Not a valid rule"}</div>
+                <input ref={c => {this.input = c; }} type="text" onChange={evt => this.handleRuleChange(evt)} />
+                <div className={css({height: '20px'})}>{this.input ? this.statusMessage(this.input.value) : null}</div>
                 <TimeControl onClickHandler={this.alternateAnimation.bind(this)} value={this.buttonText()} />
-                <Clear onClickHandler={() => this.setState({squares: this.state.squares.fill(cell.state.DEAD)})} />
+                <Clear onClickHandler={this.clearBoard} />
                 <div className={css({height: '10px'})}></div>
-                {_.range(this.sideLength).map((row: number) => this.makeRowOfSquares(row)) }
+                <Grid squares={this.state.squares} sideLength={this.sideLength}
+                onClickHandler={this.createAliveCell.bind(this)}/>
             </div >
         );
     }
 
-    isValidRule = () => ruleRegex.test(this.state.rule);
+    componentDidMount() {
+        this.input.value = 'B1/S12';
+    }
 
-    getGenerationFunction(rule: string): (squares: cell.state[]) => (cell.state[]) | null | undefined {
+    isValidRule = (rule: string) => ruleRegex.test(rule);
+
+    statusMessage = (rule: string) => this.isValidRule(rule) ? "" : "Not a valid rule";
+
+    clearBoard = () => this.setState({squares: this.state.squares.fill(cell.state.DEAD)});
+
+    setGenerationFunction(rule: string) {
         const match = ruleRegex.exec(rule);
         if (!match) {
+            this.setState({});
+            // Were this not here, the component (ie. status message) isn't rerendered when a rule is invalid
+            // meaning the invalid message isn't displayed
             return;
         }
         const bornCounts = match[1].split('').map(i => parseInt(i, 10));
         const surviveCounts = match[2].split('').map(i => parseInt(i, 10));
         console.log(`New rule issued for born ${bornCounts} and survive ${surviveCounts}`);
-        return life.computeNextGeneration(bornCounts, surviveCounts);
+        const generationFunction = life.computeNextGeneration(bornCounts, surviveCounts);
+        this.setState({ generationFunction });
     }
 
-    handleRuleChange(evt: any) {
+    handleRuleChange(evt: React.ChangeEvent<HTMLInputElement>) {
         const rule: string = evt.target.value;
-        const generationFunction = this.getGenerationFunction(rule);
-        if (generationFunction) {
-            this.setState({ rule, generationFunction });
-        } else {
-            this.setState({ rule });
-        }
+        this.setGenerationFunction(rule);
     }
 
     alternateAnimation() {
@@ -85,23 +92,6 @@ export class Board extends React.Component<{}, BoardState> {
         this.setState({
             squares: this.state.generationFunction(this.state.squares),
         });
-    }
-
-    makeRowOfSquares(i: number) {
-        return (<div className="board-row">
-            {_.range(i * this.sideLength, (i + 1) * this.sideLength).map((j: number) => this.renderSquare(j))}
-        </div>
-        );
-    }
-
-    renderSquare(i: number) {
-        return (
-            <Square
-                key={i}
-                cellState={this.state.squares[i]}
-                onClickHandler={() => this.createAliveCell(i)}
-            />
-        );
     }
 
     createAliveCell(i: number) {
