@@ -17,7 +17,6 @@ export class Grid extends React.PureComponent<GridProps> {
         <div key={i} className={css(
             {':after': {
             clear: 'both',
-            content: '',
             display: 'table',
           }})}>
             {_.range(i * this.props.sideLength, (i + 1) * this.props.sideLength)

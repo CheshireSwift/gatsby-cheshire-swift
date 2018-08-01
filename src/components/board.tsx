@@ -68,7 +68,7 @@ export class Board extends React.Component<{}, BoardState> {
 
     statusMessage = (rule: string) => this.isValidRule(rule) ? "" : "Not a valid rule";
 
-    clearBoard = () => this.setState({squares: this.state.squares.fill(cell.state.DEAD)});
+    clearBoard = () => this.setState({squares: [...this.state.squares].fill(cell.state.DEAD)});
 
     setGenerationFunction(rule: string) {
         const match = ruleRegex.exec(rule);
