@@ -1,6 +1,8 @@
 import * as cell from './cellState';
 import * as _ from 'lodash';
 
+const offsets: number[][] = [[-1, -1], [0, -1], [+1, -1], [-1, 0], [+1, 0], [-1, +1], [0, +1], [+1, +1]];
+
 export const computeNextGeneration = (bornNeighbourCount: number[], surviveNeighbourCount: number[]) => (
     (squares: cell.state[]) => {
         // Figure out how many live neighbours each cell has
@@ -8,7 +10,6 @@ export const computeNextGeneration = (bornNeighbourCount: number[], surviveNeigh
         const aliveNeighbourCount: number[] = [];
         squares.forEach((square: cell.state, i: number) => {
             // For each grid offset of a neighbour...
-            const offsets: number[][] = [[-1, -1], [0, -1], [+1, -1], [-1, 0], [+1, 0], [-1, +1], [0, +1], [+1, +1]];
             let aliveNeighbours = 0;
             offsets.forEach(pair => {
                 const [dx, dy] = pair;
@@ -31,12 +32,8 @@ export const computeNextGeneration = (bornNeighbourCount: number[], surviveNeigh
         const newState = _.zipWith(squares, aliveNeighbourCount,
             (square: cell.state, nLiveNeighbours: number) => {
                 if (square === cell.state.ALIVE) {
-                    // Any live cell with fewer than two live neighbors dies, as if by under population.
-                    // Any live cell with two or three live neighbors lives on to the next generation.
-                    // Any live cell with more than three live neighbors dies, as if by overpopulation.
                     return surviveNeighbourCount.includes(nLiveNeighbours) ? cell.state.ALIVE : cell.state.DEAD;
                 } else {
-                    // Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
                     return bornNeighbourCount.includes(nLiveNeighbours) ? cell.state.ALIVE : cell.state.DEAD;
                 }
             });
