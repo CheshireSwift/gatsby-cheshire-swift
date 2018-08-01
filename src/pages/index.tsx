@@ -1,10 +1,13 @@
 import * as React from 'react';
 import Link from 'gatsby-link';
 
-const TicTacToe = require('../components/tic-tac-toe');
-
 export default () => (
   <div>
-    <TicTacToe.Game />
+    <p>
+      <Link to="/ticTacToe-2p/">Play against a friend</Link>
+    </p>
+    <p>
+      <Link to="/ticTacToe-1p/">Play against the computer</Link>
+    </p>
   </div>
 );

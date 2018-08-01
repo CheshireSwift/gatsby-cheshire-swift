@@ -246,9 +246,33 @@ describe('Testing next move calculator', () => {
   });
 
   it('Fends off multiple step attacks', () => {
-    const squaresSetup = ['X', null, null, null, 'O', null, null, null, 'null'];
+    const squaresSetup = ['X', null, null, null, 'O', null, null, null, 'X'];
     const nextMove = TicTacToe.calculateNextMove(squaresSetup, false);
     expect(nextMove.index % 2).toEqual(1); // Quite funnyly only odd steps work :D
     expect(nextMove.maxOrMin).toEqual(0);
+  });
+
+  it('Fends off simple attack', () => {
+    const squaresSetup = ['X', null, null, null, null, null, null, null, null];
+    const nextMove = TicTacToe.calculateNextMove(squaresSetup, false);
+    expect(nextMove.index).toEqual(4); // Quite funnyly only odd steps work :D
+    expect(nextMove.maxOrMin).toEqual(0);
+  });
+});
+
+describe('Testing next move calculator integration into game', () => {
+  it('Makes a move after every mvoe made by player', () => {
+    const game = mount(<TicTacToe.Game againstComputer={true} />);
+    const magicButton = game
+      .childAt(0)
+      .childAt(0)
+      .childAt(0)
+      .childAt(2)
+      .childAt(0)
+      .childAt(0);
+    magicButton.simulate('click');
+    const receivedHistory: any = game.state('history');
+    expect(receivedHistory).toHaveLength(3);
+    expect(receivedHistory[2].squares.filter((a: any) => !!a)).toHaveLength(2);
   });
 });

@@ -39,51 +39,28 @@ interface GameState {
 }
 
 const Square = (props: SquareProps) => {
-  if (props.isWinner) {
-    return (
-      <button
-        className={css`
-          background: #ffa500;
-          border: 1px solid #999;
-          float: left;
-          font-size: 24px;
-          font-weight: bold;
-          line-height: 34px;
-          height: 34px;
-          margin-right: -1px;
-          margin-top: -1px;
-          padding: 0;
-          text-align: center;
-          width: 34px;
-        `}
-        onClick={() => props.onClick()}
-      >
-        {props.value}
-      </button>
-    );
-  } else {
-    return (
-      <button
-        className={css(`
-          background: #fff;
-          border: 1px solid #999;
-          float: left;
-          font-size: 24px;
-          font-weight: bold;
-          line-height: 34px;
-          height: 34px;
-          margin-right: -1px;
-          margin-top: -1px;
-          padding: 0;
-          text-align: center;
-          width: 34px;
-        `)}
-        onClick={() => props.onClick()}
-      >
-        {props.value}
-      </button>
-    );
-  }
+  const backgroundColor = props.isWinner ? '#ffa500' : '#fff';
+  return (
+    <button
+      className={css`
+        background: ${backgroundColor};
+        border: 1px solid #999;
+        float: left;
+        font-size: 24px;
+        font-weight: bold;
+        line-height: 34px;
+        height: 34px;
+        margin-right: -1px;
+        margin-top: -1px;
+        padding: 0;
+        text-align: center;
+        width: 34px;
+      `}
+      onClick={() => props.onClick()}
+    >
+      {props.value}
+    </button>
+  );
 };
 
 const Row = (props: RowProps) => {
@@ -153,38 +130,57 @@ class Game extends React.Component<{ againstComputer: boolean }, GameState> {
     };
   }
 
-  handleClick(i: number) {
-    const history = this.state.history;
+  getStateAfterClick(i: number, currentState: GameState): GameState {
+    const history = currentState.history.slice();
     const current = history[history.length - 1];
     const squares = current.squares.slice();
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
-    this.setState({
+    squares[i] = currentState.xIsNext ? 'X' : 'O';
+    const newState: GameState = {
       history: history.concat([
         {
           lastMove: i,
           squares,
         },
       ]),
+      isToggleOn: currentState.isToggleOn,
       stepNumber: history.length,
-      xIsNext: !this.state.xIsNext,
-    });
+      xIsNext: !currentState.xIsNext,
+    };
+    return newState;
+  }
+
+  handleClick(i: number) {
+    const newState = this.getStateAfterClick(i, this.state);
+    if (!newState) {
+      return;
+    }
+
+    // console.log(`Current xIsNext: ${this.state.xIsNext}`);
+    // console.log(`Calculated winner: ${calculateWinner(squares)}`);
+    // console.log(`History length: ${this.state.history.length}`);
+    // console.log(`Against computer? ${this.props.againstComputer}`);
 
     // If it's the computer's turn
     // "Click" the appropriate button
     if (
       this.props.againstComputer &&
-      !calculateWinner(squares) &&
-      this.state.history.length !== 9
+      !newState.xIsNext &&
+      !calculateWinner(newState.history[newState.history.length - 1].squares) &&
+      newState.history.length !== 10
     ) {
-      this.handleClick(
+      const newestState = this.getStateAfterClick(
         calculateNextMove(
-          this.state.history[this.state.history.length - 1].squares,
+          newState.history[newState.history.length - 1].squares,
           false,
         ).index,
+        newState,
       );
+      this.setState(newestState);
+    } else {
+      this.setState(newState);
     }
   }
 
@@ -320,7 +316,7 @@ function chooseRandom(arr: any[]): any {
   return arr[getRandomInt(0, arr.length - 1)];
 }
 
-function notFasly(value: any): boolean {
+function notFalsy(value: any): boolean {
   return !!value;
 }
 
@@ -340,7 +336,7 @@ function calculateNextMove(
     return { maxOrMin: max, index: null };
   }
 
-  if (squares.filter(notFasly).length === 9) {
+  if (squares.slice().filter(notFalsy).length === 9) {
     return { maxOrMin: 0, index: null };
   }
 
@@ -356,10 +352,15 @@ function calculateNextMove(
   }
 
   const maxOrMin = xIsNext
-    ? Math.min(...weights.filter(notNull))
-    : Math.max(...weights.filter(notNull));
+    ? Math.min(...weights.slice().filter(notNull))
+    : Math.max(...weights.slice().filter(notNull));
   const possibleMax = getAllIndexOF(weights, maxOrMin);
   const chosenOne = chooseRandom(possibleMax);
+  // if (squares.slice().filter(notFalsy).length === 1) {
+  //   console.log(`squares: ${squares}`);
+  //   console.log(`Weights: ${weights}`);
+  //   console.log(`PossibleMAx: ${possibleMax}`);
+  // }
   return { maxOrMin, index: chosenOne };
 }
 
