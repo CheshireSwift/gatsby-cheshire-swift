@@ -1,7 +1,7 @@
 import React = require('react');
 import * as TBoard from './Board';
-// import './tictactoe.css';
 import styled from 'react-emotion';
+import AI = require('./tictactoeBot');
 
 const GameDiv = styled('div')`
   display: flex;
@@ -95,18 +95,6 @@ export class Game extends React.Component<{}, GameState> {
       reversedHistory: !reverseState,
     });
   }
-
-  AImove() {
-    const history = this.state.history;
-    const current = history[this.state.stepNumber];
-    const player = this.state.xIsNext ? 'X' : 'O';
-    if (counterDangerousLine(player, current.squares) !== -1) {
-      this.handleClick(counterDangerousLine(player, current.squares));
-    } else {
-      this.handleClick(randomValidMove(current.squares));
-    }
-  }
-
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
@@ -170,7 +158,7 @@ export class Game extends React.Component<{}, GameState> {
           </button>
           <button
             onClick={() => {
-              this.AImove();
+              this.handleClick(AI.AImove(current.squares));
             }}
           >
             Make the AI take a turn
@@ -205,43 +193,4 @@ function calculateWinner(squares: string[]) {
     }
   }
   return null;
-}
-
-function randomValidMove(current: string[]): number {
-  let returnValue: number = Math.floor(Math.random() * 9);
-  while (current[returnValue] !== null) {
-    returnValue = Math.floor(Math.random() * 9);
-  }
-  return returnValue;
-}
-
-function counterDangerousLine(player: string, current: string[]): number {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  const opponnent = player === 'X' ? 'O' : 'X';
-  const lineValues: string[] = [];
-  let resultBLock: number = -1;
-  lines.forEach((line: number[]) => {
-    for (let i: number = 0; i < 3; i++) {
-      lineValues[i] = current[line[i]];
-    }
-    if (lineValues.indexOf(player) === -1) {
-      if (
-        (lineValues[0] === opponnent && lineValues[1] === opponnent) ||
-        (lineValues[0] === opponnent && lineValues[2] === opponnent) ||
-        (lineValues[1] === opponnent && lineValues[2] === opponnent)
-      ) {
-        resultBLock = line[lineValues.indexOf(null)];
-      }
-    }
-  });
-  return resultBLock;
 }

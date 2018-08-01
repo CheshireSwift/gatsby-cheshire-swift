@@ -3,14 +3,14 @@ import Link from 'gatsby-link';
 import styled from 'react-emotion';
 
 const PageDiv = styled('div')`
-  background: 'rebeccapurple',
-  marginBottom: '1.45rem',
+  background: rebeccapurple;
+  marginbottom: 1.45rem;
 `;
 
 const MarginDiv = styled('div')`
-  margin: '0 auto',
-  maxWidth: 960,
-  padding: '1.45rem 1.0875rem',
+  margin: 0 auto;
+  maxwidth: 960;
+  padding: 1.45rem 1.0875rem;
 `;
 
 const H1Styled = styled('h1')`
