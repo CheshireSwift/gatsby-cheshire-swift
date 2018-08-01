@@ -3,7 +3,9 @@ import * as _ from 'lodash';
 import * as life from './game-of-life';
 import * as cell from './cellState';
 import TimeControl from './timecontrol';
+import Clear from './clear';
 import Square from './square';
+import { css } from 'emotion';
 
 interface BoardState {
     squares: cell.state[];
@@ -32,35 +34,37 @@ export class Board extends React.Component<{}, BoardState> {
     render() {
         return (
             <div>
-                <p>Try some sample rules from <a href="https://en.wikipedia.org/wiki/Life-like_cellular_automaton">here</a></p>
                 <input type="text" value={this.state.rule} onChange={evt => this.handleRuleChange(evt)} />
-                <div style={{height: '20px'}}>{this.isValidRule() ? "" : "Not a valid rule"}</div>
-
+                <div className={css({height: '20px'})}>{this.isValidRule() ? "" : "Not a valid rule"}</div>
                 <TimeControl onClickHandler={this.alternateAnimation.bind(this)} value={this.buttonText()} />
-
-                <button className="styledButton"
-                onClick={() => this.setState({squares: this.state.squares.fill(cell.state.DEAD)})}>
-                Clear
-                </button>
-
-                <div className="separator"></div>
-                {_.range(this.sideLength).map((row: number) => this.makeRowOfSquares(row))}
-            </div>
+                <Clear onClickHandler={() => this.setState({squares: this.state.squares.fill(cell.state.DEAD)})} />
+                <div className={css({height: '10px'})}></div>
+                {_.range(this.sideLength).map((row: number) => this.makeRowOfSquares(row)) }
+            </div >
         );
     }
 
     isValidRule = () => ruleRegex.test(this.state.rule);
 
-    handleRuleChange(evt: any) {
-        const rule = evt.target.value;
+    getGenerationFunction(rule: string): (squares: cell.state[]) => (cell.state[]) | null | undefined {
         const match = ruleRegex.exec(rule);
-        if (match) {
-            const bornCounts = match[1].split('').map(i => parseInt(i, 10));
-            const surviveCounts = match[2].split('').map(i => parseInt(i, 10));
-            console.log(`New rule issued for born ${bornCounts} and survive ${surviveCounts}`);
-            this.setState({ generationFunction: life.computeNextGeneration(bornCounts, surviveCounts) });
+        if (!match) {
+            return;
         }
-        this.setState({ rule });
+        const bornCounts = match[1].split('').map(i => parseInt(i, 10));
+        const surviveCounts = match[2].split('').map(i => parseInt(i, 10));
+        console.log(`New rule issued for born ${bornCounts} and survive ${surviveCounts}`);
+        return life.computeNextGeneration(bornCounts, surviveCounts);
+    }
+
+    handleRuleChange(evt: any) {
+        const rule: string = evt.target.value;
+        const generationFunction = this.getGenerationFunction(rule);
+        if (generationFunction) {
+            this.setState({ rule, generationFunction });
+        } else {
+            this.setState({ rule });
+        }
     }
 
     alternateAnimation() {
@@ -94,7 +98,7 @@ export class Board extends React.Component<{}, BoardState> {
         return (
             <Square
                 key={i}
-                styleClass={cell.style[this.state.squares[i]]}
+                cellState={this.state.squares[i]}
                 onClickHandler={() => this.createAliveCell(i)}
             />
         );

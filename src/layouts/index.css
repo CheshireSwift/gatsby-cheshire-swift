@@ -730,29 +730,6 @@ ul {
   margin-bottom: 10px;
 }
 
-.dead,
-.alive {
-  border: 1px solid #999;
-  float: left;
-  font-size: 24px;
-  font-weight: bold;
-  line-height: 34px;
-  height: 15px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  text-align: center;
-  width: 15px;
-}
-
-.dead {
-  background: #fff;
-}
-
-.alive {
-  background: rgb(14, 151, 48);
-}
-
 .square:focus {
   outline: none;
 }
@@ -769,31 +746,4 @@ ul {
 
 .game-info {
   margin-left: 20px;
-}
-
-.styledButton {
-  margin: auto;
-  border: 20px;
-  line-height: 2.5;
-  font-size: 1rem;
-  text-align: center;
-  color: #fff;
-  width: 100px;
-  text-shadow: 1px 1px 1px #000;
-  border-radius: 10px;
-  background-color: rgb(93, 64, 221);
-  background-image: linear-gradient(to top left, rgba(0, 0, 0, .2), rgba(0, 0, 0, .2) 30%, rgba(0, 0, 0, 0));
-  box-shadow: inset 2px 2px 3px rgba(255, 255, 255, .6), inset -2px -2px 3px rgba(0, 0, 0, .6);
-}
-
-.styledButton:hover {
-  background-color: rgba(93, 64, 221, 1);
-}
-
-.styledButton:active {
-  box-shadow: inset -2px -2px 3px rgba(255, 255, 255, .6), inset 2px 2px 3px rgba(0, 0, 0, .6);
-}
-
-.separator {
-  height: 10px;
 }
