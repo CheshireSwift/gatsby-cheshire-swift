@@ -1,18 +1,47 @@
 import * as React from 'react';
-// import './index.css';
+import * as _ from 'lodash';
+import { css } from 'emotion';
 
-function Square(props: any) {
+function Square(props: {
+  value: string;
+  onClick: () => void;
+  isWinning: string;
+}) {
   return (
-    <button className={props.isWinning} onClick={props.onClick}>
+    <button
+      className={css(
+        {
+          backgroundColor:
+            props.isWinning === 'winning square' ? 'lightgreen' : 'white',
+          border: '1px solid #999',
+          float: 'left',
+          font: 'inherit',
+          fontSize: '30px',
+          fontWeight: 'bold',
+          height: '50px',
+          lineHeight: '34px',
+          margin: 0,
+          marginRight: '-1px',
+          marginTop: '-1px',
+          overflow: 'visible',
+          padding: 0,
+          textAlign: 'center',
+          textTransform: 'none',
+          width: '50px',
+        },
+        { ':focus': { outline: 'none' } },
+      )}
+      onClick={props.onClick}
+    >
       {props.value}
     </button>
   );
 }
 
 interface BoardProps {
-  squares: any[];
-  onClick: any;
-  winningArray: any;
+  squares: string[];
+  onClick: (i: number) => void;
+  winningArray: string[];
 }
 
 class Board extends React.Component<BoardProps, {}> {
@@ -49,16 +78,15 @@ class Board extends React.Component<BoardProps, {}> {
   }
 }
 
-interface GameProps {}
-
 interface GameState {
-  history: Array<{ squares: any[]; clickedSquare?: number[] }>;
+  history: Array<{ squares: string[]; clickedSquare?: number[] }>;
   stepNumber: number;
   xIsNext: boolean;
 }
 
-export class Game extends React.Component<GameProps, GameState> {
-  constructor(props: GameProps) {
+// tslint:disable-next-line:max-classes-per-file
+export class Game extends React.Component<{}, GameState> {
+  constructor(props: {}) {
     super(props);
     this.state = {
       history: [
@@ -82,8 +110,8 @@ export class Game extends React.Component<GameProps, GameState> {
     this.setState({
       history: history.concat([
         {
-          squares,
           clickedSquare: [Math.floor((i % 3) + 1), Math.floor(i / 3 + 1)],
+          squares,
         },
       ]),
       stepNumber: history.length,
@@ -103,19 +131,34 @@ export class Game extends React.Component<GameProps, GameState> {
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
 
-    const moves = history.map((step: any, move: number) => {
-      const clickedSquare = step.clickedSquare;
-      const desc = move
-        ? `Go to move #${move} (Col: ${clickedSquare[0]} Row:${
-            clickedSquare[1]
-          })`
-        : 'Go to game start';
-      return (
-        <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
-        </li>
-      );
-    });
+    const moves = history.map(
+      (step: { squares: string[]; clickedSquare: number[] }, move: number) => {
+        const clickedSquare = step.clickedSquare;
+        const desc = move
+          ? `Go to move #${move} (Col: ${clickedSquare[0]} Row:${
+              clickedSquare[1]
+            })`
+          : 'Go to game start';
+        return (
+          <li key={move}>
+            <button
+              className={css(
+                {
+                  font: 'inherit',
+                  margin: 3,
+                  overflow: 'visible',
+                  textTransform: 'none',
+                },
+                { ':focus': { fontWeight: 'bold' } },
+              )}
+              onClick={() => this.jumpTo(move)}
+            >
+              {desc}
+            </button>
+          </li>
+        );
+      },
+    );
 
     let status;
     if (winner) {
@@ -127,7 +170,12 @@ export class Game extends React.Component<GameProps, GameState> {
     }
 
     return (
-      <div className="game">
+      <div
+        className={css({
+          display: 'flex',
+          flexDirection: 'row',
+        })}
+      >
         <div className="game-board">
           <Board
             squares={current.squares}
@@ -138,10 +186,30 @@ export class Game extends React.Component<GameProps, GameState> {
           />
         </div>
 
-        <div className="game-info">
+        <div className={css({ 'margin-left': '20px' })}>
           <div>{status}</div>
-          <div className="moveList">
-            <ol>{moves}</ol>
+          <div
+            className={css({
+              float: 'right',
+              marginBottom: '20px',
+              marginLeft: '300px',
+            })}
+          >
+            <ol
+              className={css({
+                display: 'flex',
+                flexDirection: 'column',
+                listStyleImage: 'none',
+                listStylePosition: 'outside',
+                marginBottom: '1.45rem',
+                marginLeft: '1.45rem',
+                marginRight: 0,
+                marginTop: 0,
+                padding: 0,
+              })}
+            >
+              {moves}
+            </ol>
             &ensp;&ensp;Toggle list order &ensp;
             <input type="checkbox" id="toggle" className="toggle" />
           </div>
@@ -156,8 +224,10 @@ export class Game extends React.Component<GameProps, GameState> {
 
 // ========================================
 
-function calculateWinner(squares: any[]) {
-  const lines = [
+type Line = [number, number, number];
+
+function calculateWinner(squares: string[]): [string, Line] {
+  const lines: Line[] = [
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
@@ -167,30 +237,20 @@ function calculateWinner(squares: any[]) {
     [0, 4, 8],
     [2, 4, 6],
   ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return [squares[a], [a, b, c]];
-    }
-  }
-  return null;
+
+  const winningLine = _.find(
+    lines,
+    ([a, b, c]) =>
+      squares[a] && squares[a] === squares[b] && squares[a] === squares[c],
+  );
+  return winningLine ? [squares[winningLine[0]], winningLine] : null;
 }
 
-function createWinningArray(winningSquares: any[]) {
-  const winningArray = [
-    'square',
-    'square',
-    'square',
-    'square',
-    'square',
-    'square',
-    'square',
-    'square',
-    'square',
-  ];
+function createWinningArray(winningSquares: [string, Line] | null): string[] {
+  const winningArray = Array(9).fill('square');
   if (winningSquares) {
     for (let i = 0; i < 3; i++) {
-      winningArray[parseInt(winningSquares[1][i], 10)] = 'winning square';
+      winningArray[winningSquares[1][i]] = 'winning square';
     }
   }
   return winningArray;

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Link from 'gatsby-link';
+import { css } from '../../node_modules/emotion';
 
 interface HeaderProps {
   siteTitle: string;
@@ -27,18 +28,31 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   render() {
     return (
       <div
-        style={{
+        className={css({
           background: 'rebeccapurple',
-        }}
+        })}
       >
         <div
-          style={{
+          className={css({
             margin: '0 auto',
             maxWidth: 960,
             padding: '1.45rem 1.0875rem',
-          }}
+          })}
         >
-          <h1 style={{ margin: 0 }}>
+          <h1
+            className={css({
+              color: 'inherit',
+              fontFamily:
+                'Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif',
+              fontSize: '2.6em',
+              fontWeight: 'bold',
+              lineHeight: 1.1,
+              margin: 0,
+              marginBottom: '0.45rem',
+              marginTop: '0.45rem',
+              padding: 0,
+            })}
+          >
             <Link
               to="/"
               style={{
