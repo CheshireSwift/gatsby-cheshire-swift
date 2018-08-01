@@ -31,11 +31,9 @@ describe('Tic-Tac-Toe module', () => {
     expect(row.children()).toHaveLength(3);
   });
 
-  it('Expects game to have the two right components', () => {
+  it('Expects game to have the two components', () => {
     const game = render(<TicTacToe.Game />);
     expect(game.children()).toHaveLength(2);
-    expect(game).toContainSelector('div.game-board');
-    expect(game).toContainSelector('div.game-info');
   });
 
   it('expects board to render the state properly', () => {
@@ -216,5 +214,41 @@ describe('Tic-Tac-Toe module', () => {
     magicButton.simulate('click');
     const expectedHistory: any = game.state('history');
     expect(expectedHistory[1].squares[6]).toEqual('X');
+  });
+});
+
+describe('Testing next move calculator', () => {
+  it('Realizes winning position', () => {
+    const squaresSetup = ['O', 'O', null, 'X', null, null, null, 'X', 'X'];
+    const nextMove = TicTacToe.calculateNextMove(squaresSetup, false);
+    expect(nextMove.index).toEqual(2);
+    expect(nextMove.maxOrMin).toEqual(1);
+  });
+
+  it('Fends off enemy attack', () => {
+    const squaresSetup = ['X', 'X', null, null, 'O', null, null, null, null];
+    const nextMove = TicTacToe.calculateNextMove(squaresSetup, false);
+    expect(nextMove.index).toEqual(2);
+    expect(nextMove.maxOrMin).toEqual(0);
+  });
+
+  it('Expects that no one has a winning strategy from the beginning', () => {
+    const squaresSetup = Array<string>(9).fill(null);
+    const nextMove = TicTacToe.calculateNextMove(squaresSetup, true);
+    expect(nextMove.maxOrMin).toEqual(0);
+  });
+
+  it('Execute multiple step attacks', () => {
+    const squaresSetup = ['O', 'O', 'X', 'X', null, null, 'X', null, null];
+    const nextMove = TicTacToe.calculateNextMove(squaresSetup, false);
+    expect(nextMove.index).toEqual(4);
+    expect(nextMove.maxOrMin).toEqual(1);
+  });
+
+  it('Fends off multiple step attacks', () => {
+    const squaresSetup = ['X', null, null, null, 'O', null, null, null, 'null'];
+    const nextMove = TicTacToe.calculateNextMove(squaresSetup, false);
+    expect(nextMove.index % 2).toEqual(1); // Quite funnyly only odd steps work :D
+    expect(nextMove.maxOrMin).toEqual(0);
   });
 });

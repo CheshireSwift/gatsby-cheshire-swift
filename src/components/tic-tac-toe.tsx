@@ -64,7 +64,7 @@ const Square = (props: SquareProps) => {
   } else {
     return (
       <button
-        className={css`
+        className={css(`
           background: #fff;
           border: 1px solid #999;
           float: left;
@@ -77,7 +77,7 @@ const Square = (props: SquareProps) => {
           padding: 0;
           text-align: center;
           width: 34px;
-        `}
+        `)}
         onClick={() => props.onClick()}
       >
         {props.value}
@@ -137,8 +137,8 @@ const Toggle = (props: ToggleProps) => {
   );
 };
 
-class Game extends React.Component<{}, GameState> {
-  constructor(props: {}) {
+class Game extends React.Component<{ againstComputer: boolean }, GameState> {
+  constructor(props: { againstComputer: boolean }) {
     super(props);
     this.state = {
       history: [
@@ -171,6 +171,21 @@ class Game extends React.Component<{}, GameState> {
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
     });
+
+    // If it's the computer's turn
+    // "Click" the appropriate button
+    if (
+      this.props.againstComputer &&
+      !calculateWinner(squares) &&
+      this.state.history.length !== 9
+    ) {
+      this.handleClick(
+        calculateNextMove(
+          this.state.history[this.state.history.length - 1].squares,
+          false,
+        ).index,
+      );
+    }
   }
 
   toggleHandler() {
@@ -282,5 +297,71 @@ function calculateWinner(squares: string[]) {
   return null;
 }
 
+// Rteurns an array of the indicies of all occurances
+function getAllIndexOF(arr: any[], val: any): number[] {
+  const indicies = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === val) {
+      indicies.push(i);
+    }
+  }
+  return indicies;
+}
+
+/**
+ * Returns a random integer between min (inclusive) and max (inclusive)
+ * Using Math.round() will give you a non-uniform distribution!
+ */
+function getRandomInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function chooseRandom(arr: any[]): any {
+  return arr[getRandomInt(0, arr.length - 1)];
+}
+
+function notFasly(value: any): boolean {
+  return !!value;
+}
+
+function notNull(value: any): boolean {
+  return value !== null;
+}
+
+// Player is X
+// Computer is O
+function calculateNextMove(
+  squares: string[],
+  xIsNext: boolean,
+): { maxOrMin: number; index: number } {
+  // First check for winning states in recursion
+  if (calculateWinner(squares)) {
+    const max = squares[calculateWinner(squares)[0]] === 'X' ? -1 : 1;
+    return { maxOrMin: max, index: null };
+  }
+
+  if (squares.filter(notFasly).length === 9) {
+    return { maxOrMin: 0, index: null };
+  }
+
+  // If I have to make a move
+  const weights = Array(squares.length).fill(null);
+  for (let i = 0; i < squares.length; i++) {
+    if (squares[i]) {
+      continue;
+    }
+    const newSquares = squares.slice();
+    newSquares[i] = xIsNext ? 'X' : 'O';
+    weights[i] = calculateNextMove(newSquares, !xIsNext).maxOrMin;
+  }
+
+  const maxOrMin = xIsNext
+    ? Math.min(...weights.filter(notNull))
+    : Math.max(...weights.filter(notNull));
+  const possibleMax = getAllIndexOF(weights, maxOrMin);
+  const chosenOne = chooseRandom(possibleMax);
+  return { maxOrMin, index: chosenOne };
+}
+
 // ========================================
-module.exports = { Game, Square, Board, Row };
+module.exports = { Game, Square, Board, Row, calculateNextMove };
