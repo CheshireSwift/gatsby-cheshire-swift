@@ -9,7 +9,7 @@ describe('Testing framework', () => {
       'div[class="gameboard"]',
     );
   });
-  it('should render 9 squares', () => {
+  it('should render squares', () => {
     expect(render(<TicTacToeBasic.Game />)).toContainSelector(
       'button[class="square css-1nre2zt"]',
     );
