@@ -2,21 +2,21 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import { css } from 'emotion';
 
-enum Winner {
+export enum Winner {
   Nought,
   Cross,
   Draw,
 }
 
-interface Cell {
+export interface Cell {
   winner: Nullable<Winner>;
 }
 
-interface Board extends Cell {
+export interface Board extends Cell {
   cells: Cell[];
 }
 
-interface GameState {
+export interface GameState {
   available: number[];
   boards: Board[];
   xIsNext: boolean;
@@ -104,7 +104,7 @@ export class Game extends React.Component<{}, GameState> {
   }
 }
 
-interface LargeBoardProps {
+export interface LargeBoardProps {
   available: number[];
   boards: Board[];
   handleClick: (i: number, j: number) => void;
@@ -115,7 +115,7 @@ const boardStyle = {
   gridTemplateColumns: 'repeat(3, minmax(auto, max-content))',
 };
 
-const LargeBoard = (props: LargeBoardProps) => (
+export const LargeBoard = (props: LargeBoardProps) => (
   <div
     className={css({
       backgroundColor: 'black',
@@ -130,7 +130,7 @@ const LargeBoard = (props: LargeBoardProps) => (
         <SmallBoard
           key={i}
           available={availableBoard}
-          board={props.boards[i]}
+          board={board}
           handleClick={j => {
             if (availableBoard) {
               props.handleClick(i, j);
@@ -142,13 +142,13 @@ const LargeBoard = (props: LargeBoardProps) => (
   </div>
 );
 
-interface SmallBoardProps {
+export interface SmallBoardProps {
   available: boolean;
   board: Board;
   handleClick: (i: number) => void;
 }
 
-const SmallBoard = (props: SmallBoardProps) => (
+export const SmallBoard = (props: SmallBoardProps) => (
   <div
     className={css({
       backgroundColor: props.available ? 'green' : 'red',
@@ -160,28 +160,32 @@ const SmallBoard = (props: SmallBoardProps) => (
     {props.board.winner !== null && (
       <div
         className={css({
+          height: '100%',
+          left: 0,
           position: 'absolute',
           top: 0,
-          left: 0,
           width: '100%',
-          height: '100%',
         })}
       >
         {getSymbol(props.board.winner)()}
       </div>
     )}
     {props.board.cells.map((cell: Cell, i: number) => (
-      <Square key={i} cell={cell} onClick={() => props.handleClick(i)} />
+      <Square
+        key={i}
+        cell={cell}
+        onClick={props.available ? () => props.handleClick(i) : null}
+      />
     ))}
   </div>
 );
 
-interface SquareProps {
+export interface SquareProps {
   cell: Cell;
   onClick: () => void;
 }
 
-const Square = (props: SquareProps) => (
+export const Square = (props: SquareProps) => (
   <button
     className={css({
       backgroundColor: 'white',
@@ -205,11 +209,11 @@ function getSymbol(player: Winner): () => JSX.Element {
     case Winner.Cross:
       return () => <Cross />;
     default:
-      return () => <span />;
+      return () => null;
   }
 }
 
-const Nought = () => (
+export const Nought = () => (
   <svg version="1.1" baseProfile="full" width="100%" height="100%">
     <circle
       cx="50%"
@@ -222,7 +226,7 @@ const Nought = () => (
   </svg>
 );
 
-const Cross = () => (
+export const Cross = () => (
   <svg version="1.1" baseProfile="full" width="100%" height="100%">
     <line
       x1="20%"

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Link from 'gatsby-link';
+import { css } from 'emotion';
 
 interface HeaderProps {
   siteTitle: string;
@@ -27,25 +28,25 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   render() {
     return (
       <div
-        style={{
+        className={css({
           background: 'rebeccapurple',
           marginBottom: '1.45rem',
-        }}
+        })}
       >
         <div
-          style={{
+          className={css({
             margin: '0 auto',
             maxWidth: 960,
             padding: '1.45rem 1.0875rem',
-          }}
+          })}
         >
-          <h1 style={{ margin: 0 }}>
+          <h1 className={css({ margin: 0 })}>
             <Link
               to="/"
-              style={{
+              className={css({
                 color: 'white',
                 textDecoration: 'none',
-              }}
+              })}
             >
               {this.state.overrideTitle || this.props.siteTitle}
             </Link>
