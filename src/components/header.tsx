@@ -35,6 +35,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       >
         <div
           style={{
+            fontFamily: 'Arial',
             margin: '0 auto',
             maxWidth: 960,
             padding: '1.45rem 1.0875rem',

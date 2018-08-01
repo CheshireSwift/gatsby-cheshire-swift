@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Helmet from 'react-helmet';
+import { css } from 'emotion';
 
 import Header from '../components/header';
 import './index.css';
@@ -29,14 +30,18 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
     const colors = ['white', 'orange', 'violet', 'silver'];
     const colorList = colors.map(color => {
       return (
-        <option value={color} style={{ textTransform: 'capitalize' }}>
+        <option value={color} className={css({ textTransform: 'capitalize' })}>
           {color}
         </option>
       );
     });
 
     return (
-      <div>
+      <div
+        className={css({
+          fontFamily: 'Arial',
+        })}
+      >
         <Helmet
           title={this.props.data.site.siteMetadata.title}
           meta={[
@@ -49,28 +54,30 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
           color={this.state.color}
         />
         <div
-          style={{
+          className={css({
             margin: '0 auto',
             maxWidth: 960,
             padding: '0px 1.0875rem 1.45rem',
             paddingTop: 0,
-          }}
+          })}
         >
           {this.props.children()}
         </div>
         <div
-          style={{
-            padding: '0rem 16.55rem',
-          }}
+          className={css({
+            margin: '0 auto',
+            maxWidth: 960,
+            padding: '0px 1.0875rem 1.45rem',
+          })}
         >
           <label>
             Select header color:
             <select
               value={this.state.color}
               onChange={this.handleChange}
-              style={{
+              className={css({
                 margin: '0 10px',
-              }}
+              })}
             >
               {colorList}
             </select>

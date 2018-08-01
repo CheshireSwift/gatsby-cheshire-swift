@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import Board from './board';
+import { css } from 'emotion';
 
 interface GameState {
   history: Array<{
@@ -103,7 +104,9 @@ export default class Game extends React.Component<{}, GameState> {
       return (
         <li key={move}>
           <button
-            className={move === this.state.stepNumber ? 'clicked' : ''}
+            className={css({
+              fontWeight: move === this.state.stepNumber ? 'bold' : 'normal',
+            })}
             onClick={() => this.jumpTo(move)}
           >
             {desc}
@@ -129,7 +132,12 @@ export default class Game extends React.Component<{}, GameState> {
     }
 
     return (
-      <div className="game">
+      <div
+        className={css({
+          display: 'flex',
+          flexDirection: 'row',
+        })}
+      >
         <div className="game-board">
           <Board
             squares={current.squares}
@@ -137,10 +145,18 @@ export default class Game extends React.Component<{}, GameState> {
             winStatus={winner}
           />
         </div>
-        <div className="game-info">
+        <div
+          className={css({
+            marginLeft: '20px',
+          })}
+        >
           <div>{status}</div>
+          <br />
           <div>{results}</div>
-          <button className="toggle" onClick={() => this.reverseOrder()}>
+          <button
+            className={css({ ':active': { backgroundColor: '#999' } })}
+            onClick={() => this.reverseOrder()}
+          >
             Toggle order
           </button>
         </div>
@@ -150,8 +166,6 @@ export default class Game extends React.Component<{}, GameState> {
 }
 
 // ========================================
-
-// ReactDOM.render(<Game />, document.getElementById('root'));
 
 function calculateWinner(squares: string[]): Array<number | string> {
   const lines = [
