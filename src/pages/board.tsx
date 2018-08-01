@@ -9,9 +9,8 @@ interface BoardState {
     squares: cell.state[];
     isRunning: boolean;
     timerToken: Timer;
-    bornCounts: number[];
-    surviveCounts: number[];
     rule: string;
+    generationFunction: (squares: cell.state[]) => (cell.state[]);
 }
 
 const ruleRegex = /B(\d+)\/S(\d+)/;  // Strings which look like 'B3/S23'
@@ -22,11 +21,10 @@ export class Board extends React.Component<{}, BoardState> {
         super(props);
         this.sideLength = 50;
         this.state = {
-            bornCounts: [3],
+            generationFunction: life.computeNextGeneration([3], [2, 3]),
             isRunning: false,
             rule: 'B3/S23',
             squares: Array(this.sideLength * this.sideLength).fill(cell.state.DEAD),
-            surviveCounts: [2, 3],
             timerToken: 0,
         };
     }
@@ -49,12 +47,14 @@ export class Board extends React.Component<{}, BoardState> {
     isValidRule = () => ruleRegex.test(this.state.rule);
 
     handleRuleChange(evt: any) {
-        const match = ruleRegex.exec(evt.target.value);
+        const rule = evt.target.value;
+        const match = ruleRegex.exec(rule);
         if (match) {
             const bornCounts = match[1].split('').map(i => parseInt(i, 10));
             const surviveCounts = match[2].split('').map(i => parseInt(i, 10));
-            this.setState({ rule: match[0], bornCounts, surviveCounts });
+            this.setState({ generationFunction: life.computeNextGeneration(bornCounts, surviveCounts) });
         }
+        this.setState({ rule });
     }
 
     alternateAnimation() {
@@ -73,8 +73,7 @@ export class Board extends React.Component<{}, BoardState> {
 
     evolve() {
         this.setState({
-            squares: life.computeNextGeneration(this.state.bornCounts, this.state.surviveCounts)
-                (this.state.squares),
+            squares: this.state.generationFunction(this.state.squares),
         });
     }
 
