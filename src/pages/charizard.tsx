@@ -30,7 +30,7 @@ export default () => (
         padding: 0,
       })}
       alt="rawr"
-      src="https://cdn.bulbagarden.net/upload/thumb/7/7e/006Charizard.png/500px-006Charizard.png"
+      src="/assets/charizardFly.gif"
     />
   </div>
 );

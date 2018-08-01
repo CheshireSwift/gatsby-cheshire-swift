@@ -14,7 +14,7 @@ const navbarStyle = css({
   backgroundColor: '#c19ee5',
   height: 50,
   margin: 0,
-  marginBottom: 10,
+  marginBottom: 50,
   padding: 0,
 });
 
@@ -101,7 +101,44 @@ const Layout = ({ children, data }: LayoutProps) => (
     >
       {children()}
     </div>
-    ;
+    <div
+      className={css({
+        backgroundColor: '#decaf1',
+        position: 'fixed',
+        bottom: 35,
+        height: 125,
+        margin: 0,
+        padding: 0,
+        width: 4000,
+      })}
+    >
+      <marquee
+        className={css({ position: 'fixed', bottom: 17 })}
+        scrollamount="20"
+        direction="left"
+        behavior="scroll"
+      >
+        <img
+          className={css({
+            height: 150,
+            margin: 0,
+          })}
+          // src="/assets/charizardFly.gif"
+          src="https://vignette.wikia.nocookie.net/projectcrusade/images/9/91/Flying_charizard_by_jameswolfsbane-d6c822w.gif/revision/latest?cb=20160406170752"
+        />
+      </marquee>
+    </div>
+    <div
+      className={css({
+        backgroundColor: '#c19ee5',
+        position: 'fixed',
+        bottom: 0,
+        height: 35,
+        margin: 0,
+        padding: 0,
+        width: 4000,
+      })}
+    />
   </div>
 );
 export default Layout;
