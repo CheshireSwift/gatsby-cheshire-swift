@@ -119,7 +119,7 @@ const Layout = ({ children, data }: LayoutProps) => (
       })}
     >
       <marquee
-        className={css({ position: 'fixed', bottom: 17 })}
+        className={css({ bottom: 17, position: 'fixed' })}
         scrollamount="20"
         direction="left"
         behavior="scroll"
@@ -130,18 +130,19 @@ const Layout = ({ children, data }: LayoutProps) => (
             margin: 0,
           })}
           // src="/assets/charizardFly.gif"
-          src="https://vignette.wikia.nocookie.net/projectcrusade/images/9/91/Flying_charizard_by_jameswolfsbane-d6c822w.gif/revision/latest?cb=20160406170752"
+          src="https://vignette.wikia.nocookie.net/projectcrusade/images/9/91/
+          Flying_charizard_by_jameswolfsbane-d6c822w.gif/revision/latest?cb=20160406170752"
         />
       </marquee>
     </div>
     <div
       className={css({
         backgroundColor: '#c19ee5',
-        position: 'fixed',
         bottom: 0,
         height: 35,
         margin: 0,
         padding: 0,
+        position: 'fixed',
         width: 4000,
       })}
     />

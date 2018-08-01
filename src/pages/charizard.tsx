@@ -7,14 +7,14 @@ export default () => (
     <h1
       className={css({
         color: 'inherit',
-        'font-family':
+        fontFamily:
           'Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif',
-        'font-size': '2em',
-        'font-weight': 'bold',
-        'line-height': 1.1,
+        fontSize: '2em',
+        fontWeight: 'bold',
+        lineHeight: 1.1,
         margin: 0,
-        'margin-bottom': '1.45rem',
-        'margin-top': '1.45rem',
+        marginBottom: '1.45rem',
+        marginTop: '1.45rem',
         padding: 0,
       })}
     >
