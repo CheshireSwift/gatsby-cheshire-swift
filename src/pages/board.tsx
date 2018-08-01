@@ -9,7 +9,12 @@ interface BoardState {
     squares: cell.state[];
     isRunning: boolean;
     timerToken: Timer;
+    bornCounts: number[];
+    surviveCounts: number[];
+    rule: string;
 }
+
+const ruleRegex = /B(\d+)\/S(\d+)/;  // Strings which look like 'B3/S23'
 
 export class Board extends React.Component<{}, BoardState> {
     sideLength: number;
@@ -17,8 +22,11 @@ export class Board extends React.Component<{}, BoardState> {
         super(props);
         this.sideLength = 50;
         this.state = {
+            bornCounts: [3],
             isRunning: false,
+            rule: 'B3/S23',
             squares: Array(this.sideLength * this.sideLength).fill(cell.state.DEAD),
+            surviveCounts: [2, 3],
             timerToken: 0,
         };
     }
@@ -26,11 +34,27 @@ export class Board extends React.Component<{}, BoardState> {
     render() {
         return (
             <div>
+                <div>
+                    <input type="text" value={this.state.rule} onChange={evt => this.handleRuleChange(evt)} />
+                    <span>{this.isValidRule() ? "" : "Not a valid rule"}</span>
+                </div>
+
                 <TimeControl onClickHandler={this.alternateAnimation.bind(this)} value={this.buttonText()} />
                 <div className="separator"></div>
                 {_.range(this.sideLength).map((row: number) => this.makeRowOfSquares(row))}
             </div>
         );
+    }
+
+    isValidRule = () => ruleRegex.test(this.state.rule);
+
+    handleRuleChange(evt: any) {
+        const match = ruleRegex.exec(evt.target.value);
+        if (match) {
+            const bornCounts = match[1].split('').map(parseInt);
+            const surviveCounts = match[2].split('').map(parseInt);
+            this.setState({ rule: match[0], bornCounts, surviveCounts });
+        }
     }
 
     alternateAnimation() {
@@ -48,7 +72,10 @@ export class Board extends React.Component<{}, BoardState> {
     }
 
     evolve() {
-        this.setState({ squares: life.computeNextGeneration(this.state.squares) });
+        this.setState({
+            squares: life.computeNextGeneration(this.state.bornCounts, this.state.surviveCounts)
+                (this.state.squares),
+        });
     }
 
     makeRowOfSquares(i: number) {
