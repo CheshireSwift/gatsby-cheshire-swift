@@ -13,7 +13,7 @@ interface BoardState {
     generationFunction: (squares: cell.state[]) => (cell.state[]);
 }
 
-const ruleRegex = /B(\d+)\/S(\d+)/;  // Strings which look like 'B3/S23'
+const ruleRegex = /B(\d*)\/S(\d*)/;  // Strings which look like 'B3/S23'
 
 export class Board extends React.Component<{}, BoardState> {
     sideLength: number;
@@ -52,6 +52,7 @@ export class Board extends React.Component<{}, BoardState> {
         if (match) {
             const bornCounts = match[1].split('').map(i => parseInt(i, 10));
             const surviveCounts = match[2].split('').map(i => parseInt(i, 10));
+            console.log(`New rule issued for born ${bornCounts} and survive ${surviveCounts}`);
             this.setState({ generationFunction: life.computeNextGeneration(bornCounts, surviveCounts) });
         }
         this.setState({ rule });

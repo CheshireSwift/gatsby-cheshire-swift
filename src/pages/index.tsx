@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Board } from './board';
+import { Board } from '../components/board';
 
 const Game = () => (
   <div className="game">
