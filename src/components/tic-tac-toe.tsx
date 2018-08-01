@@ -39,23 +39,37 @@ interface GameState {
 }
 
 const Square = (props: SquareProps) => {
-  const backgroundColor = props.isWinner ? '#ffa500' : '#fff';
+  let image = '';
+  switch (props.value) {
+    case 'X':
+      image = '/assets/redcross-resized';
+      break;
+    case 'O':
+      image = '/assets/bluecirlce-resized';
+      break;
+  }
+  if (props.isWinner) {
+    image += '-winner';
+  }
+  image += '.png';
   return (
     <button
-      className={css`
-        background: ${backgroundColor};
-        border: 1px solid #999;
-        float: left;
-        font-size: 24px;
-        font-weight: bold;
-        line-height: 34px;
-        height: 34px;
-        margin-right: -1px;
-        margin-top: -1px;
-        padding: 0;
-        text-align: center;
-        width: 34px;
-      `}
+      className={css({
+        background: `transparent url('${image}') no-repeat`,
+        // backgroundPosition: '3px center',
+        backgroundSize: '100%',
+        border: '3px solid #999',
+        float: 'left',
+        fontSize: 38,
+        fontWeight: 'bold',
+        height: 60,
+        lineHeight: 34,
+        marginRight: -1,
+        marginTop: -1,
+        padding: 0,
+        textAlign: 'center',
+        width: 60,
+      })}
       onClick={() => props.onClick()}
     >
       {props.value}
@@ -157,11 +171,6 @@ class Game extends React.Component<{ againstComputer: boolean }, GameState> {
     if (!newState) {
       return;
     }
-
-    // console.log(`Current xIsNext: ${this.state.xIsNext}`);
-    // console.log(`Calculated winner: ${calculateWinner(squares)}`);
-    // console.log(`History length: ${this.state.history.length}`);
-    // console.log(`Against computer? ${this.props.againstComputer}`);
 
     // If it's the computer's turn
     // "Click" the appropriate button
