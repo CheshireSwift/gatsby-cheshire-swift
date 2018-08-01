@@ -51,8 +51,8 @@ export class Board extends React.Component<{}, BoardState> {
     handleRuleChange(evt: any) {
         const match = ruleRegex.exec(evt.target.value);
         if (match) {
-            const bornCounts = match[1].split('').map(parseInt);
-            const surviveCounts = match[2].split('').map(parseInt);
+            const bornCounts = match[1].split('').map(i => parseInt(i, 10));
+            const surviveCounts = match[2].split('').map(i => parseInt(i, 10));
             this.setState({ rule: match[0], bornCounts, surviveCounts });
         }
     }

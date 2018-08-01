@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 export const computeNextGeneration = (bornNeighbourCount: number[], surviveNeighbourCount: number[]) => (
     (squares: cell.state[]) => {
         // Figure out how many live neighbours each cell has
+        const sideLength = Math.sqrt(squares.length);
         const aliveNeighbourCount: number[] = [];
         squares.forEach((square: cell.state, i: number) => {
             // For each grid offset of a neighbour...
@@ -11,15 +12,15 @@ export const computeNextGeneration = (bornNeighbourCount: number[], surviveNeigh
             let aliveNeighbours = 0;
             offsets.forEach(pair => {
                 const [dx, dy] = pair;
-                const [col, row] = [i % this.sideLength, Math.floor(i / this.sideLength)];
+                const [col, row] = [i % sideLength, Math.floor(i / sideLength)];
                 const neighbour = { x: row + dx, y: col + dy };
-                if (neighbour.x < 0 || neighbour.x >= this.sideLength
-                    || neighbour.y < 0 || neighbour.y >= this.sideLength) {
+                if (neighbour.x < 0 || neighbour.x >= sideLength
+                    || neighbour.y < 0 || neighbour.y >= sideLength) {
                     // Neighbour cell is out of bounds, ignore
                     return;
                 }
 
-                if (squares[neighbour.x * this.sideLength + neighbour.y] !== cell.state.DEAD) {
+                if (squares[neighbour.x * sideLength + neighbour.y] !== cell.state.DEAD) {
                     aliveNeighbours += 1;
                 }
             });
