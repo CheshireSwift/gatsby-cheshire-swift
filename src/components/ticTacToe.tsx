@@ -83,6 +83,20 @@ export default class Game extends React.Component<{}, GameState> {
     });
   }
 
+  resetGame() {
+    this.setState({
+      history: [
+        {
+          position: null,
+          squares: Array(9).fill(null),
+        },
+      ],
+      orderReverse: false,
+      stepNumber: 0,
+      xIsNext: true,
+    });
+  }
+
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
@@ -153,11 +167,12 @@ export default class Game extends React.Component<{}, GameState> {
           <div>{status}</div>
           <br />
           <div>{results}</div>
+          <button onClick={() => this.reverseOrder()}>Toggle order</button>
           <button
-            className={css({ ':active': { backgroundColor: '#999' } })}
-            onClick={() => this.reverseOrder()}
+            className={css({ marginLeft: '20px' })}
+            onClick={() => this.resetGame()}
           >
-            Toggle order
+            Reset game
           </button>
         </div>
       </div>

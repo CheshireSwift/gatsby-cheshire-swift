@@ -28,6 +28,7 @@ function Square(props: SquareProps): any {
         },
         { ':focus': { outline: 'none' } },
       )}
+      key={props.value}
       onClick={props.onClick}
     >
       {props.value}
@@ -50,6 +51,7 @@ export default class Board extends React.Component<BoardProps> {
         winValue={
           this.props.winStatus ? this.props.winStatus.includes(i) : false
         }
+        key={i}
       />
     );
   }
@@ -60,10 +62,10 @@ export default class Board extends React.Component<BoardProps> {
         className={css({
           ':after': {
             clear: 'both',
-            content: '',
             display: 'table',
           },
         })}
+        key={i}
       >
         {_.range(i * 3, (i + 1) * 3).map((num: number) =>
           this.renderSquare(num),

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Link from 'gatsby-link';
-import Game from '../components/tic-tac-toe';
-import { css } from '../../node_modules/emotion';
+import Game from '../components/ticTacToe';
+import { css } from 'emotion';
 
 const GamePage = () => (
   <div className={css({ fontFamily: 'Arial' })}>

@@ -7,6 +7,7 @@ describe('the header', () => {
   it('matches the snapshot', () => {
     expect(render(<Header siteTitle="blah" color="white" />)).toMatchSnapshot();
   });
+
   it('displays the title', () => {
     const title = 'Test Site Title Yay';
     const component = render(<Header siteTitle={title} color="white" />);

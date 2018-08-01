@@ -1,38 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`the header matches the snapshot 1`] = `
-.emotion-3 {
-  background: rebeccapurple;
-  margin-bottom: 1.45rem;
-}
-
-.emotion-2 {
-  margin: 0 auto;
-  max-width: 960px;
-  padding: 1.45rem 1.0875rem;
-}
-
-.emotion-1 {
-  margin: 0;
-}
-
-.emotion-0 {
-  color: white;
-  -webkit-text-decoration: none;
-  text-decoration: none;
-}
-
 <div
-  class="emotion-3"
+  style="background:rebeccapurple;margin-bottom:1.45rem;"
 >
   <div
-    class="emotion-2"
+    style="font-family:Arial;margin:0 auto;max-width:960px;padding:1.45rem 1.0875rem;"
   >
     <h1
-      class="emotion-1"
+      style="margin:0;"
     >
       <a
-        class="emotion-0"
         href="/"
       >
         blah

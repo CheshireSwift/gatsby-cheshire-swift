@@ -30,7 +30,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
     const colors = ['white', 'orange', 'violet', 'silver'];
     const colorList = colors.map(color => {
       return (
-        <option value={color} className={css({ textTransform: 'capitalize' })}>
+        <option value={color} key={color}>
           {color}
         </option>
       );
