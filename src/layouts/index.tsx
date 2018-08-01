@@ -36,6 +36,26 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
       );
     });
 
+    const Nav = css(
+      {
+        margin: '0 auto',
+        marginBottom: '1.45rem',
+        maxWidth: 960,
+      },
+      {
+        '& a': {
+          color: 'white',
+          display: 'table-cell',
+          padding: '1em 1.0875rem',
+          textDecoration: 'none',
+          verticalAlign: 'middle',
+        },
+      },
+      {
+        '& a:hover': { backgroundColor: 'hsl(270,50%,55%)' },
+      },
+    );
+
     return (
       <div
         className={css({
@@ -53,6 +73,13 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
           siteTitle={this.props.data.site.siteMetadata.title}
           color={this.state.color}
         />
+        <div className={css({ backgroundColor: 'hsl(270,50%,60%)' })}>
+          <nav className={Nav}>
+            <a href="/">Homepage</a>
+            <a href="/page-2">Second page</a>
+            <a href="/page-3">Tic Tac Toe</a>
+          </nav>
+        </div>
         <div
           className={css({
             margin: '0 auto',
