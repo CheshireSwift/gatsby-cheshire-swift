@@ -15,7 +15,7 @@ describe('ultimate tic-tac-toe', () => {
 
   it('Square renders nothing with no winner', () => {
     const component = render(
-      <ultimate.Square cell={{ winner: null }} onClick={() => null} />,
+      <ultimate.Square cell={{ player: null }} onClick={() => null} />,
     ).get(0);
     expect(component.children).toEqual([]);
   });
@@ -23,7 +23,7 @@ describe('ultimate tic-tac-toe', () => {
   it('Square renders winner', () => {
     const component = render(
       <ultimate.Square
-        cell={{ winner: ultimate.Winner.Cross }}
+        cell={{ player: ultimate.Winner.Cross }}
         onClick={() => null}
       />,
     );
@@ -33,7 +33,7 @@ describe('ultimate tic-tac-toe', () => {
   it('Square calls onClick when clicked', () => {
     const onClick = jest.fn();
     const component = shallow(
-      <ultimate.Square cell={{ winner: null }} onClick={onClick} />,
+      <ultimate.Square cell={{ player: null }} onClick={onClick} />,
     );
     component.simulate('click');
     expect(onClick).toHaveBeenCalled();
@@ -44,8 +44,7 @@ describe('ultimate tic-tac-toe', () => {
       <ultimate.SmallBoard
         available={true}
         board={{
-          cells: Array<ultimate.Cell>(9).fill({ winner: null }),
-          winner: null,
+          cells: Array<ultimate.Cell>(9).fill({ player: null }),
         }}
         handleClick={() => null}
       />,
@@ -59,8 +58,7 @@ describe('ultimate tic-tac-toe', () => {
       <ultimate.SmallBoard
         available={true}
         board={{
-          cells: Array<ultimate.Cell>(9).fill({ winner: null }),
-          winner: null,
+          cells: Array<ultimate.Cell>(9).fill({ player: null }),
         }}
         handleClick={onClick}
       />,
@@ -75,8 +73,7 @@ describe('ultimate tic-tac-toe', () => {
       <ultimate.SmallBoard
         available={false}
         board={{
-          cells: Array<ultimate.Cell>(9).fill({ winner: null }),
-          winner: null,
+          cells: Array<ultimate.Cell>(9).fill({ player: null }),
         }}
         handleClick={onClick}
       />,
@@ -91,17 +88,16 @@ describe('ultimate tic-tac-toe', () => {
         available={false}
         board={{
           cells: [
-            { winner: ultimate.Winner.Cross },
-            { winner: ultimate.Winner.Nought },
-            ...Array(7).fill({ winner: null }),
+            { player: ultimate.Winner.Cross },
+            { player: ultimate.Winner.Nought },
+            ...Array(7).fill({ player: null }),
           ],
-          winner: null,
         }}
         handleClick={() => null}
       />,
     );
     expect(
-      component.children().map(child => child.prop('cell').winner),
+      component.children().map(child => child.prop('cell').player),
     ).toEqual([
       ultimate.Winner.Cross,
       ultimate.Winner.Nought,
@@ -114,13 +110,12 @@ describe('ultimate tic-tac-toe', () => {
       <ultimate.SmallBoard
         available={false}
         board={{
-          cells: Array(9).fill({ winner: null }),
-          winner: ultimate.Winner.Nought,
+          cells: Array(9).fill({ player: ultimate.Winner.Cross }),
         }}
         handleClick={() => null}
       />,
     );
-    expect(component.find('svg').length).toBe(1);
+    expect(component.find('svg').length).toBe(10);
   });
 
   it('LargeBoard has 9 SmallBoards', () => {
@@ -128,8 +123,7 @@ describe('ultimate tic-tac-toe', () => {
       <ultimate.LargeBoard
         available={[1, 2, 3, 4, 5, 6, 7, 8, 0]}
         boards={Array(9).fill({
-          cells: Array(9).fill({ winner: null }),
-          winner: null,
+          cells: Array(9).fill({ player: null }),
         })}
         handleClick={() => null}
       />,
@@ -143,8 +137,7 @@ describe('ultimate tic-tac-toe', () => {
       <ultimate.LargeBoard
         available={[1, 2, 3, 4, 5, 6, 7, 8, 0]}
         boards={Array(9).fill({
-          cells: Array(9).fill({ winner: null }),
-          winner: null,
+          cells: Array(9).fill({ player: null }),
         })}
         handleClick={handleClick}
       />,

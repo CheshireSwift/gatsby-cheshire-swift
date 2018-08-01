@@ -9,11 +9,35 @@ export enum Winner {
 }
 
 export interface Cell {
-  winner: Nullable<Winner>;
+  player: Nullable<Winner>;
 }
 
-export interface Board extends Cell {
+export interface Board {
   cells: Cell[];
+}
+
+function calculateWinner(squares: Cell[]): Nullable<Winner> {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  for (const [a, b, c] of lines) {
+    if (
+      squares[a].player !== null &&
+      squares[a].player !== Winner.Draw &&
+      squares[a].player === squares[b].player &&
+      squares[a].player === squares[c].player
+    ) {
+      return squares[a].player;
+    }
+  }
+  return squares.every(cell => cell.player !== null) ? Winner.Draw : null;
 }
 
 export interface GameState {
@@ -29,8 +53,7 @@ export class Game extends React.Component<{}, GameState> {
     this.state = {
       available: _.range(9),
       boards: _.times(9, i => ({
-        cells: _.times(9, j => ({ winner: null })),
-        winner: null,
+        cells: _.times(9, j => ({ player: null })),
       })),
       xIsNext: true,
     };
@@ -40,23 +63,29 @@ export class Game extends React.Component<{}, GameState> {
     const boards = this.state.boards.slice();
     boards[i] = {
       cells: boards[i].cells.slice(),
-      winner: boards[i].winner,
     };
-    if (boards[i].winner !== null || boards[i].cells[j].winner !== null) {
+    if (
+      calculateWinner(boards[i].cells) !== null ||
+      boards[i].cells[j].player !== null
+    ) {
       return;
     }
-    boards[i].cells[j].winner = this.state.xIsNext
+    boards[i].cells[j].player = this.state.xIsNext
       ? Winner.Cross
       : Winner.Nought;
-    const winner = this.calculateWinner(boards[i].cells);
     let available: number[];
-    boards[i].winner = winner;
-    if (this.calculateWinner(boards) !== null) {
+    if (
+      calculateWinner(
+        boards.map(board => ({ player: calculateWinner(board.cells) })),
+      ) !== null
+    ) {
       available = [];
     } else {
       available =
-        boards[j].winner !== null
-          ? _.range(9).filter(board => boards[board].winner === null)
+        calculateWinner(boards[j].cells) !== null
+          ? _.range(9).filter(
+              board => calculateWinner(boards[board].cells) === null,
+            )
           : [j];
     }
     this.setState(prevState => ({
@@ -64,29 +93,6 @@ export class Game extends React.Component<{}, GameState> {
       boards,
       xIsNext: !prevState.xIsNext,
     }));
-  }
-
-  calculateWinner(squares: Cell[]): Nullable<Winner> {
-    const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-    ];
-    for (const [a, b, c] of lines) {
-      if (
-        squares[a].winner !== null &&
-        squares[a].winner === squares[b].winner &&
-        squares[a].winner === squares[c].winner
-      ) {
-        return squares[a].winner;
-      }
-    }
-    return squares.every(cell => cell.winner !== null) ? Winner.Draw : null;
   }
 
   render() {
@@ -157,7 +163,7 @@ export const SmallBoard = (props: SmallBoardProps) => (
       ...boardStyle,
     })}
   >
-    {props.board.winner !== null && (
+    {calculateWinner(props.board.cells) !== null && (
       <div
         className={css({
           height: '100%',
@@ -167,7 +173,7 @@ export const SmallBoard = (props: SmallBoardProps) => (
           width: '100%',
         })}
       >
-        {getSymbol(props.board.winner)()}
+        {getSymbol(calculateWinner(props.board.cells))()}
       </div>
     )}
     {props.board.cells.map((cell: Cell, i: number) => (
@@ -198,7 +204,7 @@ export const Square = (props: SquareProps) => (
     })}
     onClick={props.onClick}
   >
-    {getSymbol(props.cell.winner)()}
+    {getSymbol(props.cell.player)()}
   </button>
 );
 
