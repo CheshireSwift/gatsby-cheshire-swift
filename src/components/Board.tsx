@@ -2,7 +2,7 @@ import React = require('react');
 import styled from 'react-emotion';
 // background: ${props => (props.isWinner ? '#ffa500' : '#fff')};
 const SquareButton = styled('button')`
-  background: ${(props: SquareProp) =>
+  background: ${(props: SquareButtonProp) =>
     props.winner ? 'hotpink' : 'turquoise'};
   border: 1px solid #999;
   float: left;
@@ -16,6 +16,11 @@ const SquareButton = styled('button')`
   text-align: center;
   width: 34px;
 `;
+
+interface SquareButtonProp {
+  winner: boolean;
+  onClick(): void;
+}
 
 interface SquareProp {
   value: string;
