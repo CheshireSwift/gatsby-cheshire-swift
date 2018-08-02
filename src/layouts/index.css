@@ -7,6 +7,7 @@ html {
 body {
   margin: 0;
   padding: 0;
+  border: 0;
 }
 
 article,
@@ -715,11 +716,6 @@ pre tt:after {
   html {
     font-size: 100%;
   }
-}
-
-body {
-  font: 14px 'Century Gothic', Futura, sans-serif;
-  margin: 20px;
 }
 
 ol,
