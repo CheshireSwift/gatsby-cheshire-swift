@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import Board from './board';
+import Board from './JOCboard';
 import { css } from 'emotion';
 
 interface GameState {
