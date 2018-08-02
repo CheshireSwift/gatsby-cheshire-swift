@@ -16,6 +16,7 @@ const navbarStyle = css({
   margin: 0,
   marginBottom: 50,
   padding: 0,
+  borderBottom: '1px solid #3d1661',
 });
 
 const navLinkStyle = css(
@@ -61,7 +62,7 @@ const Layout = ({ children, data }: LayoutProps) => (
     className={css({
       fontFamily: 'georgia,serif',
       fontSize: '1.2em',
-      overflowY: 'scroll',
+      // overflowY: 'scroll',
     })}
   >
     <Helmet
@@ -103,6 +104,7 @@ const Layout = ({ children, data }: LayoutProps) => (
         maxWidth: 960,
         padding: 0,
         paddingTop: 0,
+        marginBottom: 130,
       })}
     >
       {children()}
@@ -111,27 +113,31 @@ const Layout = ({ children, data }: LayoutProps) => (
       className={css({
         backgroundColor: '#decaf1',
         position: 'fixed',
-        bottom: 35,
-        height: 125,
+        bottom: 25,
+        height: 90,
         margin: 0,
         padding: 0,
-        width: 4000,
+        width: '100%',
+        display: 'block',
+        borderTop: '1px solid #3d1661',
       })}
     >
       <marquee
-        className={css({ bottom: 17, position: 'fixed' })}
+        className={css({
+          bottom: 17,
+          position: 'fixed',
+        })}
         scrollamount="20"
         direction="left"
         behavior="scroll"
       >
         <img
           className={css({
-            height: 150,
+            height: 90,
             margin: 0,
           })}
           // src="/assets/charizardFly.gif"
-          src="https://vignette.wikia.nocookie.net/projectcrusade/images/9/91/
-          Flying_charizard_by_jameswolfsbane-d6c822w.gif/revision/latest?cb=20160406170752"
+          src="https://vignette.wikia.nocookie.net/projectcrusade/images/9/91/Flying_charizard_by_jameswolfsbane-d6c822w.gif/revision/latest?cb=20160406170752"
         />
       </marquee>
     </div>
@@ -139,11 +145,12 @@ const Layout = ({ children, data }: LayoutProps) => (
       className={css({
         backgroundColor: '#c19ee5',
         bottom: 0,
-        height: 35,
+        height: 25,
         margin: 0,
         padding: 0,
         position: 'fixed',
-        width: 4000,
+        width: '100%',
+        display: 'block',
       })}
     />
   </div>

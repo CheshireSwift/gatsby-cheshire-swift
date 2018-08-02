@@ -8,25 +8,25 @@ const SecondPage = () => (
   <div>
     <h1
       className={css({
-        "color": 'inherit',
-        'font-family':
+        color: 'inherit',
+        fontFamily:
           'Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif',
-        'font-size': '2em',
-        'font-weight': 'bold',
-        'line-height': 1.1,
-        "margin": 0,
-        'margin-bottom': '1.45rem',
-        'margin-top': '1.45rem',
-        "padding": 0,
+        fontSize: '2em',
+        fontWeight: 'bold',
+        lineHeight: 1.1,
+        margin: 0,
+        marginBottom: '1.45rem',
+        marginTop: '1.45rem',
+        padding: 0,
       })}
     >
       Tic-Tac-Toe
     </h1>
     <p
       className={css({
-        "margin": 0,
-        'margin-bottom': '1.45rem',
-        "padding": 0,
+        margin: 0,
+        marginBottom: '1.45rem',
+        padding: 0,
       })}
     >
       A sensational interactive multiplayer experience bound to delight interns
@@ -34,10 +34,10 @@ const SecondPage = () => (
     </p>
     <div
       className={css({
-        'background-color': '#decaf1',
-        "border": '2px solid #3d1661',
-        "margin": '10px',
-        "padding": '10px',
+        backgroundColor: '#decaf1',
+        border: '2px solid #3d1661',
+        margin: '10px',
+        padding: '10px',
       })}
     >
       <Game />
