@@ -56,7 +56,7 @@ export class Board extends React.Component<{}, BoardState> {
                 <Clear onClickHandler={this.clearBoard} />
                 {spacer}
                 <Grid squares={this.state.squares} sideLength={this.sideLength}
-                onClickHandler={this.createAliveCell.bind(this)}/>
+                onClickHandler={this.toggleCellState.bind(this)}/>
             </div>
         );
     }
@@ -111,9 +111,9 @@ export class Board extends React.Component<{}, BoardState> {
         });
     }
 
-    createAliveCell(i: number) {
+    toggleCellState(i: number) {
         const squares = this.state.squares.slice();
-        squares[i] = cell.state.ALIVE;
+        squares[i] = (squares[i] === cell.state.ALIVE) ? cell.state.DEAD : cell.state.ALIVE;
         this.setState({ squares });
     }
 
