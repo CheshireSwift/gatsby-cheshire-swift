@@ -13,22 +13,33 @@ interface SquareProp {
 }
 
 const RowDiv = styled('div')`
-  margin-right: 0px;
+  margin: 0px;
 `;
 
 const BoardDiv = styled('div')`
-  margin-right: 0px;
+  margint: 0px;
 `;
 
 const SquareTile = styled('img')`
   height: 30px;
   width: 30px;
+  margin-right: -1px;
+  margin: -1px;
   padding: 0;
-  margin-right: 0px;
+  border: 2px;
 `;
 
 function Square(props: SquareProp) {
-  return <SquareTile className="square" src="/assets/GrassTile.png" />;
+  let src = '';
+  switch (props.content) {
+    case 'empty':
+      src = '/assets/GrassTile.png';
+      break;
+    case 'p1':
+      src = '/assets/BomberMan1.png';
+      break;
+  }
+  return <SquareTile className="square" src={src} />;
 }
 
 export class BombermanBoard extends React.Component<BombermanBoardState> {

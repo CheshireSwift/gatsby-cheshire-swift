@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Link from 'gatsby-link';
-import * as TicTacToeBasic from '../components/tictactoe';
+import * as TicTacToeBasic from '../components/PEKtictactoe';
 
 export default () => (
   <div>

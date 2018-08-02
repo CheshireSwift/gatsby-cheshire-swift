@@ -1,7 +1,7 @@
 import React = require('react');
-import * as TBoard from './Board';
+import * as TBoard from './PEKBoard';
 import styled from 'react-emotion';
-import AI = require('./tictactoeBot');
+import AI = require('./PEKtictactoeBot');
 
 const GameDiv = styled('div')`
   display: flex;
