@@ -4,6 +4,7 @@ import { css } from '../../node_modules/emotion';
 
 interface HeaderProps {
   siteTitle: string;
+  color: string;
 }
 
 interface HeaderState {
@@ -41,24 +42,15 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         >
           <h1
             className={css({
-              color: 'inherit',
-              fontFamily:
-                'Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif',
-              fontSize: '2.6em',
-              fontWeight: 'bold',
-              lineHeight: 1.1,
               margin: 0,
-              marginBottom: '0.45rem',
-              marginTop: '0.45rem',
-              padding: 0,
             })}
           >
             <Link
               to="/"
-              style={{
-                color: 'white',
-                textDecoration: 'none',
-              }}
+              className={css({
+                color: this.props.color,
+                textDecoration: 'overline underline white',
+              })}
             >
               {this.state.overrideTitle || this.props.siteTitle}
             </Link>

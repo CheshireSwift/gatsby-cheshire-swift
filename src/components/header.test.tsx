@@ -9,12 +9,12 @@ describe('the header', () => {
   // });
   it('displays the title', () => {
     const title = 'Test Site Title Yay';
-    const component = render(<Header siteTitle={title} />);
+    const component = render(<Header siteTitle={title} color="white" />);
     expect(component.text()).toContain(title);
   });
 
   it('links to the homepage', () => {
-    const component = render(<Header siteTitle="blah" />);
+    const component = render(<Header siteTitle="blah" color="white" />);
     expect(component).toContainSelector('a[href="/"]');
   });
 });
