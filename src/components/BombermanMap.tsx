@@ -17,7 +17,7 @@ const RowDiv = styled('div')`
 `;
 
 const BoardDiv = styled('div')`
-  margint: 0px;
+  margin: 0px;
 `;
 
 const SquareTile = styled('img')`
@@ -30,16 +30,34 @@ const SquareTile = styled('img')`
 `;
 
 function Square(props: SquareProp) {
-  let src = '';
+  const src = {
+    empty: '/assets/GrassTile.png',
+    p1: '/assets/BomberMan1.png',
+    bomb1: '/assets/bomb1.png',
+    bomb2: '/assets/bomb2.png',
+    bomb3: '/assets/bomb3.png',
+    p2: '/assets/BomberMan2.png',
+    fire: '/assets/fire.png',
+    wall: '/assets/wall.png',
+  };
   switch (props.content) {
     case 'empty':
-      src = '/assets/GrassTile.png';
-      break;
+      return <SquareTile className="square" src={src.empty} />;
     case 'p1':
-      src = '/assets/BomberMan1.png';
-      break;
+      return <SquareTile className="square" src={src.p1} />;
+    case 'p2':
+      return <SquareTile className="square" src={src.p2} />;
+    case 'bomb1':
+      return <SquareTile className="square" src={src.bomb1} />;
+    case 'bomb2':
+      return <SquareTile className="square" src={src.bomb2} />;
+    case 'bomb3':
+      return <SquareTile className="square" src={src.bomb3} />;
+    case 'fire':
+      return <SquareTile className="square" src={src.fire} />;
+    case 'wall':
+      return <SquareTile className="square" src={src.wall} />;
   }
-  return <SquareTile className="square" src={src} />;
 }
 
 export class BombermanBoard extends React.Component<BombermanBoardState> {
