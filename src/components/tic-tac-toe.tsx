@@ -26,6 +26,10 @@ interface ToggleProps {
   isToggleOn: boolean;
 }
 
+interface RestartProps {
+  onClick: () => void;
+}
+
 interface History {
   lastMove: number;
   squares: string[];
@@ -37,6 +41,29 @@ interface GameState {
   stepNumber: number;
   xIsNext: boolean;
 }
+
+interface CookieEntry {
+  winner: string;
+  mode: string;
+  number: number;
+}
+
+const stepHistoryTextElement = css({
+  textDecoration: 'none',
+  color: '#000',
+  transition: 'font-size 0.3s ease, background-color 0.3s ease',
+  display: 'block',
+  width: 200,
+  '&:hover': {
+    fontSize: 16,
+    background: '#f6f6f6',
+  },
+});
+
+const stepHistoryElement = css({
+  font: '200 14px/1.5 Helvetica, Verdana, sans-serif',
+  borderBottom: '1px solid #ccc',
+});
 
 const Square = (props: SquareProps) => {
   let image = '';
@@ -71,8 +98,7 @@ const Square = (props: SquareProps) => {
         width: 60,
       })}
       onClick={() => props.onClick()}
-    >
-    </button>
+    />
   );
 };
 
@@ -127,6 +153,10 @@ const Toggle = (props: ToggleProps) => {
   );
 };
 
+const Restart = (props: RestartProps) => {
+  return <button onClick={() => props.onClick()}>Restart</button>;
+};
+
 class Game extends React.Component<{ againstComputer: boolean }, GameState> {
   constructor(props: { againstComputer: boolean }) {
     super(props);
@@ -141,6 +171,39 @@ class Game extends React.Component<{ againstComputer: boolean }, GameState> {
       stepNumber: 0,
       xIsNext: true,
     };
+  }
+
+  handleWinnerCookies(currentState: GameState): void {
+    console.log('New cookie entry has been called');
+    // Building up the new entry
+    const currentSquares =
+      currentState.history[currentState.history.length - 1].squares;
+    const winner = calculateWinner(currentSquares)
+      ? currentSquares[calculateWinner(currentSquares)[0]] + ' won'
+      : 'Draw';
+    const newEntry = {
+      winner,
+      mode: this.props.againstComputer ? ' (against computer)' : ' (2 players)',
+      number: 0,
+    };
+
+    const currentCookieString = getCookie('matchHistory');
+    if (!currentCookieString) {
+      document.cookie = `matchHistory=${JSON.stringify([newEntry])}`;
+      return;
+    }
+
+    const currentCookie = JSON.parse(currentCookieString);
+    newEntry.number = currentCookie.length; // Update number!!!!
+    console.log(`Current cookie: `);
+    console.log(currentCookie);
+    console.log('Adding new entry...');
+    console.log(newEntry);
+    const newCookie = currentCookie.slice();
+    newCookie.push(newEntry);
+    console.log(`Writing out cookie...`);
+    console.log(newCookie);
+    document.cookie = `matchHistory=${JSON.stringify(newCookie)}`;
   }
 
   getStateAfterClick(i: number, currentState: GameState): GameState {
@@ -167,8 +230,19 @@ class Game extends React.Component<{ againstComputer: boolean }, GameState> {
 
   handleClick(i: number) {
     const newState = this.getStateAfterClick(i, this.state);
+    // Wrong move or the game has already ended
     if (!newState) {
       return;
+    }
+
+    console.log('Entered interesting bit of handleClick');
+
+    // If someone has won or the game has ended in draw update cookies
+    if (
+      calculateWinner(newState.history[newState.history.length - 1].squares) ||
+      newState.stepNumber === 9
+    ) {
+      this.handleWinnerCookies(newState);
     }
 
     // If it's the computer's turn
@@ -186,6 +260,16 @@ class Game extends React.Component<{ againstComputer: boolean }, GameState> {
         ).index,
         newState,
       );
+
+      // If the computer has won (or draw) update cookies
+      if (
+        calculateWinner(
+          newestState.history[newestState.history.length - 1].squares,
+        ) ||
+        newestState.stepNumber === 9
+      ) {
+        this.handleWinnerCookies(newestState);
+      }
       this.setState(newestState);
     } else {
       this.setState(newState);
@@ -205,6 +289,10 @@ class Game extends React.Component<{ againstComputer: boolean }, GameState> {
     });
   }
 
+  restartGame() {
+    window.location.replace('/indexViktor');
+  }
+
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
@@ -220,18 +308,15 @@ class Game extends React.Component<{ againstComputer: boolean }, GameState> {
       const desc = moveNum
         ? `Go to move #${moveNum} (${colPos}, ${rowPos})`
         : 'Go to gamestart';
-      if (moveNum === this.state.stepNumber) {
-        return (
-          <li key={moveNum}>
-            <button onClick={() => this.jumpTo(moveNum)}>
-              <b>{desc}</b>
-            </button>
-          </li>
-        );
-      }
       return (
-        <li key={moveNum}>
-          <button onClick={() => this.jumpTo(moveNum)}>{desc}</button>
+        <li className={stepHistoryElement} key={moveNum}>
+          <a
+            href="#"
+            className={stepHistoryTextElement}
+            onClick={() => this.jumpTo(moveNum)}
+          >
+            {desc}
+          </a>
         </li>
       );
     });
@@ -243,6 +328,19 @@ class Game extends React.Component<{ againstComputer: boolean }, GameState> {
     if (this.state.stepNumber === 9 && !winner) {
       status = 'Draw';
     }
+
+    // Creating history list
+    const matchHistoryString = getCookie('matchHistory');
+    console.log(`The cookies: ${document.cookie}`);
+    console.log(`Got cookie: ${matchHistoryString}`);
+    const matchHistory = matchHistoryString
+      ? JSON.parse(matchHistoryString)
+      : [];
+    const matchHistoryElements = matchHistory.map((match: CookieEntry) => (
+      <li key={match.number}>
+        <p>{`${match.winner} ${match.mode}`}</p>
+      </li>
+    ));
 
     // Build up DOM
     return (
@@ -257,16 +355,24 @@ class Game extends React.Component<{ againstComputer: boolean }, GameState> {
           winnerSquares={winnerSquares}
         />
         <div
-          className={css(`
-            margin-left: 20px;
-        `)}
+          className={css({
+            marginLeft: 40,
+          })}
         >
-          <div>{status}</div>
+          <div
+            className={css({
+              marginBottom: 15,
+              fontSize: 20,
+            })}
+          >
+            {status}
+          </div>
           <ol
-            className={css(`
-              padding-left: 30px;
-
-          `)}
+            className={css({
+              listStyleType: 'none',
+              margin: 0,
+              padding: 0,
+            })}
           >
             {moves}
           </ol>
@@ -274,6 +380,28 @@ class Game extends React.Component<{ againstComputer: boolean }, GameState> {
             isToggleOn={this.state.isToggleOn}
             onClick={() => this.toggleHandler()}
           />
+          <Restart onClick={() => this.restartGame()} />
+        </div>
+        <div
+          className={css({
+            marginLeft: 40,
+          })}
+        >
+          <div
+            className={css({
+              marginBottom: 15,
+              fontSize: 20,
+            })}
+          >
+            Previous Matches
+          </div>
+          <ol
+            className={css({
+              paddingLeft: 30,
+            })}
+          >
+            {matchHistoryElements}
+          </ol>
         </div>
       </div>
     );
@@ -370,6 +498,18 @@ function calculateNextMove(
   //   console.log(`PossibleMAx: ${possibleMax}`);
   // }
   return { maxOrMin, index: chosenOne };
+}
+
+// Returns the associated value with key 'name'
+function getCookie(name: string): string {
+  const value = '; ' + document.cookie;
+  const parts = value.split('; ' + name + '=');
+  if (parts.length === 2) {
+    return parts
+      .pop()
+      .split(';')
+      .shift();
+  }
 }
 
 // ========================================
