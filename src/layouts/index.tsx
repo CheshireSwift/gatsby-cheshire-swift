@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { css } from 'emotion';
+import Link from 'gatsby-link';
 
 import Header from '../components/header';
 import './index.css';
@@ -35,25 +36,19 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
       );
     });
 
-    const Nav = css(
-      {
-        margin: '0 auto',
-        marginBottom: '1.45rem',
-        maxWidth: 960,
+    const Nav = css({
+      a: {
+        ':hover': { backgroundColor: 'hsl(270,50%,55%)' },
+        color: 'white',
+        display: 'table-cell',
+        padding: '1em 1.0875rem',
+        textDecoration: 'none',
+        verticalAlign: 'middle',
       },
-      {
-        '& a': {
-          color: 'white',
-          display: 'table-cell',
-          padding: '1em 1.0875rem',
-          textDecoration: 'none',
-          verticalAlign: 'middle',
-        },
-      },
-      {
-        '& a:hover': { backgroundColor: 'hsl(270,50%,55%)' },
-      }
-    );
+      margin: '0 auto',
+      marginBottom: '1.45rem',
+      maxWidth: 960,
+    });
 
     return (
       <div
@@ -74,13 +69,12 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
         />
         <div className={css({ backgroundColor: 'hsl(270,50%,60%)' })}>
           <nav className={Nav}>
-            <a href="/">Homepage</a>
-            <a href="/page-2">Ellen Tic-Tac-Toe</a>
-            <a href="/page-3">Tic Tac Toe</a>
-            <a href="/indexViktor">Viktor Tic Tac Toe</a>
-            <a href="/charizard">Charizard</a>
-            <a href="/longPage">Long page</a>
-            <a href="/psrh">Game of Life</a>
+            <Link to="/">Homepage</Link>
+            <Link to="/page-2">Ellen Tic-Tac-Toe</Link>
+            <Link to="/page-3">Tic Tac Toe</Link>
+            <Link to="/indexViktor">Viktor Tic Tac Toe</Link>
+            <Link to="/psrh">Game of Life</Link>
+            <Link to="/ultimate">Ultimate Tic-Tac-Toe</Link>
           </nav>
         </div>
         <div
