@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import './connectFour.css';
 import { css } from '../../node_modules/emotion';
 
 interface SquareProps {
@@ -212,7 +211,12 @@ class Game extends React.Component<{}, GameState> {
 
     // Build up DOM
     return (
-      <div className="game">
+      <div
+        className={css({
+          display: 'flex',
+          flexDirection: 'row',
+        })}
+      >
         <div className="game-board">
           <Board squares={current.squares} onClick={i => this.handleClick(i)} />
         </div>
