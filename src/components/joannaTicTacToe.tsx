@@ -3,10 +3,12 @@ import * as _ from 'lodash';
 import Board from './JOCboard';
 import { css } from 'emotion';
 
+type FilldSpace = 'X' | 'O';
+
 interface GameState {
   history: Array<{
     position?: { row: string; col: string };
-    squares: Array<string | null>;
+    squares: Array<FilldSpace | null>;
   }>;
   orderReverse: boolean;
   stepNumber: number;
@@ -16,6 +18,7 @@ interface GameState {
 export default class Game extends React.Component<{}, GameState> {
   constructor(props: {}) {
     super(props);
+    this.handleClick = this.handleClick.bind(this);
     this.state = {
       history: [
         {
@@ -38,36 +41,27 @@ export default class Game extends React.Component<{}, GameState> {
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
-      history: history.concat([
-        {
-          position: this.calculatePosition(i),
-          squares,
-        },
-      ]),
+      history: [...history, { position: this.calculatePosition(i), squares }],
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
     });
   }
 
   calculatePosition(i: number) {
-    const position = { row: '', col: '' };
-    if (i % 3 === 0) {
-      position.col = 'left';
-    } else if (i % 3 === 1) {
-      position.col = 'middle';
-    } else {
-      position.col = 'right';
-    }
+    return {
+      col: ['left', 'middle', 'right'][i % 3],
+      row: ['top', 'middle', 'bottom'][Math.floor(i / 3)],
+    };
+  }
 
-    if (0 <= i && i <= 2) {
-      position.row = 'top';
-    } else if (3 <= i && i <= 5) {
-      position.row = 'middle';
+  computeStatus(winner) {
+    if (winner) {
+      return 'Winner: ' + winner[0];
+    } else if (this.state.stepNumber === 9) {
+      return 'Draw.';
     } else {
-      position.row = 'bottom';
+      return 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
-
-    return position;
   }
 
   jumpTo(step: number) {
@@ -105,16 +99,11 @@ export default class Game extends React.Component<{}, GameState> {
     const moves = history.map((step, move) => {
       const person = move % 2 === 0 ? 'O' : 'X';
       const desc = move
-        ? 'Go to move #' +
-          move +
-          ': ' +
-          person +
-          ' in ' +
-          step.position.row +
-          ' row, ' +
-          step.position.col +
-          ' column'
+        ? `Go to move # ${move}: ${person} in ${step.position.row} row, ${
+            step.position.col
+          } column`
         : 'Go to game start';
+
       return (
         <li key={move}>
           <button
@@ -136,14 +125,7 @@ export default class Game extends React.Component<{}, GameState> {
       results = <ol reversed>{moves.reverse()}</ol>;
     }
 
-    let status;
-    if (winner) {
-      status = 'Winner: ' + winner[0];
-    } else if (this.state.stepNumber === 9) {
-      status = 'Draw.';
-    } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-    }
+    const status = this.computeStatus(winner);
 
     return (
       <div
@@ -155,13 +137,13 @@ export default class Game extends React.Component<{}, GameState> {
         <div className="game-board">
           <Board
             squares={current.squares}
-            onClick={(i: number) => this.handleClick(i)}
+            onClick={this.handleClick}
             winStatus={winner}
           />
         </div>
         <div
           className={css({
-            marginLeft: '20px',
+            marginLeft: 20,
           })}
         >
           <div>{status}</div>
@@ -169,7 +151,7 @@ export default class Game extends React.Component<{}, GameState> {
           <div>{results}</div>
           <button onClick={() => this.reverseOrder()}>Toggle order</button>
           <button
-            className={css({ marginLeft: '20px' })}
+            className={css({ marginLeft: 20 })}
             onClick={() => this.resetGame()}
           >
             Reset game
