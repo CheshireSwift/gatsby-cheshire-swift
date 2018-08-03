@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Link from 'gatsby-link';
-import { css } from '../../node_modules/emotion';
+import { css } from 'emotion';
 
 interface HeaderProps {
   siteTitle: string;
