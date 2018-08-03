@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Link from 'gatsby-link';
-import Game from '../components/ticTacToe';
+import Game from '../components/joannaTicTacToe';
 import { css } from 'emotion';
 
 const GamePage = () => (
