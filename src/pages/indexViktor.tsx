@@ -18,12 +18,9 @@ const imageContainer = css({
     transition: '.3s ease-in-out',
   },
 
-  ' .middleText': {
+  '& .middleText': {
     transition: '.5s ease',
     opacity: 0,
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
     transform: 'translate(-50%, -50%)',
     textAlign: 'center',
     backgroundColor: '#4CAF50',
@@ -32,14 +29,14 @@ const imageContainer = css({
     padding: '16px 32px',
   },
 
-  ':hover, .imageStyle': {
+  '&:hover .imageStyle': {
     overflow: 'hidden',
     opacity: 0.3,
     transform: 'scale(1.3)',
     webkitTransform: 'scale(1.3)',
   },
 
-  '&:hover, .middleText': {
+  '&:hover .middleText': {
     overflow: 'hidden',
     opacity: 1,
     transform: 'scale(1.3)',
@@ -47,38 +44,6 @@ const imageContainer = css({
     webkitTransform: 'scale(1.3)',
   },
 });
-
-// const imageStyle = css({
-//   '&:hover': {
-//     transform: 'scale(1.3)',
-//     webkitTransform: 'scale(1.3)',
-//   },
-//   '&:hover+span': {
-//     bottom: -36,
-//     opacity: 1,
-//   },
-//   display: 'inline-block',
-//   marginBottom: 0,
-//   transform: 'scale(1)',
-//   transition: '.3s ease-in-out',
-// });
-
-// const spanStyle = css({
-//   bottom: -20,
-//   color: '#444',
-//   display: 'block',
-//   fontSize: 18,
-//   left: 0,
-//   margin: 0,
-//   opacity: 0,
-//   padding: 0,
-//   position: 'absolute',
-//   textAlign: 'center',
-//   textDecoration: 'none',
-//   transition: '.3s ease-in-out',
-//   width: 300,
-//   zIndex: -1,
-// });
 
 const middleText = css({
   transition: '.5s ease',
