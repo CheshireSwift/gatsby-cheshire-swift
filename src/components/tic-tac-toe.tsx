@@ -72,7 +72,6 @@ const Square = (props: SquareProps) => {
       })}
       onClick={() => props.onClick()}
     >
-      {props.value}
     </button>
   );
 };

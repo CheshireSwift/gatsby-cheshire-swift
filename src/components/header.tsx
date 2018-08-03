@@ -30,7 +30,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       <div
         className={css({
           background: 'rebeccapurple',
-          marginBottom: '1.45rem',
+          marginBottom: 0,
         })}
       >
         <div
