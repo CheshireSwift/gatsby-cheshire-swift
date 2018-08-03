@@ -1,6 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ultimate tic-tac-toe Cross matches the snaphot 1`] = `
+exports[`Nought matches the snaphot 1`] = `
+<svg
+  baseProfile="full"
+  height="100%"
+  version="1.1"
+  width="100%"
+>
+  <circle
+    cx="50%"
+    cy="50%"
+    fill="transparent"
+    r="30%"
+    stroke="black"
+    stroke-width="10%"
+  />
+</svg>
+`;
+
+exports[`cross Cross matches the snaphot 1`] = `
 <svg
   baseProfile="full"
   height="100%"
@@ -22,24 +40,6 @@ exports[`ultimate tic-tac-toe Cross matches the snaphot 1`] = `
     x2="80%"
     y1="80%"
     y2="20%"
-  />
-</svg>
-`;
-
-exports[`ultimate tic-tac-toe Nought matches the snaphot 1`] = `
-<svg
-  baseProfile="full"
-  height="100%"
-  version="1.1"
-  width="100%"
->
-  <circle
-    cx="50%"
-    cy="50%"
-    fill="transparent"
-    r="30%"
-    stroke="black"
-    stroke-width="10%"
   />
 </svg>
 `;

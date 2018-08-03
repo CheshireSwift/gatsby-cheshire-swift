@@ -1,39 +1,33 @@
 import * as React from 'react';
-import { render, shallow, mount } from 'enzyme';
-import * as _ from 'lodash';
+import { render, shallow } from 'enzyme';
 
-import * as ultimate from '../pages/ultimate';
+import {
+  Square,
+  Cell,
+  Winner,
+  SmallBoard,
+  LargeBoard,
+} from '../pages/ultimate';
 
 describe('ultimate tic-tac-toe', () => {
-  it('Nought matches the snaphot', () => {
-    expect(render(<ultimate.Nought />)).toMatchSnapshot();
-  });
-
-  it('Cross matches the snaphot', () => {
-    expect(render(<ultimate.Cross />)).toMatchSnapshot();
-  });
-
   it('Square renders nothing with no winner', () => {
     const component = render(
-      <ultimate.Square cell={{ player: null }} onClick={() => null} />,
+      <Square cell={{ player: null }} onClick={() => null} />,
     ).get(0);
     expect(component.children).toEqual([]);
   });
 
   it('Square renders winner', () => {
     const component = render(
-      <ultimate.Square
-        cell={{ player: ultimate.Winner.Cross }}
-        onClick={() => null}
-      />,
+      <Square cell={{ player: Winner.Cross }} onClick={() => null} />,
     );
-    expect(component.find('svg').length).toBeGreaterThanOrEqual(1);
+    expect(component).toContainSelector('svg');
   });
 
   it('Square calls onClick when clicked', () => {
     const onClick = jest.fn();
     const component = shallow(
-      <ultimate.Square cell={{ player: null }} onClick={onClick} />,
+      <Square cell={{ player: null }} onClick={onClick} />,
     );
     component.simulate('click');
     expect(onClick).toHaveBeenCalled();
@@ -41,10 +35,10 @@ describe('ultimate tic-tac-toe', () => {
 
   it('SmallBoard has 9 Squares', () => {
     const component = render(
-      <ultimate.SmallBoard
+      <SmallBoard
         available={true}
         board={{
-          cells: Array<ultimate.Cell>(9).fill({ player: null }),
+          cells: Array<Cell>(9).fill({ player: null }),
         }}
         handleClick={() => null}
       />,
@@ -55,10 +49,10 @@ describe('ultimate tic-tac-toe', () => {
   it('SmallBoard accepts clicks if available', () => {
     const onClick = jest.fn();
     const component = shallow(
-      <ultimate.SmallBoard
+      <SmallBoard
         available={true}
         board={{
-          cells: Array<ultimate.Cell>(9).fill({ player: null }),
+          cells: Array<Cell>(9).fill({ player: null }),
         }}
         handleClick={onClick}
       />,
@@ -70,10 +64,10 @@ describe('ultimate tic-tac-toe', () => {
   it('SmallBoard does not accepts clicks if not available', () => {
     const onClick = jest.fn();
     const component = shallow(
-      <ultimate.SmallBoard
+      <SmallBoard
         available={false}
         board={{
-          cells: Array<ultimate.Cell>(9).fill({ player: null }),
+          cells: Array<Cell>(9).fill({ player: null }),
         }}
         handleClick={onClick}
       />,
@@ -84,12 +78,12 @@ describe('ultimate tic-tac-toe', () => {
 
   it('SmallBoard displays squares with the correct winners', () => {
     const component = shallow(
-      <ultimate.SmallBoard
+      <SmallBoard
         available={false}
         board={{
           cells: [
-            { player: ultimate.Winner.Cross },
-            { player: ultimate.Winner.Nought },
+            { player: Winner.Cross },
+            { player: Winner.Nought },
             ...Array(7).fill({ player: null }),
           ],
         }}
@@ -98,29 +92,25 @@ describe('ultimate tic-tac-toe', () => {
     );
     expect(
       component.children().map(child => child.prop('cell').player),
-    ).toEqual([
-      ultimate.Winner.Cross,
-      ultimate.Winner.Nought,
-      ...Array(7).fill(null),
-    ]);
+    ).toEqual([Winner.Cross, Winner.Nought, ...Array(7).fill(null)]);
   });
 
   it('SmallBoard displays a winner', () => {
     const component = render(
-      <ultimate.SmallBoard
+      <SmallBoard
         available={false}
         board={{
-          cells: Array(9).fill({ player: ultimate.Winner.Cross }),
+          cells: Array(9).fill({ player: Winner.Cross }),
         }}
         handleClick={() => null}
       />,
     );
-    expect(component.find('svg').length).toBe(10);
+    expect(component.find('svg')).toHaveLength(10);
   });
 
   it('LargeBoard has 9 SmallBoards', () => {
     const component = render(
-      <ultimate.LargeBoard
+      <LargeBoard
         available={[1, 2, 3, 4, 5, 6, 7, 8, 0]}
         boards={Array(9).fill({
           cells: Array(9).fill({ player: null }),
@@ -128,13 +118,13 @@ describe('ultimate tic-tac-toe', () => {
         handleClick={() => null}
       />,
     );
-    expect(component.find('div').length).toBe(9);
+    expect(component.find('div')).toHaveLength(9);
   });
 
   it('LargeBoard passes click handler', () => {
     const handleClick = jest.fn();
     const component = shallow(
-      <ultimate.LargeBoard
+      <LargeBoard
         available={[1, 2, 3, 4, 5, 6, 7, 8, 0]}
         boards={Array(9).fill({
           cells: Array(9).fill({ player: null }),
