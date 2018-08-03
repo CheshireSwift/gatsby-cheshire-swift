@@ -194,13 +194,17 @@ class Game extends React.Component<{ againstComputer: boolean }, GameState> {
     }
 
     const currentCookie = JSON.parse(currentCookieString);
-    newEntry.number = currentCookie.length; // Update number!!!!
     console.log(`Current cookie: `);
     console.log(currentCookie);
     console.log('Adding new entry...');
     console.log(newEntry);
-    const newCookie = currentCookie.slice();
+    const minimumEntry = Math.max(0, currentCookie.length - 9);
+    const newCookie = currentCookie.slice(minimumEntry);
     newCookie.push(newEntry);
+    // Update number for every cookie
+    for (let i = 0; i < newCookie.length; i++) {
+      newCookie[i].number = i;
+    }
     console.log(`Writing out cookie...`);
     console.log(newCookie);
     document.cookie = `matchHistory=${JSON.stringify(newCookie)}`;

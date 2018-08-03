@@ -262,7 +262,7 @@ describe('Testing next move calculator', () => {
 
 describe('Testing next move calculator integration into game', () => {
   it('Makes a move after every mvoe made by player', () => {
-    const game = shallow(<TicTacToe.Game againstComputer />);
+    const game = mount(<TicTacToe.Game againstComputer />);
     const magicButton = game
       .childAt(0)
       .childAt(0)
