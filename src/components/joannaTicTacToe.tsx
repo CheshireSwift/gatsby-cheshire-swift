@@ -3,12 +3,12 @@ import * as _ from 'lodash';
 import Board from './JOCboard';
 import { css } from 'emotion';
 
-type FilldSpace = 'X' | 'O';
+type FilledSpace = 'X' | 'O';
 
 interface GameState {
   history: Array<{
     position?: { row: string; col: string };
-    squares: Array<FilldSpace | null>;
+    squares: Array<FilledSpace | null>;
   }>;
   orderReverse: boolean;
   stepNumber: number;
