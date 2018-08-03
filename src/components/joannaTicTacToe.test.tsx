@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { render, shallow } from 'enzyme';
 
-import Game from './ticTacToe';
+import Game from './joannaTicTacToe';
 
 describe('the game', () => {
   it('should alternate between players', () => {

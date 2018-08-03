@@ -1,6 +1,6 @@
-import 'jsdom-global/register'; // at the top of file , even  , before importing react
+// import 'jsdom-global/register'; // at the top of file , even  , before importing react
 import * as React from 'react';
-import { render, mount, shallow } from 'enzyme';
+import { render, mount } from 'enzyme';
 // import { JSDOM } from 'jsdom';
 // const doc = JSDOM.jsdom('<!doctype html><html><body></body></html>'); // Needed for mounting
 

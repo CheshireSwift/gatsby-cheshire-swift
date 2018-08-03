@@ -1,87 +1,17 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { css } from 'emotion';
-function Square(props: {
-  value: string;
-  onClick: () => void;
-  isWinning: string;
-}) {
-  return (
-    <button
-      className={css(
-        {
-          backgroundColor:
-            props.isWinning === 'winning square' ? 'lightgreen' : 'white',
-          border: '1px solid #999',
-          float: 'left',
-          font: 'inherit',
-          fontSize: '30px',
-          fontWeight: 'bold',
-          height: '50px',
-          lineHeight: '34px',
-          margin: 0,
-          marginRight: '-1px',
-          marginTop: '-1px',
-          overflow: 'visible',
-          padding: 0,
-          textAlign: 'center',
-          textTransform: 'none',
-          width: '50px',
-        },
-        { ':focus': { outline: 'none' } },
-      )}
-      onClick={props.onClick}
-    >
-      {props.value}
-    </button>
-  );
-}
-interface BoardProps {
-  squares: string[];
-  onClick: (i: number) => void;
-  winningArray: string[];
-}
-class Board extends React.Component<BoardProps, {}> {
-  renderSquare(i: number) {
-    return (
-      <Square
-        value={this.props.squares[i]}
-        onClick={() => this.props.onClick(i)}
-        isWinning={this.props.winningArray[i]}
-      />
-    );
-  }
-  render() {
-    return (
-      <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-      </div>
-    );
-  }
-}
+import Board from './ellenBoard';
+
 interface GameState {
   history: Array<{ squares: string[]; clickedSquare?: number[] }>;
   stepNumber: number;
   xIsNext: boolean;
 }
-// tslint:disable-next-line:max-classes-per-file
 export class Game extends React.Component<{}, GameState> {
   constructor(props: {}) {
     super(props);
+    this.handleClick = this.handleClick.bind(this);
     this.state = {
       history: [
         {
@@ -120,7 +50,7 @@ export class Game extends React.Component<{}, GameState> {
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares);
+    const winner: [string, number[]] = calculateWinner(current.squares);
     const moves = history.map(
       (step: { squares: string[]; clickedSquare: number[] }, move: number) => {
         const clickedSquare = step.clickedSquare;
@@ -149,14 +79,17 @@ export class Game extends React.Component<{}, GameState> {
         );
       },
     );
-    let status;
-    if (winner) {
-      status = 'Winner: ' + winner[0];
-    } else if (current.squares.includes(null) === false) {
-      status = 'Tie: No available moves remaining';
-    } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-    }
+    const computeStatus = () => {
+      if (winner) {
+        return 'Winner: ' + winner[0];
+      } else if (current.squares.includes(null) === false) {
+        return 'Tie: No available moves remaining';
+      } else {
+        return 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      }
+    };
+    const status = computeStatus();
+
     return (
       <div
         className={css({
@@ -167,13 +100,13 @@ export class Game extends React.Component<{}, GameState> {
         <div className="game-board">
           <Board
             squares={current.squares}
-            onClick={i => this.handleClick(i)}
+            onClick={this.handleClick}
             winningArray={createWinningArray(
-              calculateWinner(history[this.state.stepNumber].squares),
+              _.get(calculateWinner(history[this.state.stepNumber].squares), 1),
             )}
           />
         </div>
-        <div className={css({ 'margin-left': '20px' })}>
+        <div className={css({ marginLeft: 20 })}>
           <div>{status}</div>
           <div
             className={css({
@@ -200,9 +133,6 @@ export class Game extends React.Component<{}, GameState> {
             &ensp;&ensp;Toggle list order &ensp;
             <input type="checkbox" id="toggle" className="toggle" />
           </div>
-          {/* <button onClick={() => reverseOrder(moves)}>
-            Toggle list order
-          </button> */}
         </div>
       </div>
     );
@@ -228,11 +158,11 @@ function calculateWinner(squares: string[]): [string, Line] {
   );
   return winningLine ? [squares[winningLine[0]], winningLine] : null;
 }
-function createWinningArray(winningSquares: [string, Line] | null): string[] {
+function createWinningArray(winningSquares: Line | null): string[] {
   const winningArray = Array(9).fill('square');
   if (winningSquares) {
     for (let i = 0; i < 3; i++) {
-      winningArray[winningSquares[1][i]] = 'winning square';
+      winningArray[winningSquares[i]] = 'winning square';
     }
   }
   return winningArray;

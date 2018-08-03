@@ -83,7 +83,6 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
             maxWidth: 960,
             padding: '0px 1.0875rem 1.45rem',
             paddingTop: 0,
-            marginBottom: 130,
           })}
         >
           {this.props.children()}
@@ -93,6 +92,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
             margin: '0 auto',
             maxWidth: 960,
             padding: '0px 1.0875rem 1.45rem',
+            marginBottom: 130,
           })}
         >
           <label>
@@ -123,13 +123,11 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
           })}
         >
           <marquee
-            behavior="scroll"
             className={css({
               bottom: 17,
               position: 'fixed',
             })}
             direction="left"
-            scrollamount="20"
           >
             <img
               className={css({

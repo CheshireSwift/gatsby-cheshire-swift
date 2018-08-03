@@ -20,10 +20,7 @@ export default () => (
     >
       Long Page
     </h1>
-    <p>
-      This page was created with the express intent of being very long. As you
-      can see, it is currently broken because it does not scroll.
-    </p>
+    <p>This page was created with the express intent of being very long.</p>
     <p>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer a augue a
       mi iaculis scelerisque at at purus. In hac habitasse platea dictumst.
