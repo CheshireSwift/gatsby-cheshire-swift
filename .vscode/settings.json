@@ -3,5 +3,6 @@
   "tslint.autoFixOnSave": true,
   "eslint.autoFixOnSave": true,
   "npm.enableScriptExplorer": true,
-  "npm.scriptExplorerAction": "run"
+  "npm.scriptExplorerAction": "run",
+  "editor.tabSize": 2
 }

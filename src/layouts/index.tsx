@@ -75,6 +75,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
             <Link to="/indexViktor">Viktor Tic Tac Toe</Link>
             <Link to="/psrh">Game of Life</Link>
             <Link to="/ultimate">Ultimate Tic-Tac-Toe</Link>
+            <Link to="/wolfenstein/">Wolfenstein</Link>
           </nav>
         </div>
         <div
