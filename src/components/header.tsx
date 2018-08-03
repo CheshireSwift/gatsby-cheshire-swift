@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Link from 'gatsby-link';
-import { css } from '../../node_modules/emotion';
+import { css } from 'emotion';
 
 interface HeaderProps {
   siteTitle: string;
@@ -52,7 +52,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 textDecoration: 'overline underline white',
               })}
             >
-              Ultimate Tic-Tac-Toe
+              {this.state.overrideTitle || this.props.siteTitle}
             </Link>
           </h1>
         </div>
