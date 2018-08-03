@@ -4,6 +4,7 @@ import { css } from 'emotion';
 
 interface HeaderProps {
   siteTitle: string;
+  color: string;
 }
 
 interface HeaderState {
@@ -30,7 +31,6 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       <div
         className={css({
           background: 'rebeccapurple',
-          marginBottom: '1.45rem',
         })}
       >
         <div
@@ -40,12 +40,16 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             padding: '1.45rem 1.0875rem',
           })}
         >
-          <h1 className={css({ margin: 0 })}>
+          <h1
+            className={css({
+              margin: 0,
+            })}
+          >
             <Link
               to="/"
               className={css({
-                color: 'white',
-                textDecoration: 'none',
+                color: this.props.color,
+                textDecoration: 'overline underline white',
               })}
             >
               {this.state.overrideTitle || this.props.siteTitle}
