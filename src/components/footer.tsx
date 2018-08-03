@@ -27,7 +27,7 @@ export default class Footer extends React.Component<{}, {}> {
       <div>
         <div className={thickStripe}>
           <div className={footerStyle}>
-            <img className="footer" src={'/assets/charizardFly.gif'} />
+            <img className="charizard" src={'/assets/charizardFly.gif'} />
           </div>
         </div>
         <div

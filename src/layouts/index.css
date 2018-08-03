@@ -15,7 +15,7 @@ aside,
 details,
 figcaption,
 figure,
-footer,
+.charizard,
 header,
 main,
 menu,
@@ -723,19 +723,19 @@ ul {
   background: #ddd;
 }
 
-.footer {
+.charizard {
   position: absolute;
   width: auto;
   height: 100%;
   /* Starting position */
   left: 0;
   /* Apply animation to this element */
-  -moz-animation: footer 5s linear infinite;
-  -webkit-animation: footer 5s linear infinite;
-  animation: footer 5s linear infinite;
+  -moz-animation: charizard 5s linear infinite;
+  -webkit-animation: charizard 5s linear infinite;
+  animation: charizard 5s linear infinite;
 }
 
-@keyframes footer {
+@keyframes charizard {
   0% {
     left: 100%;
   }
