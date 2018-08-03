@@ -16,6 +16,8 @@ const imageContainer = css({
     opacity: 1,
     transform: 'scale(1)',
     transition: '.3s ease-in-out',
+    minWidth: '100%',
+    height: 'auto',
   },
 
   '& .middleText': {
