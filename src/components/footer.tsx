@@ -13,14 +13,9 @@ const thickStripe = css({
   borderTop: '1px solid #3d1661',
 });
 
-const marqueeStyle = css({
-  bottom: 17,
-  position: 'fixed',
-});
-
-const imageStyle = css({
+const footerStyle = css({
   height: 90,
-  margin: 0,
+  position: 'relative',
 });
 
 export default class Footer extends React.Component<{}, {}> {
@@ -31,9 +26,9 @@ export default class Footer extends React.Component<{}, {}> {
     return (
       <div>
         <div className={thickStripe}>
-          <marquee className={marqueeStyle} direction="left">
-            <img className={imageStyle} src={'/assets/charizardFly.gif'} />
-          </marquee>
+          <div className={footerStyle}>
+            <img className="footer" src={'/assets/charizardFly.gif'} />
+          </div>
         </div>
         <div
           className={css({
