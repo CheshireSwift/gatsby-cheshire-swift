@@ -5,3 +5,6 @@ declare namespace jest {
     toContainSelector(expected: string): R;
   }
 }
+
+declare type Nullable<T> = T | null;
+declare type Optional<T> = T | null | undefined;
