@@ -77,6 +77,7 @@ export default class Navbar extends React.Component<{}, {}> {
               <Link to="/ellenTTTPage">Tic-Tac-Toe</Link>
               <Link to="/charizard">Charizard</Link>
               <Link to="/longPage">Long Page</Link>
+              <Link to="/minesweeperPage">Minesweeper</Link>
             </div>
           </div>
           <div>
