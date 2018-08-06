@@ -3,9 +3,10 @@ import * as _ from 'lodash';
 import { css } from 'emotion';
 
 interface AccordionItemProps {
+  id: number;
   title: string;
   content: string;
-  firstOrLast: string;
+  isLastItem: boolean;
 }
 
 interface AccordionItemState {
@@ -46,11 +47,11 @@ export default class AccordionItem extends React.Component<
                 : 'hsl(270,50%,75%)',
               border: '1px solid hsl(270,50%,65%)',
               borderBottomLeftRadius:
-                this.props.firstOrLast === 'last' && !this.state.isOpen ? 5 : 0,
+                this.props.isLastItem && !this.state.isOpen ? 5 : 0,
               borderBottomRightRadius:
-                this.props.firstOrLast === 'last' && !this.state.isOpen ? 5 : 0,
-              borderTopLeftRadius: this.props.firstOrLast === 'first' ? 5 : 0,
-              borderTopRightRadius: this.props.firstOrLast === 'first' ? 5 : 0,
+                this.props.isLastItem && !this.state.isOpen ? 5 : 0,
+              borderTopLeftRadius: this.props.id === 0 ? 5 : 0,
+              borderTopRightRadius: this.props.id === 0 ? 5 : 0,
               color: 'white',
               cursor: 'pointer',
               padding: 18,
@@ -76,8 +77,8 @@ export default class AccordionItem extends React.Component<
           className={css({
             backgroundColor: 'hsl(270,50%,95%)',
             border: this.state.isOpen ? '1px solid grey' : '',
-            borderBottomLeftRadius: this.props.firstOrLast === 'last' ? 5 : 0,
-            borderBottomRightRadius: this.props.firstOrLast === 'last' ? 5 : 0,
+            borderBottomLeftRadius: this.props.isLastItem ? 5 : 0,
+            borderBottomRightRadius: this.props.isLastItem ? 5 : 0,
             height: this.state.isOpen ? this.state.height : '0px', // query the height
             transition: '0.5s',
             overflow: 'hidden',

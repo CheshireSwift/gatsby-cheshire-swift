@@ -1,6 +1,4 @@
 import * as React from 'react';
-import * as _ from 'lodash';
-import { css } from 'emotion';
 import AccordionItem from './accordionItem';
 
 interface AccordionProps {
@@ -15,23 +13,13 @@ export default class Accordion extends React.Component<AccordionProps> {
   render() {
     const contentList = this.props.content;
     const formattedContent = contentList.map((contentItem, index) => {
-      function findPosition(num: number) {
-        if (num === 0) {
-          return 'first';
-        } else if (num === contentList.length - 1) {
-          return 'last';
-        } else {
-          return '';
-        }
-      }
-      const position = findPosition(index);
-
       return (
         <AccordionItem
           title={contentItem.title}
           content={contentItem.content}
-          firstOrLast={position}
-          key={contentItem.title}
+          isLastItem={index === contentList.length - 1}
+          id={index}
+          key={index}
         />
       );
     });
