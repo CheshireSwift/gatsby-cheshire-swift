@@ -37,29 +37,28 @@ function Square(props: {
   );
 }
 
-// interface BoardProps {
-//   squares: string[];
-//   onClick: (i: number) => void;
-//   clickArray: boolean[];
-// }
-
 export default function Board(props: {
-  squares: string[];
-  onClick: (i: number) => void;
-  clickArray: boolean[];
+  squares: string[][];
+  onClick: (i: number, j: number) => void;
+  clickArray: boolean[][];
 }) {
-  function renderSquare(i: number) {
+  function renderSquare(i: number, j: number) {
     return (
       <Square
-        value={props.squares[i]}
-        onClick={() => props.onClick(i)}
-        isClicked={props.clickArray[i]}
+        value={props.squares[i][j]}
+        onClick={() => props.onClick(i, j)}
+        isClicked={props.clickArray[i][j]}
       />
     );
   }
-  const displaySquares: any[] = [];
-  props.squares.forEach((square, index) => {
-    displaySquares.push(renderSquare(index));
-  });
+
+  const displaySquares = Array(12).fill(Array(12).fill(null));
+  for (let i = 0; i < 12; i++) {
+    const newRow = [];
+    for (let j = 0; j < 12; j++) {
+      newRow.push(renderSquare(i, j));
+    }
+    displaySquares.push(newRow);
+  }
   return <div>{displaySquares}</div>;
 }
