@@ -22,10 +22,10 @@ interface SkyState {
 }
 
 export class Sky extends React.Component<{}, SkyState> {
-  CCWdown = this.genericKeypress('turningCCW', true);
-  CCWup = this.genericKeypress('turningCCW', false);
-  CWdown = this.genericKeypress('turningCW', true);
-  CWup = this.genericKeypress('turningCW', false);
+  CCWdown = this.createPropertySettingCallback('turningCCW', true);
+  CCWup = this.createPropertySettingCallback('turningCCW', false);
+  CWdown = this.createPropertySettingCallback('turningCW', true);
+  CWup = this.createPropertySettingCallback('turningCW', false);
 
   constructor(props: {}) {
     super(props);
@@ -61,7 +61,7 @@ export class Sky extends React.Component<{}, SkyState> {
     };
   }
 
-  genericKeypress(turnDirection: string, targetValue: boolean) {
+  createPropertySettingCallback(turnDirection: string, targetValue: boolean) {
     return (playerIndex: number) => {
       return () => {
         const playerState = this.state.player.slice();
@@ -149,7 +149,7 @@ export class Sky extends React.Component<{}, SkyState> {
       });
 
       if (playerCollision) {
-        // console.log(`Players ${player1Index} and ${player2Index} collided`);
+        console.log(`Players ${player1Index} and ${player2Index} collided`);
         [player1Index, player2Index].forEach(i => {
           playerStates[i].health = 0;
         });
@@ -162,8 +162,8 @@ export class Sky extends React.Component<{}, SkyState> {
       const boundary = Geometry.getCoefficients(position, angle);
       this.state.bullet.forEach(bullet => {
         if (Geometry.isInside(bullet.position, boundary)) {
-          // console.log(`Player ${player.colour} hit`);
-          player.health -= 50;
+          console.log(`Player ${player.colour} hit`);
+          player.health -= 100;
           bullet.age += Constants.bulletLifetime; // destroy the bullet
         }
       });
