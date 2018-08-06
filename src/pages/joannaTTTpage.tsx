@@ -6,6 +6,7 @@ import { css } from 'emotion';
 const GamePage = () => (
   <div className={css({ fontFamily: 'Arial' })}>
     <h1>Tic-Tac-Toe</h1>
+    <br />
     <Game />
     <br />
     <Link to="/">Go back to the homepage</Link>
