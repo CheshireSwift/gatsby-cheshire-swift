@@ -5,6 +5,7 @@ import { Player } from './player';
 import * as Geometry from './geometry';
 import { initialPlayers } from './initialPlayers';
 import * as _ from 'lodash';
+import { HelpScreen } from './help-screen';
 
 interface BulletState {
   position: Constants.Vector;
@@ -14,6 +15,7 @@ interface BulletState {
 
 interface SkyState {
   isPaused: boolean;
+  isHelpHidden: boolean;
   player: Constants.PlayerState[];
   bullet: BulletState[];
   timerToken: number;
@@ -29,6 +31,7 @@ export class Sky extends React.Component<{}, SkyState> {
     super(props);
     this.state = {
       isPaused: true,
+      isHelpHidden: true,
       player: initialPlayers,
       bullet: [],
       timerToken: 0,
@@ -56,7 +59,7 @@ export class Sky extends React.Component<{}, SkyState> {
       });
       this.setState({ bullet: oneMoreBullet });
     };
-  };
+  }
 
   genericKeypress(turnDirection: string, targetValue: boolean) {
     return (playerIndex: number) => {
@@ -192,6 +195,10 @@ export class Sky extends React.Component<{}, SkyState> {
     this.setState({ isPaused: !this.state.isPaused });
   }
 
+  toggleHelpScreen() {
+    this.setState({ isHelpHidden: !this.state.isHelpHidden });
+  }
+
   render() {
     const keyHandlers = [
       this.CWdown,
@@ -222,6 +229,10 @@ export class Sky extends React.Component<{}, SkyState> {
           {this.state.isPaused ? 'Start' : 'Stop'}
         </button>
 
+        <button onClick={this.toggleHelpScreen.bind(this)}>
+          {this.state.isHelpHidden ? 'Show Help' : 'Hide Help'}
+        </button>
+
         <div
           style={{
             width: Constants.fieldWidth,
@@ -234,6 +245,7 @@ export class Sky extends React.Component<{}, SkyState> {
           {players}
           {bullets}
         </div>
+        <HelpScreen isHelpHidden={this.state.isHelpHidden} />
       </div>
     );
   }
