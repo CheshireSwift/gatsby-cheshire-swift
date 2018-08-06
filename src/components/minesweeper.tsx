@@ -7,13 +7,16 @@ interface GameState {
   clickedSquares: boolean[];
   boardContents: string[];
 }
+
+const fillBoard: string[] = [];
+for (let i = 0; i < 144; i++) {
+  fillBoard[i] = Math.random() > 0.92 ? 'B' : null;
+}
+
 export default class Game extends React.Component<{}, GameState> {
   constructor(props: {}) {
     super(props);
-    const fillBoard = Array(144).fill(null);
-    fillBoard.forEach(square => {
-      square = Math.random() > 0.95 ? 'B' : null;
-    });
+    console.log(fillBoard);
     this.state = {
       boardContents: fillBoard,
       clickedSquares: Array(144).fill(null),
