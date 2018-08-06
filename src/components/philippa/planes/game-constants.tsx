@@ -7,6 +7,7 @@ export const bulletLifetime = 25; // How long a fired bullet lives on the play f
 
 export const speed = 10; // How fast players move
 export const bulletSpeed = 12; // How fast bullets move
+export const bulletDamage = 20; // How much health a player loses when hit by a bullet
 export const fieldWidth = 1000;
 export const fieldHeight = 500;
 

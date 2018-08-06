@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Constants from '../game-of-life/game-constants';
+import * as Constants from './game-constants';
 
 interface BulletProps {
   position: Constants.Vector;

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Constants from '../game-of-life/game-constants';
+import * as Constants from './game-constants';
 
 export const Biplane = (props: { colour: string; isAlive: boolean }) => {
   return (

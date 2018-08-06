@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Constants from '../game-of-life/game-constants';
+import * as Constants from './game-constants';
 import { Bullet } from './bullet';
 import { Player } from './player';
 import * as Geometry from './geometry';
@@ -166,7 +166,7 @@ export class Sky extends React.Component<{}, SkyState> {
       this.state.bullet.forEach(bullet => {
         if (Geometry.isInside(bullet.position, boundary)) {
           console.log(`Player ${player.colour} hit`);
-          player.health -= 100;
+          player.health -= Constants.bulletDamage;
           bullet.age += Constants.bulletLifetime; // destroy the bullet
         }
       });
@@ -202,6 +202,10 @@ export class Sky extends React.Component<{}, SkyState> {
     this.setState({ isHelpHidden: !this.state.isHelpHidden });
   }
 
+  setNumberOfPlayers(e: any) {
+    this.setState({ player: initialPlayers.slice(0, e.target.value) });
+  }
+
   render() {
     const keyHandlers = [
       this.CWdown,
@@ -227,7 +231,11 @@ export class Sky extends React.Component<{}, SkyState> {
     });
 
     return (
-      <div>
+      <div
+        style={{
+          height: Constants.fieldHeight,
+        }}
+      >
         <button onClick={this.toggleGameState.bind(this)}>
           {this.state.isPaused ? 'Start' : 'Stop'}
         </button>
@@ -235,6 +243,16 @@ export class Sky extends React.Component<{}, SkyState> {
         <button onClick={this.toggleHelpScreen.bind(this)}>
           {this.state.isHelpHidden ? 'Show Help' : 'Hide Help'}
         </button>
+
+        <input
+          type="number"
+          id="nPlayers"
+          name="nPlayers"
+          placeholder="Number of players"
+          min="1"
+          max="3"
+          onChange={this.setNumberOfPlayers.bind(this)}
+        />
 
         <div
           style={{

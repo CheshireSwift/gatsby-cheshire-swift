@@ -1,14 +1,15 @@
 import * as React from 'react';
-import * as Constants from '../game-of-life/game-constants';
+import * as Constants from './game-constants';
 
 export const HelpScreen = (props: { isHelpHidden: boolean }) => {
   return (
     <div
       style={{
+        padding: 20,
         width: Constants.fieldWidth,
         height: props.isHelpHidden ? 0 : Constants.fieldHeight,
         background: 'white',
-        opacity: 0.5,
+        opacity: props.isHelpHidden ? 0 : 0.8,
         overflow: 'hidden',
         position: 'absolute',
         transition: '1s ease',
