@@ -10,6 +10,7 @@ interface AccordionItemProps {
 
 interface AccordionItemState {
   isOpen: boolean;
+  height: number;
 }
 
 export default class AccordionItem extends React.Component<
@@ -18,7 +19,12 @@ export default class AccordionItem extends React.Component<
 > {
   constructor(props: AccordionItemProps) {
     super(props);
-    this.state = { isOpen: false };
+    this.state = { isOpen: false, height: 0 };
+  }
+
+  componentDidMount() {
+    const height = document.getElementById(this.props.title).clientHeight;
+    this.setState({ height });
   }
 
   handleClick() {
@@ -26,6 +32,7 @@ export default class AccordionItem extends React.Component<
   }
 
   render() {
+    const icon = this.state.isOpen ? '-' : '+';
     return (
       <div key={this.props.title}>
         <div>
@@ -35,9 +42,9 @@ export default class AccordionItem extends React.Component<
                 outline: 'none',
               },
               backgroundColor: this.state.isOpen
-                ? 'hsl(270,50%,65%)'
-                : 'hsl(270,50%,70%)',
-              border: '1px solid hsl(270,50%,60%)',
+                ? 'hsl(270,50%,70%)'
+                : 'hsl(270,50%,75%)',
+              border: '1px solid hsl(270,50%,65%)',
               borderBottomLeftRadius:
                 this.props.firstOrLast === 'last' && !this.state.isOpen ? 5 : 0,
               borderBottomRightRadius:
@@ -45,14 +52,23 @@ export default class AccordionItem extends React.Component<
               borderTopLeftRadius: this.props.firstOrLast === 'first' ? 5 : 0,
               borderTopRightRadius: this.props.firstOrLast === 'first' ? 5 : 0,
               color: 'white',
-              width: 200,
-              padding: '5px 10px',
+              padding: 18,
+              textAlign: 'left',
+              width: '100%',
             })}
             onClick={() => {
               this.handleClick();
             }}
           >
             {this.props.title}
+            <div
+              className={css({
+                float: 'right',
+                fontWeight: 'bold',
+              })}
+            >
+              {icon}
+            </div>
           </button>
         </div>
         <div
@@ -61,16 +77,17 @@ export default class AccordionItem extends React.Component<
             border: this.state.isOpen ? '1px solid grey' : '',
             borderBottomLeftRadius: this.props.firstOrLast === 'last' ? 5 : 0,
             borderBottomRightRadius: this.props.firstOrLast === 'last' ? 5 : 0,
-            height: this.state.isOpen ? '50px' : '0px', // query the height
+            height: this.state.isOpen ? this.state.height : '0px', // query the height
             transition: '0.5s',
             overflow: 'hidden',
-            width: 200,
+            width: '100%',
           })}
         >
           <div
             className={css({
-              padding: '5px 10px',
+              padding: 18,
             })}
+            id={this.props.title}
           >
             {this.props.content}
           </div>

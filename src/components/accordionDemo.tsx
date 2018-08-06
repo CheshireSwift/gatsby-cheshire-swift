@@ -15,7 +15,7 @@ export default class Accordion extends React.Component<AccordionProps> {
   render() {
     const contentList = this.props.content;
     const formattedContent = contentList.map((contentItem, index) => {
-      function findPosition(num) {
+      function findPosition(num: number) {
         if (num === 0) {
           return 'first';
         } else if (num === contentList.length - 1) {
@@ -31,6 +31,7 @@ export default class Accordion extends React.Component<AccordionProps> {
           title={contentItem.title}
           content={contentItem.content}
           firstOrLast={position}
+          key={contentItem.title}
         />
       );
     });
