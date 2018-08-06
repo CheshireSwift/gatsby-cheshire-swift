@@ -37,35 +37,29 @@ function Square(props: {
   );
 }
 
-interface BoardProps {
+// interface BoardProps {
+//   squares: string[];
+//   onClick: (i: number) => void;
+//   clickArray: boolean[];
+// }
+
+export default function Board(props: {
   squares: string[];
   onClick: (i: number) => void;
   clickArray: boolean[];
-}
-export default class Board extends React.Component<BoardProps, {}> {
-  renderSquare(i: number) {
+}) {
+  function renderSquare(i: number) {
     return (
       <Square
-        value={this.props.squares[i]}
-        onClick={() => this.props.onClick(i)}
-        isClicked={this.props.clickArray[i]}
+        value={props.squares[i]}
+        onClick={() => props.onClick(i)}
+        isClicked={props.clickArray[i]}
       />
     );
   }
-
-  makeBoard() {
-    this.props.squares.forEach((square, index) => {
-      this.renderSquare(index);
-    })
-  }
-
-  render() {
-    return (
-      <div>
-        {this.renderSquare(1)}
-      </div>
-    )
-  }
-
+  const displaySquares: any[] = [];
+  props.squares.forEach((square, index) => {
+    displaySquares.push(renderSquare(index));
+  });
+  return <div>{displaySquares}</div>;
 }
-
