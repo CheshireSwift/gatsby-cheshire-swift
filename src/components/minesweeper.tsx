@@ -10,62 +10,90 @@ interface GameState {
 }
 
 // Generates mines randomly
-const fillBoard: string[][] = [];
-for (let i = 0; i < 12; i++) {
-  const newRow = [];
-  for (let j = 0; j < 12; j++) {
-    newRow.push(Math.random() > 0.8 ? 'M' : null);
+
+function layMines() {
+  const fillBoard: string[][] = [];
+  for (let i = 0; i < 12; i++) {
+    const newRow = [];
+    for (let j = 0; j < 12; j++) {
+      newRow.push(Math.random() > 0.8 ? 'M' : null);
+    }
+    fillBoard.push(newRow);
   }
-  fillBoard.push(newRow);
+  return fillBoard;
 }
 
-// Counts adjacent mines
-for (let i = 0; i < 12; i++) {
-  for (let j = 0; j < 12; j++) {
-    if (fillBoard[i][j] === 'M') {
-      continue;
-    } else {
-      const surroundingSquares = [];
-      for (let k = -1; k <= 1; k++) {
-        if (i + k < 0 || i + k > 11) {
-          continue;
-        } else {
-          for (let l = -1; l <= 1; l++) {
-            if (j + l < 0 || j + l > 11) {
-              continue;
-            } else {
-              surroundingSquares.push(fillBoard[i + k][j + l]);
+const mineBoard = layMines();
+
+function countAdjacentMines(board: string[][]) {
+  // Counts adjacent mines
+  for (let i = 0; i < 12; i++) {
+    for (let j = 0; j < 12; j++) {
+      if (board[i][j] === 'M') {
+        continue;
+      } else {
+        const surroundingSquares = [];
+        for (let k = -1; k <= 1; k++) {
+          if (i + k < 0 || i + k > 11) {
+            continue;
+          } else {
+            for (let l = -1; l <= 1; l++) {
+              if (j + l < 0 || j + l > 11) {
+                continue;
+              } else {
+                surroundingSquares.push(board[i + k][j + l]);
+              }
             }
           }
         }
-      }
-      const countSquares = surroundingSquares.filter(value => value === 'M');
-      const mineCount = countSquares.length;
+        const countSquares = surroundingSquares.filter(value => value === 'M');
+        const mineCount = countSquares.length;
 
-      fillBoard[i][j] = mineCount.toString();
+        board[i][j] = mineCount.toString();
+      }
     }
   }
 }
 // Creates array to track which squares have been clicked
-const setClickedSquares: boolean[][] = [];
-for (let i = 0; i < 12; i++) {
-  const newRow = [];
-  for (let j = 0; j < 12; j++) {
-    newRow.push(false);
+function resetClickedSquares() {
+  const falseSquares = [];
+  for (let i = 0; i < 12; i++) {
+    const newRow = [];
+    for (let j = 0; j < 12; j++) {
+      newRow.push(false);
+    }
+    falseSquares.push(newRow);
   }
-  setClickedSquares.push(newRow);
+  return falseSquares;
 }
+
+const setClickedSquares = resetClickedSquares();
+
+countAdjacentMines(mineBoard);
 
 export default class Game extends React.Component<{}, GameState> {
   constructor(props: {}) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
     this.state = {
-      boardContents: fillBoard,
+      boardContents: mineBoard,
       clickedSquares: setClickedSquares,
       winningStatus: 'playing',
     };
   }
+
+  newGame() {
+    const newMines = layMines();
+    countAdjacentMines(newMines);
+    console.log(setClickedSquares);
+    const newClick = resetClickedSquares();
+    this.setState({
+      boardContents: newMines,
+      clickedSquares: newClick,
+      winningStatus: 'playing',
+    });
+  }
+
   handleClick(i: number, j: number) {
     if (this.state.winningStatus === 'lost') {
       return;
@@ -129,6 +157,20 @@ export default class Game extends React.Component<{}, GameState> {
           />
         </div>
         <p>{displayStatus}</p>
+        <button
+          className={css(
+            {
+              font: 'inherit',
+              margin: 3,
+              overflow: 'visible',
+              textTransform: 'none',
+            },
+            { ':focus': { fontWeight: 'bold' } },
+          )}
+          onClick={() => this.newGame()}
+        >
+          New game
+        </button>
       </div>
     );
   }
