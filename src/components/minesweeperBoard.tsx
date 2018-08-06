@@ -5,14 +5,16 @@ import { css } from 'emotion';
 function Square(props: {
   value: string;
   onClick: () => void;
+  onContextMenu: () => void;
   isClicked: boolean;
+  isFlagged: boolean;
 }) {
   return (
     <button
       className={css(
         {
-          backgroundColor: 'white',
-          color: props.isClicked === true ? 'black' : 'white',
+          backgroundColor: props.isFlagged === true ? 'red' : 'white',
+          color: 'black',
           border: '1px solid #999',
           float: 'left',
           font: 'inherit',
@@ -32,8 +34,15 @@ function Square(props: {
         { ':focus': { outline: 'none' } },
       )}
       onClick={props.onClick}
+      onContextMenu={props.onContextMenu}
     >
-      {props.value}
+      <p
+        className={css({
+          visibility: props.isClicked === true ? 'visible' : 'hidden',
+        })}
+      >
+        {props.value}
+      </p>
     </button>
   );
 }
@@ -41,14 +50,18 @@ function Square(props: {
 export default function Board(props: {
   squares: string[][];
   onClick: (i: number, j: number) => void;
+  onContextMenu: (i: number, j: number) => void;
   clickArray: boolean[][];
+  flaggedSquares: boolean[][];
 }) {
   function renderSquare(i: number, j: number) {
     return (
       <Square
         value={props.squares[i][j]}
         onClick={() => props.onClick(i, j)}
+        onContextMenu={() => props.onContextMenu(i, j)}
         isClicked={props.clickArray[i][j]}
+        isFlagged={props.flaggedSquares[i][j]}
       />
     );
   }
@@ -61,6 +74,5 @@ export default function Board(props: {
     }
     displaySquares.push(newRow);
   }
-  console.log(this.clickArray);
   return <div>{displaySquares}</div>;
 }

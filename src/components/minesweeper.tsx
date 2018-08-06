@@ -6,6 +6,7 @@ import Board from './minesweeperBoard';
 interface GameState {
   clickedSquares: boolean[][];
   boardContents: string[][];
+  flaggedSquares: boolean[][];
   winningStatus: string;
 }
 
@@ -68,6 +69,7 @@ function resetClickedSquares() {
 }
 
 const setClickedSquares = resetClickedSquares();
+const setFlaggedSquares = resetClickedSquares();
 
 countAdjacentMines(mineBoard);
 
@@ -75,9 +77,11 @@ export default class Game extends React.Component<{}, GameState> {
   constructor(props: {}) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
+    this.handleRightClick = this.handleRightClick.bind(this);
     this.state = {
       boardContents: mineBoard,
       clickedSquares: setClickedSquares,
+      flaggedSquares: setFlaggedSquares,
       winningStatus: 'playing',
     };
   }
@@ -87,10 +91,12 @@ export default class Game extends React.Component<{}, GameState> {
     countAdjacentMines(newMines);
     console.log(setClickedSquares);
     const newClick = resetClickedSquares();
+    const newFlag = resetClickedSquares();
     this.setState({
       boardContents: newMines,
       clickedSquares: newClick,
       winningStatus: 'playing',
+      flaggedSquares: newFlag,
     });
   }
 
@@ -130,6 +136,16 @@ export default class Game extends React.Component<{}, GameState> {
     }
   }
 
+  handleRightClick(i: number, j: number) {
+    if (!this.state.clickedSquares[i][j]) {
+      const newFlagArray = this.state.flaggedSquares;
+      newFlagArray[i][j] = true;
+      this.setState({
+        flaggedSquares: newFlagArray,
+      });
+    }
+  }
+
   render() {
     const computeStatus = () => {
       if (this.state.winningStatus === 'lost') {
@@ -153,7 +169,9 @@ export default class Game extends React.Component<{}, GameState> {
           <Board
             squares={this.state.boardContents}
             onClick={this.handleClick}
+            onContextMenu={this.handleRightClick}
             clickArray={this.state.clickedSquares}
+            flaggedSquares={this.state.flaggedSquares}
           />
         </div>
         <p>{displayStatus}</p>
