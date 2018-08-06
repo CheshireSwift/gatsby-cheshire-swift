@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { css } from '../../node_modules/emotion';
+import { css } from 'emotion';
 
 interface SquareProps {
   buttonClass: string;

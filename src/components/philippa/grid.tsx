@@ -2,7 +2,7 @@ import Square from './square';
 import * as React from 'react';
 import * as _ from 'lodash';
 import * as cell from './cellState';
-import { css } from '../../node_modules/emotion';
+import { css } from 'emotion';
 
 interface GridProps {
     squares: cell.state[];

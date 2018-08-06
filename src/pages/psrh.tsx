@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Board } from '../components/board';
-import { css } from '../../node_modules/emotion';
+import { css } from 'emotion';
 
 const Game = () => (
   <div className={css({

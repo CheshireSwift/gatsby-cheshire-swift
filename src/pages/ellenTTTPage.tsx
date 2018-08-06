@@ -2,7 +2,7 @@ import * as React from 'react';
 import Link from 'gatsby-link';
 
 import Game from '../components/ellenTicTacToe';
-import { css } from '../../node_modules/emotion';
+import { css } from 'emotion';
 
 const SecondPage = () => (
   <div>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { css } from '../../node_modules/emotion';
+import { css } from 'emotion';
 
 const NotFoundPage = () => (
   <div>
