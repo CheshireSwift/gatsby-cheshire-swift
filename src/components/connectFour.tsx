@@ -87,7 +87,7 @@ const Row = (props: RowProps) => {
       renderSquare({
         buttonClass: props.squares[7 * props.rowNum + i],
         onClick: () => props.onClick(7 * props.rowNum + i),
-      }),
+      })
     );
   }
   return <div className="board-row">{cells}</div>;
@@ -97,7 +97,7 @@ const Board = (props: BoardProps) => {
   const rows = [];
   for (let i = 0; i < 6; i++) {
     rows.push(
-      <Row rowNum={i} onClick={props.onClick} squares={props.squares} />,
+      <Row rowNum={i} onClick={props.onClick} squares={props.squares} />
     );
   }
 
@@ -248,7 +248,7 @@ function scanFrom(
   start: RowCol,
   direction: RowCol,
   squares: string[],
-  limit = 4,
+  limit = 4
 ) {
   if (
     !squares[rowColToInt(start.row, start.col)] ||
@@ -288,8 +288,8 @@ function calculateWinner(squares: string[]) {
           winnerSquares.push(
             rowColToInt(
               start.row + direction.row * k,
-              start.col + direction.col * k,
-            ),
+              start.col + direction.col * k
+            )
           );
         }
         return { winner: squares[i], winnerSquares };

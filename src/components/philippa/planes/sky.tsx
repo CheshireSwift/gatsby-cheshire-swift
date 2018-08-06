@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Constants from './game-constants';
+import * as Constants from '../game-of-life/game-constants';
 import { Bullet } from './bullet';
 import { Player } from './player';
 import * as Geometry from './geometry';
@@ -59,7 +59,7 @@ export class Sky extends React.Component<{}, SkyState> {
       });
       this.setState({ bullet: oneMoreBullet });
     };
-  };
+  }
 
   createPropertySettingCallback(turnDirection: string, targetValue: boolean) {
     return (playerIndex: number) => {

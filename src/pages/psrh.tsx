@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Board } from '../components/philippa/board';
+import { Board } from '../components/philippa/game-of-life/board';
 import { css } from 'emotion';
 
 const Game = () => (

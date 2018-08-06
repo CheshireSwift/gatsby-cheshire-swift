@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Constants from './game-constants';
+import * as Constants from '../game-of-life/game-constants';
 import { Biplane } from './biplane';
 
 interface PlayerProps {
