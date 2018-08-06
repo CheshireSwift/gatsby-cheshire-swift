@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 
 import { Button } from './canvas';
 import { Wall, initWall } from './wall';
+import { Enemy, initEnemy, EnemyType } from './enemy';
 
 export interface Pos {
   x: number;
@@ -35,16 +36,17 @@ export interface ProgramInfo {
     vertexUV: number;
   };
   uniformLocs: {
-    pvMatrix: WebGLUniformLocation;
+    projMatrix: WebGLUniformLocation;
+    viewMatrix: WebGLUniformLocation;
     modelMatrix: WebGLUniformLocation;
     sampler: WebGLUniformLocation;
+    billboard: WebGLUniformLocation;
   };
 }
 
 export class Wolfenstein extends React.Component<WolfProps, WolfState> {
   oldGl: WebGLRenderingContext | null = null;
   programInfo: ProgramInfo | null = null;
-  projectionMatrix: mat4 = mat4.create();
   player: Pos = { x: 2, y: 2 };
 
   constructor(props: WolfProps) {
@@ -72,12 +74,20 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
       attribute vec2 aVertexUV;
 
       uniform mat4 uModelMatrix;
-      uniform mat4 uPVMatrix;
+      uniform mat4 uViewMatrix;
+      uniform mat4 uProjMatrix;
+      uniform bool uBillboard;
 
       varying highp vec2 vUV;
 
       void main(void) {
-        gl_Position = uPVMatrix * uModelMatrix * aVertexPosition;
+        mat4 mvMatrix = uViewMatrix * uModelMatrix;
+        if (uBillboard) {
+          mvMatrix[0] = vec4(1, 0, 0, mvMatrix[0][3]);
+          mvMatrix[1] = vec4(0, 1, 0, mvMatrix[1][3]);
+          mvMatrix[2] = vec4(0, 0, 1, mvMatrix[2][3]);
+        }
+        gl_Position = uProjMatrix * mvMatrix * aVertexPosition;
         vUV = aVertexUV;
       }
     `;
@@ -101,9 +111,11 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
         vertexUV: gl.getAttribLocation(program, 'aVertexUV'),
       },
       uniformLocs: {
-        pvMatrix: gl.getUniformLocation(program, 'uPVMatrix')!,
+        projMatrix: gl.getUniformLocation(program, 'uProjMatrix')!,
+        viewMatrix: gl.getUniformLocation(program, 'uViewMatrix')!,
         modelMatrix: gl.getUniformLocation(program, 'uModelMatrix')!,
         sampler: gl.getUniformLocation(program, 'uSampler')!,
+        billboard: gl.getUniformLocation(program, 'uBillboard'),
       },
     };
 
@@ -112,7 +124,11 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
     gl.clearDepth(1.0);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
-    initWall(gl, gl.getExtension('OES_vertex_array_object')!, this.programInfo);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    const vaoExt = gl.getExtension('OES_vertex_array_object')!;
+    initWall(gl, vaoExt, this.programInfo);
+    initEnemy(gl, vaoExt, this.programInfo);
     gl.useProgram(this.programInfo.program);
 
     gl.enable(gl.CULL_FACE);
@@ -120,7 +136,14 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.1;
     const zFar = 100.0;
-    mat4.perspective(this.projectionMatrix, fieldOfView, aspect, zNear, zFar);
+    const projectionMatrix = mat4.create();
+    mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
+    gl.uniformMatrix4fv(
+      this.programInfo.uniformLocs.projMatrix,
+      false,
+      projectionMatrix,
+    );
+    gl.uniform1i(this.programInfo.uniformLocs.billboard, 0);
   }
 
   initShaderProgram(
@@ -167,13 +190,38 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
   tick(time: number) {
     const sin = Math.sin(this.props.mousePos.x / 1000);
     const cos = Math.cos(this.props.mousePos.x / 1000);
+    const newPos = { x: this.player.x, y: this.player.y };
     if (this.props.keys.get('w')) {
-      this.player.x += (cos * (time - this.state.time)) / 100;
-      this.player.y -= (sin * (time - this.state.time)) / 100;
+      newPos.x += (cos * (time - this.state.time)) / 100;
+      newPos.y -= (sin * (time - this.state.time)) / 100;
     }
     if (this.props.keys.get('s')) {
-      this.player.x -= (cos * (time - this.state.time)) / 100;
-      this.player.y += (sin * (time - this.state.time)) / 100;
+      newPos.x -= (cos * (time - this.state.time)) / 100;
+      newPos.y += (sin * (time - this.state.time)) / 100;
+    }
+    const dist = 0.2;
+    const dirs = [
+      [1, 0],
+      [0, 1],
+      [1, 1],
+      [-1, 0],
+      [0, -1],
+      [-1, -1],
+      [-1, 1],
+      [1, -1],
+    ];
+    const collision = dirs
+      .map(([dirX, dirY]) => ({
+        x: newPos.x + dirX * dist,
+        y: newPos.y + dirY * dist,
+      }))
+      .some(
+        pos =>
+          this.state.walls[Math.floor(pos.x)][Math.floor(pos.y)] !== Cell.Floor,
+      );
+    if (!collision) {
+      this.player.x = newPos.x;
+      this.player.y = newPos.y;
     }
     this.setState({ time });
   }
@@ -191,10 +239,10 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
     }
     const vaoExt = gl.getExtension('OES_vertex_array_object');
 
+    // tslint:disable-next-line:no-bitwise
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     const viewMatrix = mat4.create();
-    const pvMatrix = mat4.create();
 
     mat4.lookAt(viewMatrix, [0, 0, 0], [1, 0, 0], [0, 0, 1]);
     mat4.rotateZ(viewMatrix, viewMatrix, this.props.mousePos.x / 1000);
@@ -203,9 +251,12 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
       -this.player.y,
       -0.5,
     ]);
-    mat4.mul(pvMatrix, this.projectionMatrix, viewMatrix);
 
-    gl.uniformMatrix4fv(this.programInfo.uniformLocs.pvMatrix, false, pvMatrix);
+    gl.uniformMatrix4fv(
+      this.programInfo.uniformLocs.viewMatrix,
+      false,
+      viewMatrix,
+    );
 
     return (
       <div>
@@ -219,12 +270,23 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
                   vaoExt={vaoExt}
                   modelMatrix={this.programInfo.uniformLocs.modelMatrix}
                   sampler={this.programInfo.uniformLocs.sampler}
+                  billboard={this.programInfo.uniformLocs.billboard}
                   position={{ x, y }}
                 />
               );
             }
           });
         })}
+        <Enemy
+          gl={gl}
+          vaoExt={vaoExt}
+          modelMatrix={this.programInfo.uniformLocs.modelMatrix}
+          sampler={this.programInfo.uniformLocs.sampler}
+          billboard={this.programInfo.uniformLocs.billboard}
+          type={EnemyType.Charizard}
+          facing={0}
+          position={{ x: 5, y: 5 }}
+        />
         <p>{this.state.time}</p>
         <p>{this.props.mousePos.x}</p>
         <p>{JSON.stringify(this.props.keys)}</p>

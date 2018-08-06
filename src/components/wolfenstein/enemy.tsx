@@ -5,57 +5,30 @@ import * as _ from 'lodash';
 import { ProgramInfo, Pos } from './wolfenstein';
 import { RenderedProps, loadTexture } from './canvas';
 
-let cubeVAO: WebGLVertexArrayObjectOES | null = null;
-let texture: WebGLTexture | null = null;
+let enemyVAO: WebGLVertexArrayObjectOES | null = null;
+const texture: { [key: string]: WebGLTexture } = {};
 
-export function initWall(
+export enum EnemyType {
+  Charizard,
+  Fireball,
+}
+
+export function initEnemy(
   gl: WebGLRenderingContext,
   vaoExt: OES_vertex_array_object,
-  programInfo: ProgramInfo
+  programInfo: ProgramInfo,
 ) {
-  cubeVAO = vaoExt.createVertexArrayOES();
-  vaoExt.bindVertexArrayOES(cubeVAO);
-  texture = loadTexture(gl, '/assets/walls.png');
+  enemyVAO = vaoExt.createVertexArrayOES();
+  vaoExt.bindVertexArrayOES(enemyVAO);
+  texture[EnemyType.Charizard] = loadTexture(gl, '/assets/charizard.png');
+  texture[EnemyType.Fireball] = loadTexture(gl, '/assets/fireball.png');
 
   const positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-  const positions = _.flatten([
-    // Front
-    [0, 0, 0],
-    [1, 0, 0],
-    [1, 0, 1],
-    [0, 0, 1],
-    // Back
-    [1, 1, 0],
-    [0, 1, 0],
-    [0, 1, 1],
-    [1, 1, 1],
-    // Top
-    [0, 0, 1],
-    [1, 0, 1],
-    [1, 1, 1],
-    [0, 1, 1],
-    // Bottom
-    [0, 1, 0],
-    [1, 1, 0],
-    [1, 0, 0],
-    [0, 0, 0],
-    // Right
-    [1, 0, 0],
-    [1, 1, 0],
-    [1, 1, 1],
-    [1, 0, 1],
-    // Left
-    [0, 1, 0],
-    [0, 0, 0],
-    [0, 0, 1],
-    [0, 1, 1],
-  ]);
+  const positions = _.flatten([[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]]);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
-  const faceUVCoords = _.flatten([[0, 0], [1, 0], [1, 1], [0, 1]]);
-
-  const uvCoords: number[] = _.flatten(_.times(6, _.constant(faceUVCoords)));
+  const uvCoords = _.flatten([[0, 0], [1, 0], [1, 1], [0, 1]]);
 
   const uvBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
@@ -64,19 +37,12 @@ export function initWall(
   const indexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
 
-  const indices = _.flatten([
-    [0, 1, 2, 0, 2, 3], // front
-    [4, 5, 6, 4, 6, 7], // back
-    [8, 9, 10, 8, 10, 11], // top
-    [12, 13, 14, 12, 14, 15], // bottom
-    [16, 17, 18, 16, 18, 19], // right
-    [20, 21, 22, 20, 22, 23], // left
-  ]);
+  const indices = [0, 1, 2, 0, 2, 3];
 
   gl.bufferData(
     gl.ELEMENT_ARRAY_BUFFER,
     new Uint16Array(indices),
-    gl.STATIC_DRAW
+    gl.STATIC_DRAW,
   );
 
   {
@@ -92,7 +58,7 @@ export function initWall(
       type,
       normalize,
       stride,
-      offset
+      offset,
     );
     gl.enableVertexAttribArray(programInfo.attribLocs.vertexPos);
   }
@@ -110,18 +76,21 @@ export function initWall(
       type,
       normalize,
       stride,
-      offset
+      offset,
     );
     gl.enableVertexAttribArray(programInfo.attribLocs.vertexUV);
   }
 }
 
-interface WallProps {
+interface EnemyProps {
+  type: EnemyType;
   position: Pos;
+  facing: number;
+  spawnEnemy: (props: EnemyProps) => void;
 }
 
-export class Wall extends React.Component<RenderedProps & WallProps, {}> {
-  constructor(props: RenderedProps & WallProps) {
+export class Enemy extends React.Component<EnemyProps & RenderedProps, {}> {
+  constructor(props: EnemyProps & RenderedProps) {
     super(props);
   }
 
@@ -138,19 +107,17 @@ export class Wall extends React.Component<RenderedProps & WallProps, {}> {
 
     gl.uniformMatrix4fv(this.props.modelMatrix, false, modelMatrix);
 
-    this.props.vaoExt.bindVertexArrayOES(cubeVAO!);
+    this.props.vaoExt.bindVertexArrayOES(enemyVAO!);
 
     gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, texture!);
+    gl.bindTexture(gl.TEXTURE_2D, texture[this.props.type]);
     gl.uniform1i(this.props.sampler, 0);
-    gl.uniform1i(this.props.billboard, 0);
+    gl.uniform1i(this.props.billboard, 1);
 
-    const vertexCount = 36;
+    const vertexCount = 6;
     const type = gl.UNSIGNED_SHORT;
     const offset = 0;
     gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
     return false;
   }
 }
-
-export default Wall;
