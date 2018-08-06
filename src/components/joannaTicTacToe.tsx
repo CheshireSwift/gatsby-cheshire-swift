@@ -54,7 +54,7 @@ export default class Game extends React.Component<{}, GameState> {
     };
   }
 
-  computeStatus(winner) {
+  computeStatus(winner: Array<number | string>) {
     if (winner) {
       return 'Winner: ' + winner[0];
     } else if (this.state.stepNumber === 9) {
