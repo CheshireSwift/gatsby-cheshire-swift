@@ -1,7 +1,8 @@
 // Game constants
 export const deltaTheta = 10; // How many degrees a player rotates on each time step if the key is held down
-export const sideLength = 34; // of a player
-export const bulletAdvance = sideLength; // How far in front of a player a bullet materialises
+export const playerHeight = 34;
+export const playerWidth = 34;
+export const bulletAdvance = playerWidth; // How far in front of a player a bullet materialises
 export const bulletLifetime = 25; // How long a fired bullet lives on the play field
 
 export const speed = 5; // How fast players move

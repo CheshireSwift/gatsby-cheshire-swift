@@ -15,11 +15,11 @@ export class Player extends React.Component<PlayerProps, {}> {
       <div
         style={{
           background: isAlive ? this.props.state.colour : '#000',
-          height: Constants.sideLength,
-          width: Constants.sideLength,
+          height: Constants.playerHeight,
+          width: Constants.playerWidth,
           position: 'absolute',
-          top: y - Constants.sideLength / 2,
-          left: x - Constants.sideLength / 2,
+          top: y - Constants.playerHeight / 2,
+          left: x - Constants.playerWidth / 2,
           transform: `rotate(${angle}deg)`,
           transition: 'all 0.05s',
         }}
