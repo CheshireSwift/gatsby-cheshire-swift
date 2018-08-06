@@ -6,6 +6,7 @@ import Board from './minesweeperBoard';
 interface GameState {
   clickedSquares: boolean[][];
   boardContents: string[][];
+  winningStatus: string;
 }
 
 // Generates mines randomly
@@ -62,9 +63,13 @@ export default class Game extends React.Component<{}, GameState> {
     this.state = {
       boardContents: fillBoard,
       clickedSquares: setClickedSquares,
+      winningStatus: 'playing',
     };
   }
   handleClick(i: number, j: number) {
+    if (this.state.winningStatus === 'lost') {
+      return;
+    }
     // Reveals this square
     const newClickArray = this.state.clickedSquares;
     newClickArray[i][j] = true;
@@ -87,22 +92,57 @@ export default class Game extends React.Component<{}, GameState> {
         }
       }
     }
+    if (
+      calculateStatus(this.state.boardContents, this.state.clickedSquares) ===
+      'lost'
+    ) {
+      this.setState({
+        winningStatus: 'lost',
+      });
+    }
   }
+
   render() {
+    const computeStatus = () => {
+      if (this.state.winningStatus === 'lost') {
+        return 'You exploded! Better luck next time.';
+      } else {
+        return 'Tread carefully...';
+      }
+    };
+
+    const displayStatus = computeStatus();
+
     return (
-      <div
-        className={css({
-          display: 'flex',
-          flexDirection: 'row',
-          width: 300,
-        })}
-      >
-        <Board
-          squares={this.state.boardContents}
-          onClick={this.handleClick}
-          clickArray={this.state.clickedSquares}
-        />
+      <div>
+        <div
+          className={css({
+            display: 'flex',
+            flexDirection: 'row',
+            width: 300,
+          })}
+        >
+          <Board
+            squares={this.state.boardContents}
+            onClick={this.handleClick}
+            clickArray={this.state.clickedSquares}
+          />
+        </div>
+        <p>{displayStatus}</p>
       </div>
     );
+  }
+}
+
+function calculateStatus(
+  boardContents: string[][],
+  clickedSquares: boolean[][],
+) {
+  for (let i = 0; i < 12; i++) {
+    for (let j = 0; j < 12; j++) {
+      if (boardContents[i][j] === 'M' && clickedSquares[i][j]) {
+        return 'lost';
+      }
+    }
   }
 }
