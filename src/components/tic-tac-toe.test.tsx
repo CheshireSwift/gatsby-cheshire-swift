@@ -1,8 +1,8 @@
-import 'jsdom-global/register'; // at the top of file , even  , before importing react
+// import 'jsdom-global/register'; // at the top of file , even  , before importing react
 import * as React from 'react';
 import { render, mount } from 'enzyme';
-import { JSDOM } from 'jsdom';
-const doc = JSDOM.jsdom('<!doctype html><html><body></body></html>'); // Needed for mounting
+// import { JSDOM } from 'jsdom';
+// const doc = JSDOM.jsdom('<!doctype html><html><body></body></html>'); // Needed for mounting
 
 const TicTacToe = require('./tic-tac-toe');
 
@@ -262,7 +262,7 @@ describe('Testing next move calculator', () => {
 
 describe('Testing next move calculator integration into game', () => {
   it('Makes a move after every mvoe made by player', () => {
-    const game = mount(<TicTacToe.Game againstComputer={true} />);
+    const game = mount(<TicTacToe.Game againstComputer />);
     const magicButton = game
       .childAt(0)
       .childAt(0)

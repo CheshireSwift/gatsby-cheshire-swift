@@ -21,9 +21,9 @@ const NotFoundPage = () => (
     </h1>
     <p
       className={css({
-        "margin": 0,
-        'margin-bottom': '1.45rem',
-        "padding": 0,
+        margin: 0,
+        marginBottom: '1.45rem',
+        padding: 0,
       })}
     >
       You just hit a route that doesn&#39;t exist... the sadness.
