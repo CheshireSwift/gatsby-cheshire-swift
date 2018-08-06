@@ -2,118 +2,9 @@ import * as React from 'react';
 import * as Constants from './game-constants';
 import { Bullet } from './bullet';
 import { Player } from './player';
-
-function getCoefficients(position: Constants.Vector, angle: number) {
-  // The 4 lines forming the boundary of a player square
-  //   (at `position` and orientation `angle`)
-  // are represented in "implicit form" A*x + B*y + C <= 0
-  // If the line's expression evaluates to true, it implies
-  // point (x,y) lies to the left, or on, the line.
-  const [topLeft, bottomRight] = getPoints(position, angle, [180 + 45, 45]);
-  const coefficients: Constants.Line[] = [];
-  if (angle === 0) {
-    coefficients.push(
-      ...[
-        { A: -1, B: 0, C: topLeft.x },
-        { A: 1, B: 0, C: -bottomRight.x },
-        { A: 0, B: 1, C: -bottomRight.y },
-        { A: 0, B: -1, C: topLeft.y }, // done
-      ],
-    );
-  } else if (angle === 90) {
-    coefficients.push(
-      ...[
-        { A: -1, B: 0, C: bottomRight.x },
-        { A: 1, B: 0, C: -topLeft.x },
-        { A: 0, B: 1, C: -bottomRight.y },
-        { A: 0, B: -1, C: topLeft.y }, // done
-      ],
-    );
-  } else if (angle === 180) {
-    coefficients.push(
-      ...[
-        { A: -1, B: 0, C: bottomRight.x },
-        { A: 1, B: 0, C: -topLeft.x },
-        { A: 0, B: 1, C: -topLeft.y },
-        { A: 0, B: -1, C: bottomRight.y }, // done
-      ],
-    );
-  } else if (angle === 270) {
-    coefficients.push(
-      ...[
-        { A: -1, B: 0, C: topLeft.x },
-        { A: 1, B: 0, C: -bottomRight.x },
-        { A: 0, B: 1, C: -topLeft.y },
-        { A: 0, B: -1, C: bottomRight.y }, // done
-      ],
-    );
-  } else {
-    const m1 = Math.tan(angle * (Math.PI / 180));
-    const m2 = -1 / m1;
-    [topLeft, bottomRight].forEach(p => {
-      const { x, y } = p;
-      [m1, m2].forEach(m => {
-        const line = {
-          A: -m,
-          B: 1,
-          C: m * x - y,
-        };
-        if (!onLeftOf(position, line)) {
-          // The implicit form of the line MUST include the square's center
-          line.A = -line.A;
-          line.B = -line.B;
-          line.C = -line.C;
-        }
-        coefficients.push(line);
-      });
-    });
-  }
-  return coefficients;
-}
-
-function getPoints(
-  playerPosition: Constants.Vector,
-  playerAngle: number,
-  angles: number[],
-) {
-  const { x, y } = playerPosition; // center
-  const radius = Constants.sideLength / 1.414; // root(2) approx
-  return angles.map(t => {
-    const inRadians = (t + playerAngle) * (Math.PI / 180);
-    return {
-      x: x + radius * Math.cos(inRadians),
-      y: y + radius * Math.sin(inRadians),
-    };
-  });
-}
-
-function isInside(
-  point: Constants.Vector,
-  boundaryCoefficients: Constants.Line[],
-) {
-  return boundaryCoefficients.every((coefficients: Constants.Line) =>
-    onLeftOf(point, coefficients),
-  );
-}
-
-function onLeftOf(p: Constants.Vector, coefficients: Constants.Line) {
-  const { x, y } = p;
-  const { A, B, C } = coefficients;
-  return A * x + B * y + C <= 0;
-}
-
-function getPairs(n: number) {
-  const indices = [...Array(n).keys()];
-  const playerCombinations: number[][] = [];
-  indices.forEach((i: number) => {
-    indices.slice(i).forEach(j => {
-      if (i !== j) {
-        playerCombinations.push([i, j]);
-      }
-    });
-  });
-  return playerCombinations;
-}
+import * as Geometry from './geometry';
+import { initialPlayers } from './initialPlayers';
+import * as _ from 'lodash';
 
 interface BulletState {
   position: Constants.Vector;
@@ -125,6 +16,7 @@ interface SkyState {
   isPaused: boolean;
   player: Constants.PlayerState[];
   bullet: BulletState[];
+  timerToken: number;
 }
 
 export class Sky extends React.Component<{}, SkyState> {
@@ -133,13 +25,6 @@ export class Sky extends React.Component<{}, SkyState> {
   CWdown = this.genericKeypress('turningCW', true);
   CWup = this.genericKeypress('turningCW', false);
 
-  keyHandlers = [
-    this.CWdown,
-    this.CWup,
-    this.CCWdown,
-    this.CCWup,
-    this.fireBullet,
-  ];
   constructor(props: {}) {
     super(props);
     this.state = {
@@ -157,7 +42,6 @@ export class Sky extends React.Component<{}, SkyState> {
           colour: '#ff0',
           health: 100,
         },
-
         {
           position: {
             x: 70,
@@ -170,7 +54,6 @@ export class Sky extends React.Component<{}, SkyState> {
           colour: '#0ff',
           health: 100,
         },
-
         {
           position: {
             x: 70,
@@ -185,6 +68,7 @@ export class Sky extends React.Component<{}, SkyState> {
         },
       ],
       bullet: [],
+      timerToken: 0,
     };
     this.CWdown = this.CWdown.bind(this);
     this.CCWdown = this.CCWdown.bind(this);
@@ -211,7 +95,7 @@ export class Sky extends React.Component<{}, SkyState> {
     };
   }
 
-  genericKeypress(turnDirection: Constants.directions, targetValue: boolean) {
+  genericKeypress(turnDirection: string, targetValue: boolean) {
     return (playerIndex: number) => {
       return () => {
         const playerState = this.state.player.slice();
@@ -222,7 +106,7 @@ export class Sky extends React.Component<{}, SkyState> {
   }
 
   componentWillUnmount() {
-    clearInterval(this.timeInterval);
+    clearInterval(this.state.timerToken);
   }
 
   updateGame() {
@@ -280,12 +164,12 @@ export class Sky extends React.Component<{}, SkyState> {
   collisionDetected() {
     // Player vs player
     const playerStates = this.state.player.slice();
-    getPairs(this.state.player.length).forEach(pair => {
+    Geometry.getPairs(this.state.player.length).forEach(pair => {
       const [player1Index, player2Index] = pair;
       // for each of the 4 points on the square boundary of player 2,
       // test inclusion against every line on the boundary of player 1
       const { position: p2Pos, angle: p2Angle } = playerStates[player2Index];
-      const p2Points = getPoints(p2Pos, p2Angle, [
+      const p2Points = Geometry.getPoints(p2Pos, p2Angle, [
         360 - 45,
         180 + 45,
         180 - 45,
@@ -293,9 +177,9 @@ export class Sky extends React.Component<{}, SkyState> {
       ]);
 
       const { position: p1Pos, angle: p1Angle } = playerStates[player1Index];
-      const p1Boundary = getCoefficients(p1Pos, p1Angle);
+      const p1Boundary = Geometry.getCoefficients(p1Pos, p1Angle);
       const playerCollision = p2Points.some(point => {
-        return isInside(point, p1Boundary);
+        return Geometry.isInside(point, p1Boundary);
       });
 
       if (playerCollision) {
@@ -309,11 +193,11 @@ export class Sky extends React.Component<{}, SkyState> {
     // Bullets vs players
     playerStates.forEach(player => {
       const { position, angle } = player;
-      const boundary = getCoefficients(position, angle);
+      const boundary = Geometry.getCoefficients(position, angle);
       this.state.bullet.forEach(bullet => {
-        if (isInside(bullet.position, boundary)) {
+        if (Geometry.isInside(bullet.position, boundary)) {
           // console.log(`Player ${player.colour} hit`);
-          player.health -= 10;
+          player.health -= 50;
           bullet.age += Constants.bulletLifetime; // destroy the bullet
         }
       });
@@ -337,20 +221,29 @@ export class Sky extends React.Component<{}, SkyState> {
 
   toggleGameState() {
     if (this.state.isPaused) {
-      this.timeInterval = setInterval(this.updateGame.bind(this), 33);
+      const timerToken = setInterval(this.updateGame.bind(this), 33);
+      this.setState({ timerToken });
     } else {
-      clearInterval(this.timeInterval);
+      clearInterval(this.state.timerToken);
     }
     this.setState({ isPaused: !this.state.isPaused });
   }
 
   render() {
-    const players = [...Array(this.state.player.length).keys()].map(i => {
+    const keyHandlers = [
+      this.CWdown,
+      this.CWup,
+      this.CCWdown,
+      this.CCWup,
+      this.fireBullet,
+    ];
+
+    const players = _.range(this.state.player.length).map(i => {
       return (
         <Player
           key={i}
           state={this.state.player[i]}
-          keyHandlers={this.keyHandlers.map(f => f(i))}
+          keyHandlers={keyHandlers.map(f => f(i))}
         />
       );
     });
@@ -372,6 +265,7 @@ export class Sky extends React.Component<{}, SkyState> {
             height: Constants.fieldHeight,
             background: 'skyblue',
             overflow: 'hidden',
+            position: 'absolute',
           }}
         >
           {players}

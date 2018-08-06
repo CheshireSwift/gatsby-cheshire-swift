@@ -6,7 +6,7 @@ interface PlayerProps {
   keyHandlers: Array<() => void>;
 }
 
-export class Player extends React.PureComponent<PlayerProps> {
+export class Player extends React.Component<PlayerProps, {}> {
   render() {
     const { x, y } = this.props.state.position;
     const angle = this.props.state.angle;
@@ -42,7 +42,7 @@ export class Player extends React.PureComponent<PlayerProps> {
       default:
         return;
     }
-  };
+  }
 
   handleKeyUp = (e: KeyboardEvent) => {
     switch (e.code) {
@@ -55,7 +55,7 @@ export class Player extends React.PureComponent<PlayerProps> {
       default:
         return;
     }
-  };
+  }
 
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown.bind(this));

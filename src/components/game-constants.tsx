@@ -4,15 +4,10 @@ export const sideLength = 34; // of a player
 export const bulletAdvance = sideLength; // How far in front of a player a bullet materialises
 export const bulletLifetime = 25; // How long a fired bullet lives on the play field
 
-export const speed = 3; // How fast players move
+export const speed = 5; // How fast players move
 export const bulletSpeed = 12; // How fast bullets move
 export const fieldWidth = 500;
 export const fieldHeight = 500;
-
-export const directions = {
-  cw: +deltaTheta,
-  ccw: -deltaTheta,
-};
 
 export interface Vector {
   x: number;
