@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as Constants from './game-constants';
+import { Biplane } from './biplane';
 
 interface PlayerProps {
   state: Constants.PlayerState;
@@ -14,7 +15,6 @@ export class Player extends React.Component<PlayerProps, {}> {
     return (
       <div
         style={{
-          background: isAlive ? this.props.state.colour : '#000',
           height: Constants.playerHeight,
           width: Constants.playerWidth,
           position: 'absolute',
@@ -23,7 +23,9 @@ export class Player extends React.Component<PlayerProps, {}> {
           transform: `rotate(${angle}deg)`,
           transition: 'all 0.05s',
         }}
-      />
+      >
+        <Biplane colour={this.props.state.colour} isAlive={isAlive} />
+      </div>
     );
   }
 
@@ -42,7 +44,7 @@ export class Player extends React.Component<PlayerProps, {}> {
       default:
         return;
     }
-  };
+  }
 
   handleKeyUp = (e: KeyboardEvent) => {
     switch (e.code) {
@@ -55,7 +57,7 @@ export class Player extends React.Component<PlayerProps, {}> {
       default:
         return;
     }
-  };
+  }
 
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown.bind(this));
