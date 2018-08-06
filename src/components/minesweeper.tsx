@@ -8,6 +8,7 @@ interface GameState {
   boardContents: string[][];
 }
 
+// Generates mines randomly
 const fillBoard: string[][] = [];
 for (let i = 0; i < 12; i++) {
   const newRow = [];
@@ -17,67 +18,34 @@ for (let i = 0; i < 12; i++) {
   fillBoard.push(newRow);
 }
 
-for (let i = 1; i < 11; i++) {
-  for (let j = 1; j < 11; j++) {
+// Counts adjacent mines
+for (let i = 0; i < 12; i++) {
+  for (let j = 0; j < 12; j++) {
     if (fillBoard[i][j] === 'M') {
       continue;
     } else {
-      const surroundingSquares = [
-        fillBoard[i + 1][j - 1],
-        fillBoard[i + 1][j],
-        fillBoard[i + 1][j + 1],
-        fillBoard[i][j + 1],
-        fillBoard[i][j - 1],
-        fillBoard[i - 1][j - 1],
-        fillBoard[i - 1][j],
-        fillBoard[i - 1][j + 1],
-      ];
-
+      const surroundingSquares = [];
+      for (let k = -1; k <= 1; k++) {
+        if (i + k < 0 || i + k > 11) {
+          continue;
+        } else {
+          for (let l = -1; l <= 1; l++) {
+            if (j + l < 0 || j + l > 11) {
+              continue;
+            } else {
+              surroundingSquares.push(fillBoard[i + k][j + l]);
+            }
+          }
+        }
+      }
       const countSquares = surroundingSquares.filter(value => value === 'M');
-      console.log(countSquares);
       const mineCount = countSquares.length;
 
       fillBoard[i][j] = mineCount.toString();
-
-      // console.log(mineCount, 'in', i, j);
-
-      // if (fillBoard[i + 1][j - 1] === 'M') {
-      //   mineCount++;
-      //   console.log('Ref', i, j);
-      //   console.log(i + 1, j - 1);
-      // }
-      // if (fillBoard[i + 1][j] === 'M') {
-      //   mineCount++;
-      //   console.log('Ref', i, j);
-      //   console.log(i + 1, j);
-      // }
-
-      // for (let k = -1; k < 2; k++) {
-      //   for (let g = -1; g < 2; g++) {
-      //     if (
-      //       i + k > -1 &&
-      //       i + k < 12 &&
-      //       j + g > -1 &&
-      //       j + g < 12 &&
-      //       fillBoard[i + k][j + k] === 'M'
-      //     ) {
-      //       mineCount++;
-      //       console.log('Ref', i, j);
-      //       console.log(i + k, j + k);
-      //       continue;
-      //     } else {
-      //       continue;
-      //     }
-      //   }
-      // }
-      //
-      // if (mineCount) {
-      //   fillBoard[i][j] = mineCount.toString();
-      // }
     }
   }
 }
-
+// Creates array to track which squares have been clicked
 const setClickedSquares: boolean[][] = [];
 for (let i = 0; i < 12; i++) {
   const newRow = [];
