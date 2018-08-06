@@ -13,7 +13,7 @@ const fillBoard: string[][] = [];
 for (let i = 0; i < 12; i++) {
   const newRow = [];
   for (let j = 0; j < 12; j++) {
-    newRow.push(Math.random() > 0.92 ? 'M' : null);
+    newRow.push(Math.random() > 0.8 ? 'M' : null);
   }
   fillBoard.push(newRow);
 }
@@ -65,11 +65,28 @@ export default class Game extends React.Component<{}, GameState> {
     };
   }
   handleClick(i: number, j: number) {
+    // Reveals this square
     const newClickArray = this.state.clickedSquares;
     newClickArray[i][j] = true;
     this.setState({
       clickedSquares: newClickArray,
     });
+    // Reveals all adjacent squares for 0 mine squares (recursively)
+    if (this.state.boardContents[i][j] === '0') {
+      for (let k = -1; k <= 1; k++) {
+        if (i + k < 0 || i + k > 11) {
+          continue;
+        } else {
+          for (let l = -1; l <= 1; l++) {
+            if (j + l < 0 || j + l > 11) {
+              continue;
+            } else if (!this.state.clickedSquares[i + k][j + l]) {
+              this.handleClick(i + k, j + l);
+            }
+          }
+        }
+      }
+    }
   }
   render() {
     return (
