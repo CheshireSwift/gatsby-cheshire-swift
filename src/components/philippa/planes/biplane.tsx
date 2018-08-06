@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as Constants from './game-constants';
 
-export const Biplane = (props: { colour: string; isAlive: boolean }) => {
+export const Biplane = (props: { hue: number; health: number }) => {
   return (
     <svg
       version="1.0"
@@ -13,7 +13,7 @@ export const Biplane = (props: { colour: string; isAlive: boolean }) => {
     >
       <g
         transform="translate(1280.000000,640.000000) scale(-0.100000,-0.100000)"
-        fill={props.isAlive ? props.colour : '#000'}
+        fill={`hsl(${props.hue}, 100%, ${props.health / 2}%)`}
         stroke="none"
       >
         <path

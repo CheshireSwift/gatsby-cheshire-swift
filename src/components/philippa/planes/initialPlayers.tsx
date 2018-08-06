@@ -8,7 +8,7 @@ export const initialPlayers = [
     turningCW: false,
     turningCCW: false,
     keyCodes: ['KeyA', 'KeyD', 'KeyF'],
-    colour: '#ff0',
+    hue: 60,
     health: 100,
   },
 
@@ -21,7 +21,7 @@ export const initialPlayers = [
     turningCW: false,
     turningCCW: false,
     keyCodes: ['ArrowLeft', 'ArrowRight', 'KeyM'],
-    colour: '#0ff',
+    hue: 180,
     health: 100,
   },
 
@@ -34,7 +34,7 @@ export const initialPlayers = [
     turningCW: false,
     turningCCW: false,
     keyCodes: ['KeyH', 'KeyK', 'KeyL'],
-    colour: '#f0f',
+    hue: 300,
     health: 100,
   },
 ];

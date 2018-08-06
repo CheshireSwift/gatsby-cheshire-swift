@@ -20,7 +20,7 @@ export function getCoefficients(position: Constants.Vector, angle: number) {
         { A: 1, B: 0, C: -bottomRight.x },
         { A: 0, B: 1, C: -bottomRight.y },
         { A: 0, B: -1, C: topLeft.y }, // done
-      ]
+      ],
     );
   } else if (angle === 90) {
     coefficients.push(
@@ -29,7 +29,7 @@ export function getCoefficients(position: Constants.Vector, angle: number) {
         { A: 1, B: 0, C: -topLeft.x },
         { A: 0, B: 1, C: -bottomRight.y },
         { A: 0, B: -1, C: topLeft.y }, // done
-      ]
+      ],
     );
   } else if (angle === 180) {
     coefficients.push(
@@ -38,7 +38,7 @@ export function getCoefficients(position: Constants.Vector, angle: number) {
         { A: 1, B: 0, C: -topLeft.x },
         { A: 0, B: 1, C: -topLeft.y },
         { A: 0, B: -1, C: bottomRight.y }, // done
-      ]
+      ],
     );
   } else if (angle === 270) {
     coefficients.push(
@@ -47,7 +47,7 @@ export function getCoefficients(position: Constants.Vector, angle: number) {
         { A: 1, B: 0, C: -bottomRight.x },
         { A: 0, B: 1, C: -topLeft.y },
         { A: 0, B: -1, C: bottomRight.y }, // done
-      ]
+      ],
     );
   } else {
     const m1 = Math.tan(angle * (Math.PI / 180));
@@ -76,7 +76,7 @@ export function getCoefficients(position: Constants.Vector, angle: number) {
 export function getPoints(
   playerPosition: Constants.Vector,
   playerAngle: number,
-  angles: number[]
+  angles: number[],
 ) {
   const { x, y } = playerPosition; // center
   const [w, h] = [Constants.playerWidth, Constants.playerHeight];
@@ -92,10 +92,10 @@ export function getPoints(
 
 export function isInside(
   point: Constants.Vector,
-  boundaryCoefficients: Constants.Line[]
+  boundaryCoefficients: Constants.Line[],
 ) {
   return boundaryCoefficients.every((coefficients: Constants.Line) =>
-    onLeftOf(point, coefficients)
+    onLeftOf(point, coefficients),
   );
 }
 

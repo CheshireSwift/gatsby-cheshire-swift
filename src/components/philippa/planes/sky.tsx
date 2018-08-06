@@ -76,7 +76,7 @@ export class Sky extends React.Component<{}, SkyState> {
   }
 
   updateGame() {
-    this.collisionDetected();
+    this.detectCollisions();
 
     this.setState({
       player: this.computeNextPlayerState(),
@@ -127,7 +127,7 @@ export class Sky extends React.Component<{}, SkyState> {
       .filter(b => b.age < Constants.bulletLifetime); // Remove old bullets from playfield
   }
 
-  collisionDetected() {
+  detectCollisions() {
     // Player vs player
     const playerStates = this.state.player.slice();
     Geometry.getPairs(this.state.player.length).forEach(pair => {
@@ -165,7 +165,7 @@ export class Sky extends React.Component<{}, SkyState> {
       const boundary = Geometry.getCoefficients(position, angle);
       this.state.bullet.forEach(bullet => {
         if (Geometry.isInside(bullet.position, boundary)) {
-          console.log(`Player ${player.colour} hit`);
+          console.log(`Player ${player.hue} hit`);
           player.health -= Constants.bulletDamage;
           bullet.age += Constants.bulletLifetime; // destroy the bullet
         }

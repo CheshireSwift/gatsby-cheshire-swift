@@ -28,6 +28,6 @@ export interface PlayerState {
   turningCW: boolean;
   turningCCW: boolean;
   keyCodes: string[];
-  colour: string;
+  hue: number;
   health: number;
 }

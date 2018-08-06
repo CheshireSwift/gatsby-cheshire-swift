@@ -24,7 +24,7 @@ export class Player extends React.Component<PlayerProps, {}> {
           transition: 'all 0.05s',
         }}
       >
-        <Biplane colour={this.props.state.colour} isAlive={isAlive} />
+        <Biplane hue={this.props.state.hue} health={this.props.state.health} />
       </div>
     );
   }
@@ -44,7 +44,7 @@ export class Player extends React.Component<PlayerProps, {}> {
       default:
         return;
     }
-  };
+  }
 
   handleKeyUp = (e: KeyboardEvent) => {
     switch (e.code) {
@@ -57,7 +57,7 @@ export class Player extends React.Component<PlayerProps, {}> {
       default:
         return;
     }
-  };
+  }
 
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown.bind(this));
