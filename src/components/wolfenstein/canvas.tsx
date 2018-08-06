@@ -13,14 +13,6 @@ export enum Button {
   Right = 2,
 }
 
-export interface RenderedProps {
-  gl: WebGLRenderingContext;
-  vaoExt: OES_vertex_array_object;
-  modelMatrix: WebGLUniformLocation;
-  sampler: WebGLUniformLocation;
-  billboard: WebGLUniformLocation;
-}
-
 interface CanvasProps {
   width: number;
   height: number;

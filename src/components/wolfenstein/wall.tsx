@@ -2,8 +2,8 @@ import * as React from 'react';
 import { mat4 } from 'gl-matrix';
 import * as _ from 'lodash';
 
-import { ProgramInfo, Pos } from './wolfenstein';
-import { RenderedProps, loadTexture } from './canvas';
+import { ProgramInfo, RenderedProps, Pos } from './wolfenstein';
+import { loadTexture } from './canvas';
 
 let cubeVAO: WebGLVertexArrayObjectOES | null = null;
 let texture: WebGLTexture | null = null;
@@ -11,7 +11,7 @@ let texture: WebGLTexture | null = null;
 export function initWall(
   gl: WebGLRenderingContext,
   vaoExt: OES_vertex_array_object,
-  programInfo: ProgramInfo
+  programInfo: ProgramInfo,
 ) {
   cubeVAO = vaoExt.createVertexArrayOES();
   vaoExt.bindVertexArrayOES(cubeVAO);
@@ -76,7 +76,7 @@ export function initWall(
   gl.bufferData(
     gl.ELEMENT_ARRAY_BUFFER,
     new Uint16Array(indices),
-    gl.STATIC_DRAW
+    gl.STATIC_DRAW,
   );
 
   {
@@ -92,7 +92,7 @@ export function initWall(
       type,
       normalize,
       stride,
-      offset
+      offset,
     );
     gl.enableVertexAttribArray(programInfo.attribLocs.vertexPos);
   }
@@ -110,7 +110,7 @@ export function initWall(
       type,
       normalize,
       stride,
-      offset
+      offset,
     );
     gl.enableVertexAttribArray(programInfo.attribLocs.vertexUV);
   }
@@ -136,14 +136,18 @@ export class Wall extends React.Component<RenderedProps & WallProps, {}> {
       0.0,
     ]);
 
-    gl.uniformMatrix4fv(this.props.modelMatrix, false, modelMatrix);
+    gl.uniformMatrix4fv(
+      this.props.programInfo.uniformLocs.modelMatrix,
+      false,
+      modelMatrix,
+    );
 
     this.props.vaoExt.bindVertexArrayOES(cubeVAO!);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture!);
-    gl.uniform1i(this.props.sampler, 0);
-    gl.uniform1i(this.props.billboard, 0);
+    gl.uniform1i(this.props.programInfo.uniformLocs.sampler, 0);
+    gl.uniform1i(this.props.programInfo.uniformLocs.billboard, 0);
 
     const vertexCount = 36;
     const type = gl.UNSIGNED_SHORT;

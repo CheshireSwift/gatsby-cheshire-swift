@@ -26,7 +26,6 @@ interface WolfProps {
 interface WolfState {
   shouldRun: boolean;
   time: number;
-  walls: Cell[][];
 }
 
 export interface ProgramInfo {
@@ -44,10 +43,36 @@ export interface ProgramInfo {
   };
 }
 
+export interface RenderedProps {
+  gl: WebGLRenderingContext;
+  vaoExt: OES_vertex_array_object;
+  programInfo: ProgramInfo;
+}
+
 export class Wolfenstein extends React.Component<WolfProps, WolfState> {
   oldGl: WebGLRenderingContext | null = null;
   programInfo: ProgramInfo | null = null;
   player: Pos = { x: 2, y: 2 };
+  walls: Cell[][] = _.times(20, i =>
+    _.times(20, j => {
+      if (i === 0 || i === 19 || j === 0 || j === 19) {
+        return Cell.Wall;
+      } else {
+        return Cell.Floor;
+      }
+    }),
+  );
+  enemies: Array<{
+    type: EnemyType;
+    position: Pos;
+    facing: number;
+  }> = [
+    {
+      type: EnemyType.Charizard,
+      position: { x: 5, y: 5 },
+      facing: 0,
+    },
+  ];
 
   constructor(props: WolfProps) {
     super(props);
@@ -55,15 +80,6 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
     this.state = {
       shouldRun: false,
       time: performance.now(),
-      walls: _.times(20, i =>
-        _.times(20, j => {
-          if (i === 0 || i === 19 || j === 0 || j === 19) {
-            return Cell.Wall;
-          } else {
-            return Cell.Floor;
-          }
-        }),
-      ),
     };
     window.requestAnimationFrame(this.tick);
   }
@@ -190,14 +206,23 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
   tick(time: number) {
     const sin = Math.sin(this.props.mousePos.x / 1000);
     const cos = Math.cos(this.props.mousePos.x / 1000);
+    const speed = 1 / 400;
     const newPos = { x: this.player.x, y: this.player.y };
     if (this.props.keys.get('w')) {
-      newPos.x += (cos * (time - this.state.time)) / 100;
-      newPos.y -= (sin * (time - this.state.time)) / 100;
+      newPos.x += cos * (time - this.state.time) * speed;
+      newPos.y -= sin * (time - this.state.time) * speed;
     }
     if (this.props.keys.get('s')) {
-      newPos.x -= (cos * (time - this.state.time)) / 100;
-      newPos.y += (sin * (time - this.state.time)) / 100;
+      newPos.x -= cos * (time - this.state.time) * speed;
+      newPos.y += sin * (time - this.state.time) * speed;
+    }
+    if (this.props.keys.get('a')) {
+      newPos.x += sin * (time - this.state.time) * speed * 0.5;
+      newPos.y += cos * (time - this.state.time) * speed * 0.5;
+    }
+    if (this.props.keys.get('d')) {
+      newPos.x -= sin * (time - this.state.time) * speed * 0.5;
+      newPos.y -= cos * (time - this.state.time) * speed * 0.5;
     }
     const dist = 0.2;
     const dirs = [
@@ -216,8 +241,7 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
         y: newPos.y + dirY * dist,
       }))
       .some(
-        pos =>
-          this.state.walls[Math.floor(pos.x)][Math.floor(pos.y)] !== Cell.Floor,
+        pos => this.walls[Math.floor(pos.x)][Math.floor(pos.y)] !== Cell.Floor,
       );
     if (!collision) {
       this.player.x = newPos.x;
@@ -260,7 +284,7 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
 
     return (
       <div>
-        {_.flatMap(this.state.walls, (walls, x) => {
+        {_.flatMap(this.walls, (walls, x) => {
           return _.map(walls, (wall, y) => {
             if (wall !== Cell.Floor) {
               return (
@@ -268,29 +292,25 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
                   key={[x, y].toString()}
                   gl={gl}
                   vaoExt={vaoExt}
-                  modelMatrix={this.programInfo.uniformLocs.modelMatrix}
-                  sampler={this.programInfo.uniformLocs.sampler}
-                  billboard={this.programInfo.uniformLocs.billboard}
+                  programInfo={this.programInfo}
                   position={{ x, y }}
                 />
               );
             }
           });
         })}
-        <Enemy
-          gl={gl}
-          vaoExt={vaoExt}
-          modelMatrix={this.programInfo.uniformLocs.modelMatrix}
-          sampler={this.programInfo.uniformLocs.sampler}
-          billboard={this.programInfo.uniformLocs.billboard}
-          type={EnemyType.Charizard}
-          facing={0}
-          position={{ x: 5, y: 5 }}
-        />
-        <p>{this.state.time}</p>
-        <p>{this.props.mousePos.x}</p>
-        <p>{JSON.stringify(this.props.keys)}</p>
-        <p>{JSON.stringify(this.props.buttons)}</p>
+        {this.enemies.map(enemy => (
+          <Enemy
+            time={this.state.time}
+            gl={gl}
+            vaoExt={vaoExt}
+            programInfo={this.programInfo}
+            type={enemy.type}
+            facing={enemy.facing}
+            position={enemy.position}
+            spawnEnemy={props => this.enemies.push(props)}
+          />
+        ))}
       </div>
     );
   }

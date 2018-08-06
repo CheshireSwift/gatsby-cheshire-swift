@@ -2,8 +2,8 @@ import * as React from 'react';
 import { mat4 } from 'gl-matrix';
 import * as _ from 'lodash';
 
-import { ProgramInfo, Pos } from './wolfenstein';
-import { RenderedProps, loadTexture } from './canvas';
+import { ProgramInfo, Pos, RenderedProps } from './wolfenstein';
+import { loadTexture } from './canvas';
 
 let enemyVAO: WebGLVertexArrayObjectOES | null = null;
 const texture: { [key: string]: WebGLTexture } = {};
@@ -25,7 +25,12 @@ export function initEnemy(
 
   const positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-  const positions = _.flatten([[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]]);
+  const positions = _.flatten([
+    [-0.5, 0, 0],
+    [0.5, 0, 0],
+    [0.5, 1, 0],
+    [-0.5, 1, 0],
+  ]);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
   const uvCoords = _.flatten([[0, 0], [1, 0], [1, 1], [0, 1]]);
@@ -86,15 +91,42 @@ interface EnemyProps {
   type: EnemyType;
   position: Pos;
   facing: number;
-  spawnEnemy: (props: EnemyProps) => void;
+  time: number;
+  spawnEnemy: (
+    props: {
+      type: EnemyType;
+      position: Pos;
+      facing: number;
+    },
+  ) => void;
 }
 
-export class Enemy extends React.Component<EnemyProps & RenderedProps, {}> {
+export class Enemy extends React.Component<
+  EnemyProps & RenderedProps,
+  { lastTime: number }
+> {
   constructor(props: EnemyProps & RenderedProps) {
     super(props);
+    this.state = {
+      lastTime: props.time,
+    };
   }
 
   render(): false {
+    if (
+      this.props.type === EnemyType.Charizard &&
+      this.props.time - this.state.lastTime > 1000
+    ) {
+      this.setState({
+        lastTime: this.props.time,
+      });
+      this.props.spawnEnemy({
+        type: EnemyType.Fireball,
+        position: { x: 8, y: 8 },
+        facing: 0,
+      });
+    }
+
     const gl = this.props.gl;
 
     const modelMatrix = mat4.create();
@@ -105,14 +137,18 @@ export class Enemy extends React.Component<EnemyProps & RenderedProps, {}> {
       0.0,
     ]);
 
-    gl.uniformMatrix4fv(this.props.modelMatrix, false, modelMatrix);
+    gl.uniformMatrix4fv(
+      this.props.programInfo.uniformLocs.modelMatrix,
+      false,
+      modelMatrix,
+    );
 
     this.props.vaoExt.bindVertexArrayOES(enemyVAO!);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture[this.props.type]);
-    gl.uniform1i(this.props.sampler, 0);
-    gl.uniform1i(this.props.billboard, 1);
+    gl.uniform1i(this.props.programInfo.uniformLocs.sampler, 0);
+    gl.uniform1i(this.props.programInfo.uniformLocs.billboard, 1);
 
     const vertexCount = 6;
     const type = gl.UNSIGNED_SHORT;
