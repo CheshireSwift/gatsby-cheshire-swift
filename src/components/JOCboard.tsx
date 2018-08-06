@@ -11,23 +11,23 @@ interface SquareProps {
 function Square(props: SquareProps): any {
   return (
     <button
-      className={css(
-        {
-          background: props.winValue ? 'rgb(0, 255, 0)' : 'white',
-          border: '1px solid #999',
-          float: 'left',
-          fontSize: '24px',
-          fontWeight: 'bold',
-          height: '34px',
-          lineHeight: '34px',
-          marginRight: '-1px',
-          marginTop: '-1px',
-          padding: 0,
-          textAlign: 'center',
-          width: '34px',
+      className={css({
+        ':focus': {
+          outline: 'none',
         },
-        { ':focus': { outline: 'none' } },
-      )}
+        background: props.winValue ? 'rgb(0, 255, 0)' : 'white',
+        border: '1px solid #999',
+        float: 'left',
+        fontSize: 24,
+        fontWeight: 'bold',
+        height: 34,
+        lineHeight: '34px',
+        marginRight: -1,
+        marginTop: -1,
+        padding: 0,
+        textAlign: 'center',
+        width: 34,
+      })}
       key={props.value}
       onClick={props.onClick}
     >

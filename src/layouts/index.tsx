@@ -1,6 +1,9 @@
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { css } from 'emotion';
+import Link from 'gatsby-link';
+import Footer from '../components/footer';
+import Navbar from '../components/navbar';
 
 import Header from '../components/header';
 import './index.css';
@@ -35,26 +38,6 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
       );
     });
 
-    const Nav = css(
-      {
-        margin: '0 auto',
-        marginBottom: '1.45rem',
-        maxWidth: 960,
-      },
-      {
-        '& a': {
-          color: 'white',
-          display: 'table-cell',
-          padding: '1em 1.0875rem',
-          textDecoration: 'none',
-          verticalAlign: 'middle',
-        },
-      },
-      {
-        '& a:hover': { backgroundColor: 'hsl(270,50%,55%)' },
-      },
-    );
-
     return (
       <div
         className={css({
@@ -72,23 +55,13 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
           siteTitle={this.props.data.site.siteMetadata.title}
           color={this.state.color}
         />
-        <div className={css({ backgroundColor: 'hsl(270,50%,60%)' })}>
-          <nav className={Nav}>
-            <a href="/">Homepage</a>
-            <a href="/page-2">Ellen Tic-Tac-Toe</a>
-            <a href="/page-3">Tic Tac Toe</a>
-            <a href="/charizard">Charizard</a>
-            <a href="/longPage">Long page</a>
-            <a href="/psrh">Game of Life</a>
-          </nav>
-        </div>
+        <Navbar />
         <div
           className={css({
             margin: '0 auto',
             maxWidth: 960,
             padding: '0px 1.0875rem 1.45rem',
             paddingTop: 0,
-            marginBottom: 130,
           })}
         >
           {this.props.children()}
@@ -98,6 +71,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
             margin: '0 auto',
             maxWidth: 960,
             padding: '0px 1.0875rem 1.45rem',
+            marginBottom: 130,
           })}
         >
           <label>
@@ -114,50 +88,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
           </label>
         </div>
 
-        <div
-          className={css({
-            backgroundColor: '#decaf1',
-            position: 'fixed',
-            bottom: 25,
-            height: 90,
-            margin: 0,
-            padding: 0,
-            width: '100%',
-            display: 'block',
-            borderTop: '1px solid #3d1661',
-          })}
-        >
-          <marquee
-            className={css({
-              bottom: 17,
-              position: 'fixed',
-            })}
-            scrollamount="20"
-            direction="left"
-            behavior="scroll"
-          >
-            <img
-              className={css({
-                height: 90,
-                margin: 0,
-              })}
-              // src="/assets/charizardFly.gif"
-              src="https://vignette.wikia.nocookie.net/projectcrusade/images/9/91/Flying_charizard_by_jameswolfsbane-d6c822w.gif/revision/latest?cb=20160406170752"
-            />
-          </marquee>
-        </div>
-        <div
-          className={css({
-            backgroundColor: '#c19ee5',
-            bottom: 0,
-            height: 25,
-            margin: 0,
-            padding: 0,
-            position: 'fixed',
-            width: '100%',
-            display: 'block',
-          })}
-        />
+        <Footer />
       </div>
     );
   }

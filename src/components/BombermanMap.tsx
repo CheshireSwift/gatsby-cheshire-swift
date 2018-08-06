@@ -77,7 +77,6 @@ function Square(props: SquareProp) {
     case 'wall':
       return <SquareTile className="square" src={src.wall} />;
   }
-  console.log(`this should never be displayed ${props.content}`);
 }
 
 export class BombermanBoard extends React.Component<BombermanBoardState> {
