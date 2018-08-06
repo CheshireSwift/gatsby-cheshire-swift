@@ -1,5 +1,6 @@
 import React = require('react');
 import * as BombermanMap from './BombermanMap';
+import styled from '../../node_modules/react-emotion';
 
 interface GameState {
   map: string[];
@@ -7,13 +8,18 @@ interface GameState {
   higth: number;
 }
 
+const GameDescriptionDiv = styled('div')`
+  position: right;
+`;
 type possibleDirections = 'up' | 'down' | 'left' | 'right' | 'bomb';
 
 export class BombermanGame extends React.Component<{}, GameState> {
+  p1Alive: boolean;
+  p2Alive: boolean;
   updatedMap: string[];
   timer: number;
-  actions: possibleDirections[];
-  actionAgents: string[];
+  actions: possibleDirections[] = [];
+  actionAgents: string[] = [];
   constructor(props: {}) {
     super(props);
     this.game = this.game.bind(this);
@@ -49,8 +55,12 @@ export class BombermanGame extends React.Component<{}, GameState> {
   }
 
   move(direction: possibleDirections, player: string) {
-    const location = this.updatedMap.indexOf(player);
-    console.log(`'executing movements' at ${location}`);
+    let location = -1;
+    for (let i = 0; i < this.updatedMap.length; i++) {
+      if (this.updatedMap[i].slice(0, 2) === player) {
+        location = i;
+      }
+    }
     let targetLocation = -1;
     switch (direction) {
       case 'up':
@@ -67,10 +77,14 @@ export class BombermanGame extends React.Component<{}, GameState> {
         break;
     }
     if (this.isAccesible(location, targetLocation)) {
-      const tempMap = this.updatedMap;
-      tempMap[targetLocation] = tempMap[location];
-      tempMap[location] = 'empty';
-      this.updatedMap = tempMap;
+      const currentTile = this.updatedMap[location];
+      if (currentTile.length !== 2) {
+        this.updatedMap[location] = currentTile.slice(2, 7);
+        this.updatedMap[targetLocation] = player;
+      } else {
+        this.updatedMap[location] = 'empty';
+        this.updatedMap[targetLocation] = player;
+      }
     }
   }
 
@@ -98,40 +112,44 @@ export class BombermanGame extends React.Component<{}, GameState> {
         agent = 'p1';
         action = 'bomb';
         break;
-      case 112:
+      case 117:
         agent = 'p2';
         action = 'bomb';
         break;
-      case 91:
+      case 105:
         agent = 'p2';
         action = 'up';
         break;
-      case 59:
+      case 106:
         agent = 'p2';
         action = 'left';
         break;
-      case 39:
+      case 107:
         agent = 'p2';
         action = 'down';
         break;
-      case 35:
+      case 108:
         agent = 'p2';
         action = 'right';
         break;
-      case 32:
+      case 13:
         this.updatedMap = this.state.map;
         this.timer = 0;
         this.actions = [];
         this.actionAgents = [];
+        this.p1Alive = true;
+        this.p2Alive = true;
         setInterval(this.game, 150);
         break;
     }
-    this.actionAgents.push(agent);
-    this.actions.push(action);
+    if (agent) {
+      this.actionAgents.push(agent);
+      this.actions.push(action);
+    }
   }
 
   game() {
-    this.timer = this.timer === 9 ? 0 : this.timer + 1;
+    this.timer = this.timer === 6 ? 0 : this.timer + 1;
     if (this.timer === 0) {
       this.ageBombs();
     }
@@ -139,17 +157,17 @@ export class BombermanGame extends React.Component<{}, GameState> {
     this.setState({
       map: this.updatedMap,
     });
-    if (
-      this.state.map.indexOf('p1') === -1 &&
-      this.state.map.indexOf('p2') === -1
-    ) {
+    if (!this.p1Alive && !this.p2Alive) {
       alert('Draw!!');
+      location.reload();
     }
-    if (this.state.map.indexOf('p1') === -1) {
+    if (!this.p1Alive) {
       alert('Player 2 has won!!!');
+      location.reload();
     }
-    if (this.state.map.indexOf('p2') === -1) {
+    if (!this.p2Alive) {
       alert('Player 1 has won!!!');
+      location.reload();
     }
   }
 
@@ -166,49 +184,39 @@ export class BombermanGame extends React.Component<{}, GameState> {
   }
 
   setBomb(player: string) {
-    console.log('setting bombs');
-    const newMap = this.updatedMap;
-    const location = newMap.indexOf(player);
-    newMap[location] = 'bomb1';
-    const possibleLocations: number[] = [
-      location + 1,
-      location - 1,
-      location + this.state.width,
-      location - this.state.width,
-    ];
-    let canMove: boolean = false;
-    for (let i = 0; i < 4; i++) {
-      if (this.isAccesible(location, possibleLocations[i])) {
-        canMove = true;
-      }
-    }
-    if (canMove) {
-      let targetLocation = possibleLocations[Math.floor(Math.random() * 4)];
-      while (!this.isAccesible(location, targetLocation)) {
-        targetLocation = possibleLocations[Math.floor(Math.random() * 4)];
-      }
-      newMap[targetLocation] = player;
-      this.updatedMap = newMap;
-    }
+    const location = this.updatedMap.indexOf(player);
+    this.updatedMap[location] = player + 'bomb1';
   }
 
   ageBombs() {
     const explosions = [];
     const updatedMap: string[] = this.updatedMap;
     for (let i = 0; i < this.state.width * this.state.higth; i++) {
-      switch (updatedMap[i]) {
+      if (updatedMap[i] === 'fire') {
+        updatedMap[i] = 'empty';
+      }
+      switch (
+        updatedMap[i].slice(updatedMap[i].length - 5, updatedMap[i].length)
+      ) {
         case 'bomb1':
-          updatedMap[i] = 'bomb2';
+          updatedMap[i].length === 5
+            ? (updatedMap[i] = 'bomb2')
+            : (updatedMap[i] = updatedMap[i].slice(0, 2) + 'bomb2');
           break;
         case 'bomb2':
-          updatedMap[i] = 'bomb3';
+          updatedMap[i].length === 5
+            ? (updatedMap[i] = 'bomb3')
+            : (updatedMap[i] = updatedMap[i].slice(0, 2) + 'bomb3');
           break;
         case 'bomb3':
+          if (updatedMap[i].slice(0, 2) === 'p1') {
+            this.p1Alive = false;
+          }
+          if (updatedMap[i].slice(0, 2) === 'p2') {
+            this.p2Alive = false;
+          }
           updatedMap[i] = 'fire';
           explosions.push(i);
-          break;
-        case 'fire':
-          updatedMap[i] = 'empty';
           break;
       }
     }
@@ -234,11 +242,18 @@ export class BombermanGame extends React.Component<{}, GameState> {
       }
       if (this.onMap(fireAt, direction)) {
         if (
-          newMap[fireAt] === 'bomb1' ||
-          newMap[fireAt] === 'bomb2' ||
-          newMap[fireAt] === 'bomb3'
+          newMap[fireAt].slice(
+            newMap[fireAt].length - 5,
+            newMap[fireAt].length - 1,
+          ) === 'bomb'
         ) {
           chain.push(fireAt);
+        }
+        if (newMap[fireAt].slice(0, 2) === 'p1') {
+          this.p1Alive = false;
+        }
+        if (newMap[fireAt].slice(0, 2) === 'p2') {
+          this.p2Alive = false;
         }
         newMap[fireAt] = 'fire';
       }
@@ -261,17 +276,22 @@ export class BombermanGame extends React.Component<{}, GameState> {
 
   render() {
     return (
-      <div className="game" data-size="A4">
-        <div className="gameMap">
-          <BombermanMap.BombermanBoard
-            width={this.state.width}
-            higth={this.state.higth}
-            contents={this.state.map}
-          />
-        </div>
-        <div className="KeyBoard">
-          <input type="text" id="one" onKeyPress={this.buttonpress} />
-        </div>
+      <div
+        className="game"
+        data-size="A4"
+        onKeyPress={this.buttonpress}
+        tabIndex="-1"
+      >
+        <BombermanMap.BombermanBoard
+          width={this.state.width}
+          higth={this.state.higth}
+          contents={this.state.map}
+        />
+
+        <GameDescriptionDiv>
+          Press enter to begin. Controls: player 1 : WASD, Q for bombs. player 2
+          : IJKL, U for bombs.
+        </GameDescriptionDiv>
       </div>
     );
   }
