@@ -59,7 +59,7 @@ export class Sky extends React.Component<{}, SkyState> {
       });
       this.setState({ bullet: oneMoreBullet });
     };
-  }
+  };
 
   createPropertySettingCallback(turnDirection: string, targetValue: boolean) {
     return (playerIndex: number) => {
@@ -135,11 +135,14 @@ export class Sky extends React.Component<{}, SkyState> {
       // for each of the 4 points on the square boundary of player 2,
       // test inclusion against every line on the boundary of player 1
       const { position: p2Pos, angle: p2Angle } = playerStates[player2Index];
+      const angularOffset =
+        (Math.atan(Constants.playerHeight / Constants.playerWidth) * 180) /
+        Math.PI;
       const p2Points = Geometry.getPoints(p2Pos, p2Angle, [
-        360 - 45,
-        180 + 45,
-        180 - 45,
-        45,
+        360 - angularOffset,
+        180 + angularOffset,
+        180 - angularOffset,
+        angularOffset,
       ]);
 
       const { position: p1Pos, angle: p1Angle } = playerStates[player1Index];
