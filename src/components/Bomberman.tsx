@@ -280,7 +280,7 @@ export class BombermanGame extends React.Component<{}, GameState> {
         className="game"
         data-size="A4"
         onKeyPress={this.buttonpress}
-        tabIndex="-1"
+        tabIndex={-1}
       >
         <BombermanMap.BombermanBoard
           width={this.state.width}
