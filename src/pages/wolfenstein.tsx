@@ -1,17 +1,12 @@
 import * as React from 'react';
-import WolfensteinCanvas from '../components/wolfenstein';
+import Canvas from '../components/wolfenstein/canvas';
 
 import { css } from 'emotion';
 
-const SecondPage = () => (
+const Wolfenstein = () => (
   <div>
-    <WolfensteinCanvas
-      width={320}
-      height={240}
-      pixelRatio={window.devicePixelRatio || 1}
-      scale={2}
-    />
+    <Canvas width={800} height={600} />
   </div>
 );
 
-export default SecondPage;
+export default Wolfenstein;
