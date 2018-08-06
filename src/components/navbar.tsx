@@ -83,6 +83,7 @@ export default class Navbar extends React.Component<{}, {}> {
             <p>Joanna</p>
             <div>
               <Link to="/joannaTTTPage">Tic Tac Toe</Link>
+              <Link to="/accordion">Accordion Demo</Link>
             </div>
           </div>
           <div>
