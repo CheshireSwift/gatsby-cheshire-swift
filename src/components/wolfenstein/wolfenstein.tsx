@@ -3,8 +3,10 @@ import { mat4 } from 'gl-matrix';
 import * as _ from 'lodash';
 
 import { Button } from './canvas';
-import { Wall, initWall } from './wall';
-import { Enemy, initEnemy, EnemyType } from './enemy';
+import { getBillboardVAO, getCubeVAO } from './vao';
+import { Wall } from './wall';
+import { Enemy } from './enemy';
+import { Fireball } from './fireball';
 
 export interface Pos {
   x: number;
@@ -46,12 +48,20 @@ export interface ProgramInfo {
 export interface RenderedProps {
   gl: WebGLRenderingContext;
   vaoExt: OES_vertex_array_object;
+  vao: WebGLVertexArrayObjectOES;
   programInfo: ProgramInfo;
 }
 
 export class Wolfenstein extends React.Component<WolfProps, WolfState> {
+  get id(): number {
+    const newId = this._nextId;
+    this._nextId += 1;
+    return newId;
+  }
   oldGl: WebGLRenderingContext | null = null;
   programInfo: ProgramInfo | null = null;
+  cubeVAO: WebGLVertexArrayObjectOES;
+  billboardVAO: WebGLVertexArrayObjectOES;
   player: Pos = { x: 2, y: 2 };
   walls: Cell[][] = _.times(20, i =>
     _.times(20, j => {
@@ -62,17 +72,12 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
       }
     }),
   );
-  enemies: Array<{
-    type: EnemyType;
-    position: Pos;
-    facing: number;
-  }> = [
-    {
-      type: EnemyType.Charizard,
-      position: { x: 5, y: 5 },
-      facing: 0,
-    },
+  enemies: Array<{ id: number; pos: Pos }> = [
+    { id: -1, pos: { x: 10, y: 10 } },
   ];
+  fireballs: Array<{ id: number; pos: Pos }> = [];
+
+  _nextId = 0;
 
   constructor(props: WolfProps) {
     super(props);
@@ -109,12 +114,18 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
     `;
 
     const fsSource = `
+      precision mediump float;
+
       varying highp vec2 vUV;
 
       uniform sampler2D uSampler;
 
       void main(void) {
-        gl_FragColor = texture2D(uSampler, vUV);
+        vec4 colour = texture2D(uSampler, vUV);
+        if (colour.a < 0.9) {
+          discard;
+        }
+        gl_FragColor = colour;
       }
     `;
 
@@ -140,11 +151,9 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
     gl.clearDepth(1.0);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     const vaoExt = gl.getExtension('OES_vertex_array_object')!;
-    initWall(gl, vaoExt, this.programInfo);
-    initEnemy(gl, vaoExt, this.programInfo);
+    this.cubeVAO = getCubeVAO(gl, vaoExt, this.programInfo);
+    this.billboardVAO = getBillboardVAO(gl, vaoExt, this.programInfo);
     gl.useProgram(this.programInfo.program);
 
     gl.enable(gl.CULL_FACE);
@@ -292,6 +301,7 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
                   key={[x, y].toString()}
                   gl={gl}
                   vaoExt={vaoExt}
+                  vao={this.cubeVAO}
                   programInfo={this.programInfo}
                   position={{ x, y }}
                 />
@@ -299,16 +309,30 @@ export class Wolfenstein extends React.Component<WolfProps, WolfState> {
             }
           });
         })}
-        {this.enemies.map(enemy => (
+        {this.enemies.map(pos => (
           <Enemy
+            key={pos.id}
             time={this.state.time}
             gl={gl}
             vaoExt={vaoExt}
+            vao={this.billboardVAO}
             programInfo={this.programInfo}
-            type={enemy.type}
-            facing={enemy.facing}
-            position={enemy.position}
-            spawnEnemy={props => this.enemies.push(props)}
+            position={pos.pos}
+            spawnFireball={fireball =>
+              this.fireballs.push({ id: this.id, pos: fireball })
+            }
+          />
+        ))}
+        {this.fireballs.map(pos => (
+          <Fireball
+            key={pos.id}
+            time={this.state.time}
+            gl={gl}
+            vaoExt={vaoExt}
+            vao={this.billboardVAO}
+            programInfo={this.programInfo}
+            initialPos={pos.pos}
+            direction={0}
           />
         ))}
       </div>

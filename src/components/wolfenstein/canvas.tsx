@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Level } from './level';
 import { Wolfenstein } from './wolfenstein';
 
 interface GameState {
@@ -141,8 +140,18 @@ class Game extends React.Component<CanvasProps, GameState> {
   }
 }
 
-export function loadTexture(gl: WebGLRenderingContext, url: string) {
+const textures: { [key: string]: WebGLTexture } = {};
+
+export function getTexture(
+  gl: WebGLRenderingContext,
+  url: string,
+): WebGLTexture {
+  if (url in textures) {
+    return textures[url];
+  }
+
   const texture = gl.createTexture();
+  textures[url] = texture;
   gl.bindTexture(gl.TEXTURE_2D, texture);
   const level = 0;
   const internalFormat = gl.RGBA;
@@ -179,7 +188,6 @@ export function loadTexture(gl: WebGLRenderingContext, url: string) {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
   };
   image.src = url;
 
