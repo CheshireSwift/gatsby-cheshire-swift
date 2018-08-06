@@ -12,7 +12,7 @@ function Square(props: {
       className={css(
         {
           backgroundColor: 'white',
-          color: props.isClicked === true ? 'red' : 'white',
+          color: props.value === 'M' ? 'red' : 'black',
           border: '1px solid #999',
           float: 'left',
           font: 'inherit',
