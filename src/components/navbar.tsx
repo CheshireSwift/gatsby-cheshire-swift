@@ -96,6 +96,7 @@ export default class Navbar extends React.Component<{}, {}> {
             <p>Philippa</p>
             <div>
               <Link to="/psrh">Game of Life</Link>
+              <Link to="/psrh-1">Local Multiplayer Shooter</Link>
             </div>
           </div>
           <div>

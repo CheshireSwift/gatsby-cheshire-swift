@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Sky } from '../components/sky';
+import { Sky } from './sky';
 
 export class Game extends React.Component {
   render() {

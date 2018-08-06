@@ -42,7 +42,7 @@ export class Player extends React.Component<PlayerProps, {}> {
       default:
         return;
     }
-  }
+  };
 
   handleKeyUp = (e: KeyboardEvent) => {
     switch (e.code) {
@@ -55,7 +55,7 @@ export class Player extends React.Component<PlayerProps, {}> {
       default:
         return;
     }
-  }
+  };
 
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown.bind(this));

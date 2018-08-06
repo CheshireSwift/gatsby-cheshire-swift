@@ -56,7 +56,7 @@ export class Sky extends React.Component<{}, SkyState> {
       });
       this.setState({ bullet: oneMoreBullet });
     };
-  }
+  };
 
   genericKeypress(turnDirection: string, targetValue: boolean) {
     return (playerIndex: number) => {
