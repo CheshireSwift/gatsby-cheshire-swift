@@ -12,23 +12,35 @@ const fillBoard: string[][] = [];
 for (let i = 0; i < 12; i++) {
   const newRow = [];
   for (let j = 0; j < 12; j++) {
-    console.log(i, j);
     newRow.push(Math.random() > 0.92 ? 'B' : null);
   }
   fillBoard.push(newRow);
 }
-console.log(fillBoard);
+
+const setClickedSquares: boolean[][] = [];
+for (let i = 0; i < 12; i++) {
+  const newRow = [];
+  for (let j = 0; j < 12; j++) {
+    newRow.push(false);
+  }
+  setClickedSquares.push(newRow);
+}
 
 export default class Game extends React.Component<{}, GameState> {
   constructor(props: {}) {
     super(props);
+    this.handleClick = this.handleClick.bind(this);
     this.state = {
       boardContents: fillBoard,
-      clickedSquares: Array(12).fill(Array(12).fill(null)),
+      clickedSquares: setClickedSquares,
     };
   }
-  handleClick() {
-    console.log('Click');
+  handleClick(i: number, j: number) {
+    const newClickArray = this.state.clickedSquares;
+    newClickArray[i][j] = true;
+    this.setState({
+      clickedSquares: newClickArray,
+    });
   }
   render() {
     return (

@@ -12,6 +12,7 @@ function Square(props: {
       className={css(
         {
           backgroundColor: 'white',
+          color: props.isClicked === true ? 'red' : 'white',
           border: '1px solid #999',
           float: 'left',
           font: 'inherit',
@@ -60,5 +61,6 @@ export default function Board(props: {
     }
     displaySquares.push(newRow);
   }
+  console.log(this.clickArray);
   return <div>{displaySquares}</div>;
 }
