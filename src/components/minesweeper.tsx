@@ -127,8 +127,11 @@ export default class Game extends React.Component<{}, GameState> {
       }
     }
     if (
-      calculateStatus(this.state.boardContents, this.state.clickedSquares) ===
-      'lost'
+      calculateStatus(
+        this.state.boardContents,
+        this.state.clickedSquares,
+        this.state.flaggedSquares,
+      ) === 'lost'
     ) {
       this.setState({
         winningStatus: 'lost',
@@ -150,6 +153,8 @@ export default class Game extends React.Component<{}, GameState> {
     const computeStatus = () => {
       if (this.state.winningStatus === 'lost') {
         return 'You exploded! Better luck next time.';
+      } else if (this.state.winningStatus === 'won') {
+        return 'You won! Congratulations!';
       } else {
         return 'Tread carefully...';
       }
@@ -197,12 +202,20 @@ export default class Game extends React.Component<{}, GameState> {
 function calculateStatus(
   boardContents: string[][],
   clickedSquares: boolean[][],
+  flaggedSquares: boolean[][],
 ) {
   for (let i = 0; i < 12; i++) {
     for (let j = 0; j < 12; j++) {
       if (boardContents[i][j] === 'M' && clickedSquares[i][j]) {
         return 'lost';
       }
+      if (!flaggedSquares[i][j] && boardContents[i][j] === 'M') {
+        continue;
+      }
+      if (!clickedSquares[i][j] && boardContents[i][j] !== 'M') {
+        continue;
+      }
+      return 'won';
     }
   }
 }
