@@ -1,25 +1,7 @@
 import * as React from 'react';
 import './ticTacToe.css';
 import { css } from 'emotion';
-
-interface SquareProps {
-  isWinner: boolean;
-  onClick: () => void;
-  value: string;
-}
-
-interface RowProps {
-  rowNum: number;
-  squares: string[];
-  winnerSquares: number[];
-  onClick: (i: number) => void;
-}
-
-interface BoardProps {
-  squares: string[];
-  winnerSquares: number[];
-  onClick: (i: number) => void;
-}
+import { Board } from './viktorBoard';
 
 interface ToggleProps {
   onClick: () => void;
@@ -64,86 +46,6 @@ const stepHistoryElement = css({
   font: '200 14px/1.5 Helvetica, Verdana, sans-serif',
   borderBottom: '1px solid #ccc',
 });
-
-const Square = (props: SquareProps) => {
-  let image = '';
-  switch (props.value) {
-    case 'X':
-      image = '/assets/redcross-resized';
-      break;
-    case 'O':
-      image = '/assets/bluecirlce-resized';
-      break;
-  }
-  if (props.isWinner) {
-    image += '-winner';
-  }
-  image += '.png';
-  return (
-    <button
-      className={css({
-        background: `transparent url('${image}') no-repeat`,
-        // backgroundPosition: '3px center',
-        backgroundSize: '100%',
-        border: '3px solid #999',
-        float: 'left',
-        fontSize: 38,
-        fontWeight: 'bold',
-        height: 60,
-        lineHeight: 34,
-        marginRight: -1,
-        marginTop: -1,
-        padding: 0,
-        textAlign: 'center',
-        width: 60,
-      })}
-      onClick={() => props.onClick()}
-    />
-  );
-};
-
-const Row = (props: RowProps) => {
-  const cells = [];
-  for (let i = 0; i < 3; i++) {
-    const isWinner = props.winnerSquares
-      ? props.winnerSquares.includes(3 * props.rowNum + i)
-      : false;
-    cells.push(
-      renderSquare({
-        isWinner,
-        onClick: () => props.onClick(3 * props.rowNum + i),
-        value: props.squares[3 * props.rowNum + i],
-      }),
-    );
-  }
-  return <div className="board-row">{cells}</div>;
-};
-
-function renderSquare(props: SquareProps): JSX.Element {
-  return (
-    <Square
-      value={props.value}
-      onClick={props.onClick}
-      isWinner={props.isWinner}
-    />
-  );
-}
-
-const Board = (props: BoardProps) => {
-  const rows = [];
-  for (let i = 0; i < 3; i++) {
-    rows.push(
-      <Row
-        rowNum={i}
-        squares={props.squares}
-        winnerSquares={props.winnerSquares}
-        onClick={props.onClick}
-      />,
-    );
-  }
-
-  return <div className="game-board">{rows}</div>;
-};
 
 const Toggle = (props: ToggleProps) => {
   return (
@@ -355,8 +257,9 @@ class Game extends React.Component<{ againstComputer: boolean }, GameState> {
       >
         <Board
           squares={current.squares}
-          onClick={i => this.handleClick(i)}
-          winnerSquares={winnerSquares}
+          onClick={(i: number) => this.handleClick(i)}
+          winnerSquares={!!winnerSquares ? winnerSquares : Array(9).fill(false)}
+          size={{ row: 3, col: 3 }}
         />
         <div
           className={css({
@@ -496,11 +399,6 @@ function calculateNextMove(
     : Math.max(...weights.slice().filter(notNull));
   const possibleMax = getAllIndexOF(weights, maxOrMin);
   const chosenOne = chooseRandom(possibleMax);
-  // if (squares.slice().filter(notFalsy).length === 1) {
-  //   console.log(`squares: ${squares}`);
-  //   console.log(`Weights: ${weights}`);
-  //   console.log(`PossibleMAx: ${possibleMax}`);
-  // }
   return { maxOrMin, index: chosenOne };
 }
 
@@ -517,4 +415,4 @@ function getCookie(name: string): string {
 }
 
 // ========================================
-module.exports = { Game, Square, Board, Row, calculateNextMove };
+module.exports = { Game, calculateNextMove };
