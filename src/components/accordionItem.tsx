@@ -52,6 +52,7 @@ export default class AccordionItem extends React.Component<
               borderTopLeftRadius: this.props.firstOrLast === 'first' ? 5 : 0,
               borderTopRightRadius: this.props.firstOrLast === 'first' ? 5 : 0,
               color: 'white',
+              cursor: 'pointer',
               padding: 18,
               textAlign: 'left',
               width: '100%',
