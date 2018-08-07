@@ -25,8 +25,8 @@ export default class BreakoutGame extends GameInterface {
 
     this.ballRadius = 6;
 
-    this.velocityFirst = 2.5;
-    this.velocityIncrease = 0.05;
+    this.velocityFirst = 3.5;
+    this.velocityIncrease = 0.08;
 
     this.directionFirst = 300;
 

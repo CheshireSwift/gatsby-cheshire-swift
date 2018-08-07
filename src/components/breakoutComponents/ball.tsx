@@ -79,6 +79,8 @@ export default class Ball {
         ) {
           square.kill();
           this.game.ballDirection = 360 - this.game.ballDirection;
+          console.log('Square was hit from top');
+          return;
         }
         // If it was bottom
         if (
@@ -88,6 +90,8 @@ export default class Ball {
         ) {
           square.kill();
           this.game.ballDirection = 360 - this.game.ballDirection;
+          console.log('Square was hit from bottom');
+          return;
         }
       }
 
@@ -104,17 +108,20 @@ export default class Ball {
         ) {
           square.kill();
           this.game.ballDirection = 180 - this.game.ballDirection;
+          console.log('Square was hit from left');
+          return;
         }
-      }
 
-      // if it was right
-      if (
-        square.position.x < this.position.x - this.game.ballRadius &&
-        this.position.x - this.game.ballRadius <
-          square.position.x + this.game.squareWidth
-      ) {
-        square.kill();
-        this.game.ballDirection = 180 - this.game.ballDirection;
+        // if it was right
+        if (
+          square.position.x < this.position.x - this.game.ballRadius &&
+          this.position.x - this.game.ballRadius <
+            square.position.x + this.game.squareWidth
+        ) {
+          square.kill();
+          this.game.ballDirection = 180 - this.game.ballDirection;
+          console.log('Square was hit from right');
+        }
       }
     });
   }

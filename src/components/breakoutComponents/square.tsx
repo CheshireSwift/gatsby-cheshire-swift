@@ -19,6 +19,7 @@ export default class Square {
     if (this.alive) {
       this.alive = false;
       this.game.score++;
+      this.game.velocity += this.game.velocityIncrease;
     } else {
       console.log('WARNING: You are about to kill an already dead square');
     }
