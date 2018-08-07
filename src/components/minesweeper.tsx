@@ -101,7 +101,10 @@ export default class Game extends React.Component<{}, GameState> {
   }
 
   handleClick(i: number, j: number) {
-    if (this.state.winningStatus === 'lost') {
+    if (
+      this.state.winningStatus === 'lost' ||
+      this.state.winningStatus === 'won'
+    ) {
       return;
     }
     // Reveals this square
@@ -126,17 +129,15 @@ export default class Game extends React.Component<{}, GameState> {
         }
       }
     }
-    if (
-      calculateStatus(
-        this.state.boardContents,
-        this.state.clickedSquares,
-        this.state.flaggedSquares,
-      ) === 'lost'
-    ) {
-      this.setState({
-        winningStatus: 'lost',
-      });
-    }
+    const calculatedStatus = calculateStatus(
+      this.state.boardContents,
+      this.state.clickedSquares,
+      this.state.flaggedSquares,
+    );
+
+    this.setState({
+      winningStatus: calculatedStatus,
+    });
   }
 
   handleRightClick(i: number, j: number) {
@@ -204,18 +205,17 @@ function calculateStatus(
   clickedSquares: boolean[][],
   flaggedSquares: boolean[][],
 ) {
+  let trackStatus = '';
   for (let i = 0; i < 12; i++) {
     for (let j = 0; j < 12; j++) {
       if (boardContents[i][j] === 'M' && clickedSquares[i][j]) {
         return 'lost';
       }
-      if (!flaggedSquares[i][j] && boardContents[i][j] === 'M') {
-        continue;
-      }
       if (!clickedSquares[i][j] && boardContents[i][j] !== 'M') {
+        trackStatus += 'E';
         continue;
       }
-      return 'won';
     }
   }
+  return trackStatus.includes('E') ? 'playing' : 'won';
 }
