@@ -17,6 +17,7 @@ export interface Vector {
 }
 
 export interface Line {
+  // Coefficients of line AX + By + C <= 0
   A: number;
   B: number;
   C: number;

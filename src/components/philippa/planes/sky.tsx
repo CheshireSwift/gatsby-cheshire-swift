@@ -71,6 +71,17 @@ export class Sky extends React.Component<{}, SkyState> {
     };
   }
 
+  // componentDidMount() {
+  //   // Bind all the player keys
+  //   _.range(this.state.player.length).forEach(playerIndex => {
+  //     const keyHandlers = this.state.player.keys;
+  //     Object(keyHandlers).entries().forEach((propertySet: {property: string, value: boolean}) => {
+  //       const {property, value} = propertySet;
+  //       this.createPropertySettingCallback(playerIndex)(property, value);
+  //     });
+  //   });
+  // }
+
   componentWillUnmount() {
     clearInterval(this.state.timerToken);
   }
@@ -128,37 +139,7 @@ export class Sky extends React.Component<{}, SkyState> {
   }
 
   detectCollisions() {
-    // Player vs player
     const playerStates = this.state.player.slice();
-    Geometry.getPairs(this.state.player.length).forEach(pair => {
-      const [player1Index, player2Index] = pair;
-      // for each of the 4 points on the square boundary of player 2,
-      // test inclusion against every line on the boundary of player 1
-      const { position: p2Pos, angle: p2Angle } = playerStates[player2Index];
-      const angularOffset =
-        (Math.atan(Constants.playerHeight / Constants.playerWidth) * 180) /
-        Math.PI;
-      const p2Points = Geometry.getPoints(p2Pos, p2Angle, [
-        360 - angularOffset,
-        180 + angularOffset,
-        180 - angularOffset,
-        angularOffset,
-      ]);
-
-      const { position: p1Pos, angle: p1Angle } = playerStates[player1Index];
-      const p1Boundary = Geometry.getCoefficients(p1Pos, p1Angle);
-      const playerCollision = p2Points.some(point => {
-        return Geometry.isInside(point, p1Boundary);
-      });
-
-      if (playerCollision) {
-        console.log(`Players ${player1Index} and ${player2Index} collided`);
-        [player1Index, player2Index].forEach(i => {
-          playerStates[i].health = 0;
-        });
-      }
-    });
-
     // Bullets vs players
     playerStates.forEach(player => {
       const { position, angle } = player;
@@ -230,6 +211,12 @@ export class Sky extends React.Component<{}, SkyState> {
       bullets.push(<Bullet key={i} position={b.position} />);
     });
 
+    const sun = (
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle fill="url(#exampleGradient)" cx="60" cy="60" r="50" />
+      </svg>
+    );
+
     return (
       <div
         style={{
@@ -258,11 +245,13 @@ export class Sky extends React.Component<{}, SkyState> {
           style={{
             width: Constants.fieldWidth,
             height: Constants.fieldHeight,
-            background: 'skyblue',
+            background: 'linear-gradient(skyblue, white)',
             overflow: 'hidden',
             position: 'absolute',
+            borderRadius: 15,
           }}
         >
+          {sun}
           {players}
           {bullets}
         </div>

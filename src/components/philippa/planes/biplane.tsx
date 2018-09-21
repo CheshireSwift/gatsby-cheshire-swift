@@ -14,7 +14,8 @@ export const Biplane = (props: { hue: number; health: number }) => {
       <g
         transform="translate(1280.000000,640.000000) scale(-0.100000,-0.100000)"
         fill={`hsl(${props.hue}, 100%, ${props.health / 2}%)`}
-        stroke="none"
+        stroke="gray"
+        strokeWidth="5%"
       >
         <path
           d="M3000 6159 c-173 -18 -343 -79 -422 -152 -45 -41 -63 -113 -61 -247
