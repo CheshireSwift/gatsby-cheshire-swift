@@ -211,12 +211,6 @@ export class Sky extends React.Component<{}, SkyState> {
       bullets.push(<Bullet key={i} position={b.position} />);
     });
 
-    const sun = (
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <circle fill="url(#exampleGradient)" cx="60" cy="60" r="50" />
-      </svg>
-    );
-
     return (
       <div
         style={{
@@ -251,7 +245,6 @@ export class Sky extends React.Component<{}, SkyState> {
             borderRadius: 15,
           }}
         >
-          {sun}
           {players}
           {bullets}
         </div>
