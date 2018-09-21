@@ -74,12 +74,12 @@ export default () => (
     </div>
     <div className="imageWrapper">
       <div className={imageContainer}>
-        <img
+        {/* <img
           className="imageStyle"
           src={'/assets/computer-resized.jpg'}
           alt="Computer"
           onClick={() => window.location.replace('./ticTacToe-1p')}
-        />
+        /> */}
         <div className="middleText">
           <div className="text">Against Computer</div>
         </div>

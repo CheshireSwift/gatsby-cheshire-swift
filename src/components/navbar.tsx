@@ -77,12 +77,14 @@ export default class Navbar extends React.Component<{}, {}> {
               <Link to="/ellenTTTPage">Tic-Tac-Toe</Link>
               <Link to="/charizard">Charizard</Link>
               <Link to="/longPage">Long Page</Link>
+              <Link to="/minesweeperPage">Mine-sweeper</Link>
             </div>
           </div>
           <div>
             <p>Joanna</p>
             <div>
               <Link to="/joannaTTTPage">Tic Tac Toe</Link>
+              <Link to="/accordion">Accordion Demo</Link>
             </div>
           </div>
           <div>
