@@ -1,7 +1,10 @@
 import * as React from 'react';
+import Link from 'gatsby-link';
+
+import Game from '../components/ellenTicTacToe';
 import { css } from 'emotion';
 
-const NotFoundPage = () => (
+const SecondPage = () => (
   <div>
     <h1
       className={css({
@@ -17,7 +20,7 @@ const NotFoundPage = () => (
         padding: 0,
       })}
     >
-      NOT FOUND
+      Tic-Tac-Toe
     </h1>
     <p
       className={css({
@@ -26,9 +29,20 @@ const NotFoundPage = () => (
         padding: 0,
       })}
     >
-      You just hit a route that doesn&#39;t exist... the sadness.
+      A sensational interactive multiplayer experience bound to delight interns
+      and computing professionals alike!
     </p>
+    <div
+      className={css({
+        backgroundColor: '#decaf1',
+        border: '2px solid #3d1661',
+        margin: '10px',
+        padding: '10px',
+      })}
+    >
+      <Game />
+    </div>
   </div>
 );
 
-export default NotFoundPage;
+export default SecondPage;
